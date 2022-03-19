@@ -1,10 +1,12 @@
 package com.adda.model;
 
 import com.adda.domain.UserEntity;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 public class User {
     private Long id;
     private String username;
@@ -22,27 +24,4 @@ public class User {
     public User() {
     }
 
-    public List<Advertisement> getAdverts() {
-        return adverts;
-    }
-
-    public void setAdverts(List<Advertisement> adverts) {
-        this.adverts = adverts;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 }

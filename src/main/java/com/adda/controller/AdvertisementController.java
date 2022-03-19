@@ -37,7 +37,6 @@ public class AdvertisementController {
             UserEntity user = userRepository.findByUsernameOrEmail(authUser.getName(), authUser.getName())
                     .orElseThrow(() ->
                             new UsernameNotFoundException("User not found with username or email:" + authUser.getName()));
-            //System.out.println(customUserDetailsService.loadUserByUsername(user.getName()));
 
             advertisementService.addAdvert(advertisement, user);
             return ResponseEntity.ok("advertisement is successfully added");

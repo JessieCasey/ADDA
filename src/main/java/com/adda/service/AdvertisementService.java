@@ -21,7 +21,7 @@ public class AdvertisementService {
     public void addAdvert(AdvertisementEntity advertisement, UserEntity user) {
         advertisement.setEmail(user.getEmail());
         advertisement.setUser(user);
-        advertisement.setUsername(user);
+        advertisement.setUsername(user.getUsername());
         advertisement.setPhotoLinks(new PhotoEntity());
         Advertisement.toModel(advertisementRepository.save(advertisement));
     }
