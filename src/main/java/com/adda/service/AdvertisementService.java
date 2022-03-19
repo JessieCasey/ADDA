@@ -10,10 +10,6 @@ import com.adda.repository.advertisementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 @Service
 public class AdvertisementService {
     @Autowired
@@ -22,12 +18,12 @@ public class AdvertisementService {
     @Autowired
     private advertisementRepository advertisementRepository;
 
-    public Advertisement addAdvert(AdvertisementEntity advertisement, Long id) {
-        UserEntity user = userRepository.findById(id).get();
+    public void addAdvert(AdvertisementEntity advertisement, UserEntity user) {
+        advertisement.setEmail(user.getEmail());
         advertisement.setUser(user);
         advertisement.setUsername(user);
         advertisement.setPhotoLinks(new PhotoEntity());
-        return Advertisement.toModel(advertisementRepository.save(advertisement));
+        Advertisement.toModel(advertisementRepository.save(advertisement));
     }
 
     public Advertisement addPhoto(PhotoEntity photoEntity, Long id) {

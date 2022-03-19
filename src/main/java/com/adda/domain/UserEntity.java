@@ -1,53 +1,30 @@
 package com.adda.domain;
 
-import javax.persistence.*;
-import java.util.List;
+import lombok.Data;
 
+import javax.persistence.*;
+import java.util.Set;
+
+@Data
 @Entity
-@Table(name = "user_table")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"username"}),
+        @UniqueConstraint(columnNames = {"email"})
+})
 public class UserEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
+    private String name;
     private String username;
+    private String email;
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<AdvertisementEntity> adverts;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 
-    public UserEntity() {
-    }
-
-    public List<AdvertisementEntity> getAdverts() {
-        return adverts;
-    }
-
-    public void setAdverts(List<AdvertisementEntity> adverts) {
-        this.adverts = adverts;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
+    private Set<RoleEntity> roles;
 }

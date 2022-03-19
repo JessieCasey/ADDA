@@ -2,8 +2,8 @@ package com.adda.model;
 
 import com.adda.domain.UserEntity;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class User {
     private Long id;
@@ -14,7 +14,8 @@ public class User {
         User model = new User();
         model.setId(entity.getId());
         model.setUsername(entity.getUsername());
-        model.setAdverts(entity.getAdverts().stream().map(Advertisement::toModel).collect(Collectors.toList()));
+        //model.setAdverts(entity.getAdverts().stream().map(Advertisement::toModel).collect(Collectors.toList()));
+        model.setAdverts(new ArrayList<>());
         return model;
     }
 
