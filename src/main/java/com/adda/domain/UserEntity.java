@@ -1,7 +1,5 @@
 package com.adda.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -17,9 +15,6 @@ public class UserEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<AdvertisementEntity> adverts;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<TodoEntity> todos;
-
     public UserEntity() {
     }
 
@@ -31,18 +26,9 @@ public class UserEntity {
         this.adverts = adverts;
     }
 
-    public List<TodoEntity> getTodos() {
-        return todos;
-    }
-
-    public void setTodos(List<TodoEntity> todos) {
-        this.todos = todos;
-    }
-
     public Long getId() {
         return id;
     }
-
 
     public void setId(Long id) {
         this.id = id;
@@ -63,4 +49,5 @@ public class UserEntity {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

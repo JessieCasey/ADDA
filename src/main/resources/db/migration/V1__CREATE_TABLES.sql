@@ -8,14 +8,6 @@ create table user_table
     PRIMARY KEY (id)
 );
 
-create table todo_table
-(
-    id        serial,
-    title     varchar(64) not null,
-    completed BOOLEAN     NOT NULL,
-    PRIMARY KEY (id)
-);
-
 create table advertisement_table
 (
     id          serial,

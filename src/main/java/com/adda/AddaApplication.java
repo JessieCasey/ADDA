@@ -10,5 +10,4 @@ public class AddaApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AddaApplication.class, args);
 	}
-
 }
