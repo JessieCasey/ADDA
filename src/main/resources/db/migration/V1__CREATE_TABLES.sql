@@ -15,18 +15,26 @@ create table roles
     name varchar(60) not null,
     PRIMARY KEY (id)
 );
+create table categories_table
+(
+    category_id   serial      not null,
+    category_name varchar(64) not null,
+    PRIMARY KEY (category_id)
+);
 create table advertisement_table
 (
-    id          serial,
+    id          UUID NOT NULL,
     title       varchar(64)   not null,
-    categories  varchar(64)   not null,
+    category_id integer,
+    price       integer,
     description varchar(1024) not null,
-    geoposition varchar(64),
     email       varchar(100)  not null,
-    phone       varchar(64)   not null,
     user_name   varchar(64),
     PRIMARY KEY (id)
 );
+
+ALTER TABLE advertisement_table
+    ADD CONSTRAINT categories_advertisement_fkey FOREIGN KEY (category_id) REFERENCES categories_table (category_id);
 
 create table photo_table
 (

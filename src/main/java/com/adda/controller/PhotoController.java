@@ -78,6 +78,6 @@ public class PhotoController {
 
         photoEntity.setPhotos(arrayOfPath);
         advertisementService.addPhoto(photoEntity, advertId);
-        return new ResponseEntity<>("File uploaded successfully", HttpStatus.OK);
+        return new ResponseEntity<>("File is uploaded successfully", HttpStatus.OK);
     }
 }

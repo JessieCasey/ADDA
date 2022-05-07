@@ -3,9 +3,11 @@ package com.adda.model;
 import com.adda.domain.AdvertisementEntity;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class Advertisement {
-    private Long id;
+    private UUID id;
     private String title;
     private String categories;
     private String description;
@@ -15,16 +17,13 @@ public class Advertisement {
     private String photos;
     private String username;
 
-
     public static Advertisement toModel(AdvertisementEntity entity) {
         Advertisement model = new Advertisement();
         model.setId(entity.getId());
         model.setTitle(entity.getTitle());
-        model.setCategories(entity.getCategories());
+        model.setCategories(String.valueOf(entity.getCategory()));
         model.setDescription(entity.getDescription());
-        model.setGeoPosition(entity.getGeoposition());
         model.setEmail(entity.getEmail());
-        model.setPhone(entity.getPhone());
         model.setUsername(entity.getUsername());
         model.setPhotos(entity.getPhotoLinks().toString());
 

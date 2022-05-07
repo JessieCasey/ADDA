@@ -25,7 +25,7 @@ public class UserController {
         } catch (UserAlreadyExistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Произошла ошибка1");
+            return ResponseEntity.badRequest().body("Registration is not completed");
         }
     }
 
@@ -36,7 +36,7 @@ public class UserController {
         } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body("No user found");
         }
     }
 
@@ -45,7 +45,7 @@ public class UserController {
         try {
             return ResponseEntity.ok(userService.getAll());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body("You cannot get all users");
         }
     }
 
@@ -54,7 +54,7 @@ public class UserController {
         try {
             return ResponseEntity.ok(userService.delete(id));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body("No user found");
         }
     }
 }
