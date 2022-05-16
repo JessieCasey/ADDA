@@ -1,7 +1,7 @@
 package com.adda.service;
 
 import com.adda.DTO.AdvertisementDTO;
-import com.adda.DTO.filterDTO;
+import com.adda.DTO.FilterDTO;
 import com.adda.domain.PhotoEntity;
 import com.adda.domain.UserEntity;
 import com.adda.domain.AdvertisementEntity;
@@ -9,7 +9,7 @@ import com.adda.exception.AdvertisementNotFoundException;
 import com.adda.model.Advertisement;
 import com.adda.repository.CategoriesRepository;
 import com.adda.repository.UserRepository;
-import com.adda.repository.advertisementRepository;
+import com.adda.repository.AdvertisementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ public class AdvertisementService {
     private CategoriesRepository categoriesRepository;
 
     @Autowired
-    private advertisementRepository advertisementRepository;
+    private AdvertisementRepository advertisementRepository;
 
     public void addAdvert(AdvertisementDTO advertisementDTO, UserEntity user) {
         addAdvert(null, advertisementDTO, user);
@@ -33,6 +33,8 @@ public class AdvertisementService {
 
     public void addAdvert(UUID id, AdvertisementDTO advertisementDTO, UserEntity user) {
         UUID advertisementID = Optional.ofNullable(id).orElse(UUID.randomUUID());
+        PhotoEntity photoEntity = new PhotoEntity();
+        photoEntity.setPhotos(new String[8]);
         AdvertisementEntity advertisement = new AdvertisementEntity(
                 advertisementID,
                 advertisementDTO.getTitle(),
@@ -40,16 +42,16 @@ public class AdvertisementService {
                 advertisementDTO.getDescription(),
                 user.getEmail(),
                 user.getUsername(),
-                new PhotoEntity(),
+                photoEntity,
                 categoriesRepository.findById(advertisementDTO.getCategoryId()).get(),
                 user
         );
         Advertisement.toModel(advertisementRepository.save(advertisement));
     }
 
-    public Advertisement addPhoto(PhotoEntity photoEntity, Long id) {
-        AdvertisementEntity advertisement = advertisementRepository.findById(id).get();
-        advertisement.setPhotoLinks(photoEntity);
+    public Advertisement addPhoto(PhotoEntity photoEntity, UUID id) {
+        AdvertisementEntity advertisement = advertisementRepository.findById(id);
+        advertisement.setPhotos(photoEntity);
         //advertisement.setPhotos(photo);
         return Advertisement.toModel(advertisementRepository.save(advertisement));
     }
@@ -70,7 +72,7 @@ public class AdvertisementService {
         return advertisements;
     }
 
-    public Iterable<AdvertisementEntity> getAdvertisementsByFilters(filterDTO filterDTO) throws AdvertisementNotFoundException {
+    public Iterable<AdvertisementEntity> getAdvertisementsByFilters(FilterDTO filterDTO) throws AdvertisementNotFoundException {
         Iterable<AdvertisementEntity> advertisements = null;
         if (filterDTO.getCategoryName() == null || filterDTO.getCategoryName().equals("")) {
             advertisements = advertisementRepository.findAllByPriceBetween(filterDTO.getStartPrice(), filterDTO.getEndPrice());

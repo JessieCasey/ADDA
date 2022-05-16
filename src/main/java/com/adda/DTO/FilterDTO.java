@@ -1,10 +1,9 @@
 package com.adda.DTO;
 
-import com.adda.domain.CategoriesEntity;
 import lombok.Data;
 
 @Data
-public class filterDTO {
+public class FilterDTO {
     Integer startPrice;
     Integer endPrice;
     String categoryName;

@@ -1,6 +1,7 @@
 package com.adda.model;
 
 import com.adda.domain.AdvertisementEntity;
+import com.adda.domain.PhotoEntity;
 import lombok.Data;
 
 import java.util.UUID;
@@ -14,7 +15,7 @@ public class Advertisement {
     private String geoPosition;
     private String email;
     private String phone;
-    private String photos;
+    private PhotoEntity photos;
     private String username;
 
     public static Advertisement toModel(AdvertisementEntity entity) {
@@ -25,7 +26,7 @@ public class Advertisement {
         model.setDescription(entity.getDescription());
         model.setEmail(entity.getEmail());
         model.setUsername(entity.getUsername());
-        model.setPhotos(entity.getPhotoLinks().toString());
+        model.setPhotos(entity.getPhotos());
 
         return model;
     }

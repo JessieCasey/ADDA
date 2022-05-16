@@ -21,20 +21,6 @@ create table categories_table
     category_name varchar(64) not null,
     PRIMARY KEY (category_id)
 );
-create table advertisement_table
-(
-    id          UUID NOT NULL,
-    title       varchar(64)   not null,
-    category_id integer,
-    price       integer,
-    description varchar(1024) not null,
-    email       varchar(100)  not null,
-    user_name   varchar(64),
-    PRIMARY KEY (id)
-);
-
-ALTER TABLE advertisement_table
-    ADD CONSTRAINT categories_advertisement_fkey FOREIGN KEY (category_id) REFERENCES categories_table (category_id);
 
 create table photo_table
 (
@@ -49,3 +35,23 @@ create table photo_table
     photo8 varchar(1024),
     PRIMARY KEY (id)
 );
+
+create table advertisement_table
+(
+    id          UUID NOT NULL,
+    title       varchar(64)   not null,
+    category_id integer,
+    photo_id    integer,
+    price       integer,
+    description varchar(1024) not null,
+    email       varchar(100)  not null,
+    user_name   varchar(64),
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE advertisement_table
+    ADD CONSTRAINT categories_advertisement_fkey FOREIGN KEY (category_id) REFERENCES categories_table (category_id);
+
+ALTER TABLE advertisement_table
+    ADD CONSTRAINT photos_advertisement_fkey FOREIGN KEY (photo_id) REFERENCES photo_table (id);
+

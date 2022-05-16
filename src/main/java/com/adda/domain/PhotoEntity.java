@@ -1,7 +1,7 @@
 package com.adda.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-
 import javax.persistence.*;
 
 @Data
@@ -20,7 +20,8 @@ public class PhotoEntity {
     private String photo7;
     private String photo8;
 
-    @OneToOne(mappedBy = "photoLinks", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToOne(mappedBy = "photos", cascade = CascadeType.ALL)
     private AdvertisementEntity advert;
 
     public void setPhotos(String[] photos) {
@@ -33,7 +34,7 @@ public class PhotoEntity {
         this.photo7 = photos[6];
         this.photo8 = photos[7];
     }
-    
+
     @Override
     public String toString() {
         return "{" +

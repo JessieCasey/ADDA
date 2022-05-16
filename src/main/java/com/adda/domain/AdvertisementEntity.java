@@ -21,8 +21,8 @@ public class AdvertisementEntity {
     private String username;
     // назва, категорія, ціна, фотки, опис
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "photoLinks_id")
-    private PhotoEntity photoLinks;
+    @JoinColumn(name = "photos")
+    private PhotoEntity photos;
 
     @ManyToOne
     @JoinColumn(name = "category")
@@ -38,7 +38,7 @@ public class AdvertisementEntity {
                                String description,
                                String email,
                                String username,
-                               PhotoEntity photoLinks,
+                               PhotoEntity photos,
                                CategoriesEntity category,
                                UserEntity user) {
         this.id = id;
@@ -47,18 +47,17 @@ public class AdvertisementEntity {
         this.description = description;
         this.email = email;
         this.username = username;
-        this.photoLinks = photoLinks;
+        this.photos = photos;
         this.category = category;
         this.user = user;
     }
 
 
-    @JsonIgnore
-    public PhotoEntity getPhotoLinks() {
-        return photoLinks;
+    public PhotoEntity getPhotos() {
+        return photos;
     }
 
-    public void setPhotoLinks(PhotoEntity photoLinks) {
-        this.photoLinks = photoLinks;
+    public void setPhotos(PhotoEntity photos) {
+        this.photos = photos;
     }
 }

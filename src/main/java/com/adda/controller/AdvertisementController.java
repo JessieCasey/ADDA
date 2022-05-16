@@ -1,7 +1,7 @@
 package com.adda.controller;
 
 import com.adda.DTO.AdvertisementDTO;
-import com.adda.DTO.filterDTO;
+import com.adda.DTO.FilterDTO;
 import com.adda.domain.UserEntity;
 import com.adda.exception.AdvertisementNotFoundException;
 import com.adda.repository.UserRepository;
@@ -63,7 +63,7 @@ public class AdvertisementController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity getAdvertisementByPriceInRangeAndCategory(@RequestBody filterDTO filterDTO) {
+    public ResponseEntity getAdvertisementByPriceInRangeAndCategory(@RequestBody FilterDTO filterDTO) {
         try {
             return ResponseEntity.ok(advertisementService.getAdvertisementsByFilters(filterDTO));
         } catch (Exception e) {
