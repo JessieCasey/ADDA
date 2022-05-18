@@ -2,11 +2,11 @@ create sequence hibernate_sequence start 1 increment 1;
 
 create table user_table
 (
-    id       serial,
-    name     varchar(64) not null,
-    username varchar(64) not null,
-    email    varchar(64) not null,
-    password varchar(64) not null,
+    id         serial,
+    first_name varchar(64) not null,
+    last_name  varchar(64) not null,
+    username   varchar(64) not null,
+    email      varchar(64) not null,
     PRIMARY KEY (id)
 );
 create table roles
@@ -38,7 +38,7 @@ create table photo_table
 
 create table advertisement_table
 (
-    id          UUID NOT NULL,
+    id          UUID          NOT NULL,
     title       varchar(64)   not null,
     category_id integer,
     photo_id    integer,

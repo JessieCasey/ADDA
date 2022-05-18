@@ -15,6 +15,10 @@ public interface AdvertisementRepository extends CrudRepository<AdvertisementEnt
 
     Iterable<AdvertisementEntity> findAllByPriceBetween(Integer startPrice, Integer endPrice);
 
+    boolean existsByTitleAndUsername(String advertisementName, String username);
+
+    AdvertisementEntity findByTitleAndUsername(String advertisementName, String username);
+
     Iterable<AdvertisementEntity> findAllByTitle(String advertisementName);
 
     Iterable<AdvertisementEntity> findAllByCategory(CategoriesEntity category);

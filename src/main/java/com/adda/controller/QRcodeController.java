@@ -38,4 +38,9 @@ public class QRcodeController {
 
         return ResponseEntity.ok(qrcode);
     }
+
+    @GetMapping("/heroku")
+    public String heroku() {
+        return "Heroku app is running";
+    }
 }

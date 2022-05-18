@@ -13,21 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/user")
 public class UserController {
-
     @Autowired
     private UserService userService;
-
-    @PostMapping(value = "/registration", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity registration(@RequestBody UserEntity user) {
-        try {
-            userService.registration(user);
-            return ResponseEntity.ok("GOOD");
-        } catch (UserAlreadyExistException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Registration is not completed");
-        }
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity getOneUser(@PathVariable Long id) {

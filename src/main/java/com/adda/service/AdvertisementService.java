@@ -27,11 +27,11 @@ public class AdvertisementService {
     @Autowired
     private AdvertisementRepository advertisementRepository;
 
-    public void addAdvert(AdvertisementDTO advertisementDTO, UserEntity user) {
-        addAdvert(null, advertisementDTO, user);
+    public AdvertisementEntity addAdvert(AdvertisementDTO advertisementDTO, UserEntity user) {
+        return addAdvert(null, advertisementDTO, user);
     }
 
-    public void addAdvert(UUID id, AdvertisementDTO advertisementDTO, UserEntity user) {
+    public AdvertisementEntity addAdvert(UUID id, AdvertisementDTO advertisementDTO, UserEntity user) {
         UUID advertisementID = Optional.ofNullable(id).orElse(UUID.randomUUID());
         PhotoEntity photoEntity = new PhotoEntity();
         photoEntity.setPhotos(new String[8]);
@@ -47,6 +47,7 @@ public class AdvertisementService {
                 user
         );
         Advertisement.toModel(advertisementRepository.save(advertisement));
+        return advertisement;
     }
 
     public Advertisement addPhoto(PhotoEntity photoEntity, UUID id) {

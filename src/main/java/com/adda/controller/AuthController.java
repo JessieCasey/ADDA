@@ -1,11 +1,12 @@
 package com.adda.controller;
 
 import com.adda.DTO.LoginDTO;
-import com.adda.DTO.SignUpDTO;
+import com.adda.DTO.UserDTO;
 import com.adda.domain.RoleEntity;
 import com.adda.domain.UserEntity;
 import com.adda.repository.RoleRepository;
 import com.adda.repository.UserRepository;
+import com.adda.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Base64;
 import java.util.Collections;
 
 @RestController
@@ -47,24 +47,18 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody SignUpDTO signUpDto) {
-
-        // add check for username exists in a DB
-        if (userRepository.existsByUsername(signUpDto.getUsername())) {
-            return new ResponseEntity<>("Username is already taken!", HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
         // add check for email exists in DB
-        if (userRepository.existsByEmail(signUpDto.getEmail())) {
+        if(userRepository.existsByEmail(userDTO.getEmail())){
             return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
         }
 
         // create user object
         UserEntity user = new UserEntity();
-        user.setName(signUpDto.getName());
-        user.setUsername(signUpDto.getUsername());
-        user.setEmail(signUpDto.getEmail());
-        user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
 
         RoleEntity roles = roleRepository.findByName("ROLE_ADMIN").get();
         user.setRoles(Collections.singleton(roles));

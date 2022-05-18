@@ -1,16 +1,52 @@
 package com.adda.service;
 
+import com.adda.domain.AdvertisementEntity;
+import com.adda.domain.PhotoEntity;
 import com.adda.service.photoService.UploadClient;
 import com.adda.service.photoService.parameters.ExpirationTime;
 import com.adda.service.photoService.parameters.UploadParameters;
 import com.adda.service.photoService.responses.OptionalResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PhotoService {
     private static final String API_KEY = "3bcf090f1603553d4218e2cea8b30549";
 
-    public static OptionalResponse[] uploadPhotoToServer(String[] imagesInBase64, String[] fileNames)  {
+    public static PhotoEntity uploadPhotoToAdvertisement(List<MultipartFile> fileList) throws IOException {
+        // check if the current user has the advertisement
+
+        String[] arrayOfPath = new String[8];
+        String[] fileNames = new String[8];
+
+        String uniqueFileName = null;
+        String[] imagesBase64 = new String[8];
+        for (int i = 0; i < fileList.size(); i++) {
+            uniqueFileName = UUID.randomUUID() + fileList.get(i).getOriginalFilename();
+            fileNames[i] = uniqueFileName;
+
+            imagesBase64[i] = Base64.getEncoder().encodeToString(fileList.get(i).getBytes());
+        }
+
+        PhotoEntity photoEntity = new PhotoEntity();
+        OptionalResponse[] optionalResponse = PhotoService.uploadPhotoToServer(imagesBase64, fileNames);
+        for (int i = 0; i < optionalResponse.length; i++) {
+            if (optionalResponse[i] != null) {
+                arrayOfPath[i] = optionalResponse[i].get().getResponseData().getImageUrl();
+            }
+        }
+
+        photoEntity.setPhotos(arrayOfPath);
+        return photoEntity;
+    }
+
+    public static OptionalResponse[] uploadPhotoToServer(String[] imagesInBase64, String[] fileNames) {
         OptionalResponse[] uploadedImages = new OptionalResponse[imagesInBase64.length];
         for (int i = 0; i < imagesInBase64.length; i++) {
             if (imagesInBase64[i] != null) {

@@ -23,7 +23,7 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("/upl")
+@RequestMapping("/api/upload")
 public class PhotoController {
 
     @Autowired
@@ -31,6 +31,10 @@ public class PhotoController {
 
     @Autowired
     private AdvertisementRepository advertisementRepository;
+
+
+    @Autowired
+    private PhotoService photoService;
 
     @PostMapping
     public ResponseEntity<Object> uploadPhotoToAdvertisement(
@@ -50,8 +54,6 @@ public class PhotoController {
             return new ResponseEntity<>("Files are NOT uploaded successfully" + "advertisement is null", HttpStatus.BAD_REQUEST);
         }
 
-        String[] arrayOfPath = new String[8];
-        String[] fileNames = new String[8];
         List<MultipartFile> fileList = new ArrayList();
 
         if (file1 != null)
@@ -71,25 +73,8 @@ public class PhotoController {
         if (file8 != null)
             fileList.add(file8);
 
-        String uniqueFileName = null;
-        String[] imagesBase64 = new String[8];
-        for (int i = 0; i < fileList.size(); i++) {
-            uniqueFileName = UUID.randomUUID() + fileList.get(i).getOriginalFilename();
-            fileNames[i] = uniqueFileName;
-
-            imagesBase64[i] = Base64.getEncoder().encodeToString(fileList.get(i).getBytes());
-        }
-
-        PhotoEntity photoEntity = new PhotoEntity();
-        OptionalResponse[] optionalResponse = PhotoService.uploadPhotoToServer(imagesBase64, fileNames);
-        for (int i = 0; i < optionalResponse.length; i++) {
-            if (optionalResponse[i] != null) {
-                arrayOfPath[i] = optionalResponse[i].get().getResponseData().getImageUrl();
-            }
-        }
-
-        photoEntity.setPhotos(arrayOfPath);
-        advertisementService.addPhoto(photoEntity, advertId);
+        PhotoEntity photoEntity = PhotoService.uploadPhotoToAdvertisement(fileList);
+        advertisementService.addPhoto(photoEntity, advertisement.getId());
         return new ResponseEntity<>("Files are uploaded successfully", HttpStatus.OK);
     }
 }

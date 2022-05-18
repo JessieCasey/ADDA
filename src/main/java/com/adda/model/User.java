@@ -15,7 +15,7 @@ public class User {
     public static User toModel(UserEntity entity) {
         User model = new User();
         model.setId(entity.getId());
-        model.setUsername(entity.getUsername());
+        model.setUsername(entity.getLastName());
         //model.setAdverts(entity.getAdverts().stream().map(Advertisement::toModel).collect(Collectors.toList()));
         model.setAdverts(new ArrayList<>());
         return model;
