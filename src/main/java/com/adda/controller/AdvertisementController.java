@@ -7,13 +7,11 @@ import com.adda.exception.AdvertisementNotFoundException;
 import com.adda.repository.UserRepository;
 import com.adda.service.AdvertisementService;
 import com.adda.service.CustomUserDetailsService;
+import com.adda.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -27,15 +25,19 @@ public class AdvertisementController {
 
     @Autowired
     private AdvertisementService advertisementService;
+    // eyJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiSm9lIENvZGVyIn0.5dlp7GmziL2QS06sZgK4mtaqv0_xX4oFUuTDh1zHK4U
 
+
+
+    //
     @PostMapping("/add")
-    public HttpEntity<String> addAdvertisement(@RequestBody AdvertisementDTO advertisementDTO, Principal authUser) {
+    public HttpEntity<String> addAdvertisement(@RequestBody AdvertisementDTO advertisementDTO) {
         try {
-            UserEntity user = userRepository.findByUsernameOrEmail(authUser.getName(), authUser.getName())
-                    .orElseThrow(() ->
-                            new UsernameNotFoundException("User not found with username or email:" + authUser.getName()));
+            ResponseEntity<String> tokenEncoded = UserService.encodeToken(advertisementDTO.getToken());
+            System.out.println(tokenEncoded.getBody());
 
-            advertisementService.addAdvert(advertisementDTO, user);
+            UserEntity user = new UserEntity();
+            //advertisementService.addAdvert(advertisementDTO, user);
             return ResponseEntity.ok("advertisement is successfully added");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("ERROR: advert is NOT added \n" + e);

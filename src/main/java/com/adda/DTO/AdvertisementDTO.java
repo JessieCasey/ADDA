@@ -8,4 +8,5 @@ public class AdvertisementDTO {
     private Long categoryId;
     private Integer price;
     private String description;
+    private String token;
 }
