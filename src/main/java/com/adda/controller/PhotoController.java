@@ -5,7 +5,6 @@ import com.adda.domain.PhotoEntity;
 import com.adda.repository.AdvertisementRepository;
 import com.adda.service.AdvertisementService;
 import com.adda.service.PhotoService;
-import com.adda.service.photoService.responses.OptionalResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
