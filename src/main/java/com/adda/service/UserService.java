@@ -67,8 +67,12 @@ public class UserService {
     }
 
     public UserEntity encodeUserFromToken(String token) throws Exception {
-
-        String[] chunks = token.substring(token.indexOf(" ")).split("\\.");
+        String[] chunks;
+        if (!token.contains(" ")) {
+            chunks = token.split("\\.");
+        } else {
+            chunks = token.substring(token.indexOf(" ")).split("\\.");
+        }
         Base64.Decoder decoder = Base64.getUrlDecoder();
 
         String header = new String(decoder.decode(chunks[0]));
