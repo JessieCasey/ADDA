@@ -40,7 +40,8 @@ public class AdvertisementController {
     private UserService userService;
 
     @PostMapping("/add")
-    public HttpEntity<String> addAdvertisement(@RequestPart(name = "advertisement") AdvertisementDTO advertisementDTO,
+    public HttpEntity<String> addAdvertisement(@RequestHeader("Authorization") String token,
+                                               @RequestPart(name = "advertisement") AdvertisementDTO advertisementDTO,
                                                @RequestParam(name = "file1", required = false) MultipartFile file1,
                                                @RequestParam(name = "file2", required = false) MultipartFile file2,
                                                @RequestParam(name = "file3", required = false) MultipartFile file3,
@@ -50,7 +51,7 @@ public class AdvertisementController {
                                                @RequestParam(name = "file7", required = false) MultipartFile file7,
                                                @RequestParam(name = "file8", required = false) MultipartFile file8
     ) throws Exception {
-        UserEntity user = userService.encodeUserFromToken(advertisementDTO.getToken());
+        UserEntity user = userService.encodeUserFromToken(token);
         try {
             if (advertisementRepository.existsByTitleAndUsername(advertisementDTO.getTitle(), user.getUsername())) {
                 return ResponseEntity.badRequest().body("advertisement is already existed in your profile");
