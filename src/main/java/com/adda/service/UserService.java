@@ -12,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 
@@ -71,8 +74,11 @@ public class UserService {
         if (!token.contains(" ")) {
             chunks = token.split("\\.");
         } else {
-            chunks = token.substring(token.indexOf(" ")).split("\\.");
+
+            chunks = token.substring(token.indexOf(" ")).trim().split("\\.");
+            System.out.println(Arrays.toString(chunks));
         }
+
         Base64.Decoder decoder = Base64.getUrlDecoder();
 
         String header = new String(decoder.decode(chunks[0]));
@@ -89,6 +95,11 @@ public class UserService {
             registerUser(new UserDTO(id, firstName, lastName, username, email));
         }
         return userRepository.findById(id).get();
+    }
+
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    public static String getBearerTokenHeader() {
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getHeader("Authorization");
     }
 
 }

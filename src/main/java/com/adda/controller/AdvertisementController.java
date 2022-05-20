@@ -21,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.adda.service.UserService.getBearerTokenHeader;
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("api/advert")
@@ -40,7 +42,7 @@ public class AdvertisementController {
     private UserService userService;
 
     @PostMapping("/add")
-    public HttpEntity<String> addAdvertisement(@RequestHeader("Authorization") String token,
+    public HttpEntity<String> addAdvertisement(
                                                @RequestPart(name = "advertisement") AdvertisementDTO advertisementDTO,
                                                @RequestParam(name = "file1", required = false) MultipartFile file1,
                                                @RequestParam(name = "file2", required = false) MultipartFile file2,
@@ -51,7 +53,8 @@ public class AdvertisementController {
                                                @RequestParam(name = "file7", required = false) MultipartFile file7,
                                                @RequestParam(name = "file8", required = false) MultipartFile file8
     ) throws Exception {
-        UserEntity user = userService.encodeUserFromToken(token);
+        System.out.println(getBearerTokenHeader());
+        UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
         try {
             if (advertisementRepository.existsByTitleAndUsername(advertisementDTO.getTitle(), user.getUsername())) {
                 return ResponseEntity.badRequest().body("advertisement is already existed in your profile");
