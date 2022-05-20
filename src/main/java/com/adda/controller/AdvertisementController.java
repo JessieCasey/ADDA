@@ -44,7 +44,7 @@ public class AdvertisementController {
 
     @PostMapping(value = "/add")
     public ResponseEntity addAdvertisement(
-                                               @RequestPart(name = "advertisement") String advertJsonString,
+                                               @RequestPart(name = "advertisement") AdvertisementDTO advertisementDTO,
                                                @RequestParam(name = "file1", required = false) MultipartFile file1,
                                                @RequestParam(name = "file2", required = false) MultipartFile file2,
                                                @RequestParam(name = "file3", required = false) MultipartFile file3,
@@ -55,7 +55,6 @@ public class AdvertisementController {
                                                @RequestParam(name = "file8", required = false) MultipartFile file8
     ) throws Exception {
         UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
-        AdvertisementDTO advertisementDTO = convertJSON(advertJsonString);
 
         try {
             if (advertisementRepository.existsByTitleAndUsername(advertisementDTO.getTitle(), user.getUsername())) {

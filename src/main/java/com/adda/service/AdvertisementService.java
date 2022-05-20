@@ -91,9 +91,4 @@ public class AdvertisementService {
         return advertisementRepository.findAll();
     }
 
-    public static AdvertisementDTO convertJSON(String jsonString) {
-        Gson g = new Gson();
-        AdvertisementDTO advertisementDTO = g.fromJson(jsonString, AdvertisementDTO.class);
-        return advertisementDTO;
-    }
 }
