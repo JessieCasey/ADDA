@@ -6,7 +6,6 @@ import com.adda.domain.AdvertisementEntity;
 import com.adda.domain.PhotoEntity;
 import com.adda.domain.UserEntity;
 import com.adda.exception.AdvertisementNotFoundException;
-import com.adda.model.Advertisement;
 import com.adda.repository.AdvertisementRepository;
 import com.adda.repository.UserRepository;
 import com.adda.service.AdvertisementService;
@@ -14,7 +13,6 @@ import com.adda.service.CustomUserDetailsService;
 import com.adda.service.PhotoService;
 import com.adda.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.adda.service.AdvertisementService.convertJSON;
 import static com.adda.service.UserService.getBearerTokenHeader;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
