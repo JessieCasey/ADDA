@@ -75,7 +75,6 @@ public class UserService {
             chunks = token.split("\\.");
         } else {
             chunks = token.substring(token.indexOf(" ")).trim().split("\\.");
-            System.out.println(Arrays.toString(chunks));
         }
 
         Base64.Decoder decoder = Base64.getUrlDecoder();

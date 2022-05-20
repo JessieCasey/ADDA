@@ -10,6 +10,7 @@ import com.adda.model.Advertisement;
 import com.adda.repository.CategoriesRepository;
 import com.adda.repository.UserRepository;
 import com.adda.repository.AdvertisementRepository;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -88,5 +89,11 @@ public class AdvertisementService {
     }
     public Iterable<AdvertisementEntity> getAllAdvertisements() {
         return advertisementRepository.findAll();
+    }
+
+    public static AdvertisementDTO convertJSON(String jsonString) {
+        Gson g = new Gson();
+        AdvertisementDTO advertisementDTO = g.fromJson(jsonString, AdvertisementDTO.class);
+        return advertisementDTO;
     }
 }

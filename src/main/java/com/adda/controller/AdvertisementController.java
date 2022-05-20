@@ -6,6 +6,7 @@ import com.adda.domain.AdvertisementEntity;
 import com.adda.domain.PhotoEntity;
 import com.adda.domain.UserEntity;
 import com.adda.exception.AdvertisementNotFoundException;
+import com.adda.model.Advertisement;
 import com.adda.repository.AdvertisementRepository;
 import com.adda.repository.UserRepository;
 import com.adda.service.AdvertisementService;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.adda.service.AdvertisementService.convertJSON;
 import static com.adda.service.UserService.getBearerTokenHeader;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -40,9 +42,9 @@ public class AdvertisementController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/add")
-    public HttpEntity<String> addAdvertisement(
-                                               @RequestPart(name = "advertisement") AdvertisementDTO advertisementDTO,
+    @PostMapping(value = "/add")
+    public ResponseEntity addAdvertisement(
+                                               @RequestPart(name = "advertisement") String advertJsonString,
                                                @RequestParam(name = "file1", required = false) MultipartFile file1,
                                                @RequestParam(name = "file2", required = false) MultipartFile file2,
                                                @RequestParam(name = "file3", required = false) MultipartFile file3,
@@ -52,8 +54,9 @@ public class AdvertisementController {
                                                @RequestParam(name = "file7", required = false) MultipartFile file7,
                                                @RequestParam(name = "file8", required = false) MultipartFile file8
     ) throws Exception {
-        System.out.println(getBearerTokenHeader());
         UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
+        AdvertisementDTO advertisementDTO = convertJSON(advertJsonString);
+
         try {
             if (advertisementRepository.existsByTitleAndUsername(advertisementDTO.getTitle(), user.getUsername())) {
                 return ResponseEntity.badRequest().body("advertisement is already existed in your profile");
