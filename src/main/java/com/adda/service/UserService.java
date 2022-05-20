@@ -74,7 +74,6 @@ public class UserService {
         if (!token.contains(" ")) {
             chunks = token.split("\\.");
         } else {
-
             chunks = token.substring(token.indexOf(" ")).trim().split("\\.");
             System.out.println(Arrays.toString(chunks));
         }
