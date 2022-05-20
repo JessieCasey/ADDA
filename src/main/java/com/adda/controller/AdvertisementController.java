@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.adda.service.UserService.getBearerTokenHeader;
-
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "188.163.37.187"})
 @RestController
 @RequestMapping("api/advert")
 public class AdvertisementController {
