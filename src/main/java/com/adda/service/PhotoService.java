@@ -50,7 +50,7 @@ public class PhotoService {
         OptionalResponse[] uploadedImages = new OptionalResponse[imagesInBase64.length];
         for (int i = 0; i < imagesInBase64.length; i++) {
             if (imagesInBase64[i] != null) {
-                UploadParameters uploadParameters = new UploadParameters(API_KEY, imagesInBase64[i], fileNames[i], ExpirationTime.fromLong(1900000));
+                UploadParameters uploadParameters = new UploadParameters(API_KEY, imagesInBase64[i], fileNames[i], ExpirationTime.fromLong(2500000));
                 uploadedImages[i] = UploadClient.upload(uploadParameters);
             }
         }
