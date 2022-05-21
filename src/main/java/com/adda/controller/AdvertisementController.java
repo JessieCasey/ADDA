@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.adda.service.UserService.getBearerTokenHeader;
+
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("api/advert")
@@ -41,15 +42,15 @@ public class AdvertisementController {
 
     @PostMapping(value = "/add")
     public ResponseEntity addAdvertisement(
-                                               @RequestPart(name = "advertisement") AdvertisementDTO advertisementDTO,
-                                               @RequestParam(name = "file1", required = false) MultipartFile file1,
-                                               @RequestParam(name = "file2", required = false) MultipartFile file2,
-                                               @RequestParam(name = "file3", required = false) MultipartFile file3,
-                                               @RequestParam(name = "file4", required = false) MultipartFile file4,
-                                               @RequestParam(name = "file5", required = false) MultipartFile file5,
-                                               @RequestParam(name = "file6", required = false) MultipartFile file6,
-                                               @RequestParam(name = "file7", required = false) MultipartFile file7,
-                                               @RequestParam(name = "file8", required = false) MultipartFile file8
+            @RequestPart(name = "advertisement") AdvertisementDTO advertisementDTO,
+            @RequestParam(name = "file1", required = false) MultipartFile file1,
+            @RequestParam(name = "file2", required = false) MultipartFile file2,
+            @RequestParam(name = "file3", required = false) MultipartFile file3,
+            @RequestParam(name = "file4", required = false) MultipartFile file4,
+            @RequestParam(name = "file5", required = false) MultipartFile file5,
+            @RequestParam(name = "file6", required = false) MultipartFile file6,
+            @RequestParam(name = "file7", required = false) MultipartFile file7,
+            @RequestParam(name = "file8", required = false) MultipartFile file8
     ) throws Exception {
         UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
 
@@ -84,7 +85,7 @@ public class AdvertisementController {
 
             return ResponseEntity.ok("advertisement is successfully added");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("ERROR: advert is NOT added \n" + e);
+            return ResponseEntity.badRequest().body("advertisement is not added \n" + e);
         }
     }
 
@@ -104,7 +105,7 @@ public class AdvertisementController {
         try {
             return ResponseEntity.ok(advertisementService.getAdvertisementsByCategory(category_id));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Advertisement isn't available");
+            return ResponseEntity.badRequest().body("There's no advertisements in that category");
         }
     }
 
@@ -113,7 +114,8 @@ public class AdvertisementController {
         try {
             return ResponseEntity.ok(advertisementService.getAdvertisementsByFilters(filterDTO));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Advertisement isn't available");
+            return ResponseEntity.badRequest().body("There's no advertisement in the price range: ["
+                    + filterDTO.getStartPrice() + "-" + filterDTO.getEndPrice() + "] and in the category: [" + filterDTO.getCategoryName() + "]");
         }
     }
 
@@ -122,7 +124,7 @@ public class AdvertisementController {
         try {
             return ResponseEntity.ok(advertisementService.getAllByUser(userId));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Advertisement isn't available");
+            return ResponseEntity.badRequest().body("The user with id: [" + userId + "] " + "doesn't have any advertisements");
         }
     }
 

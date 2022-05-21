@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.StreamSupport;
 
 @Service
 public class AdvertisementService {
@@ -67,7 +68,7 @@ public class AdvertisementService {
 
     public Iterable<AdvertisementEntity> getAdvertisementsByCategory(Long categoryId) throws AdvertisementNotFoundException {
         Iterable<AdvertisementEntity> advertisements = advertisementRepository.findAllByCategory(categoriesRepository.findById(categoryId).get());
-        if (advertisements == null) {
+        if (advertisements == null || (!StreamSupport.stream(advertisements.spliterator(), false).findAny().isPresent())) {
             throw new AdvertisementNotFoundException("No adverts in that category");
         }
         return advertisements;
