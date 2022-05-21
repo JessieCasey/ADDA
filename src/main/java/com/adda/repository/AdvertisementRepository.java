@@ -2,6 +2,7 @@ package com.adda.repository;
 
 import com.adda.domain.AdvertisementEntity;
 import com.adda.domain.CategoriesEntity;
+import com.adda.domain.UserEntity;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.UUID;
@@ -22,4 +23,7 @@ public interface AdvertisementRepository extends CrudRepository<AdvertisementEnt
     Iterable<AdvertisementEntity> findAllByTitle(String advertisementName);
 
     Iterable<AdvertisementEntity> findAllByCategory(CategoriesEntity category);
+
+    Iterable<AdvertisementEntity> findAllByUser(UserEntity user);
+
 }

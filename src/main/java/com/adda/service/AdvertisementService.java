@@ -10,7 +10,6 @@ import com.adda.model.Advertisement;
 import com.adda.repository.CategoriesRepository;
 import com.adda.repository.UserRepository;
 import com.adda.repository.AdvertisementRepository;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,8 +65,8 @@ public class AdvertisementService {
         return advertisements;
     }
 
-    public Iterable<AdvertisementEntity> getAdvertisementsByCategory(String category_name) throws AdvertisementNotFoundException {
-        Iterable<AdvertisementEntity> advertisements = advertisementRepository.findAllByCategory(categoriesRepository.findByCategoryName(category_name));
+    public Iterable<AdvertisementEntity> getAdvertisementsByCategory(Long categoryId) throws AdvertisementNotFoundException {
+        Iterable<AdvertisementEntity> advertisements = advertisementRepository.findAllByCategory(categoriesRepository.findById(categoryId).get());
         if (advertisements == null) {
             throw new AdvertisementNotFoundException("No adverts in that category");
         }
@@ -79,7 +78,7 @@ public class AdvertisementService {
         if (filterDTO.getCategoryName() == null || filterDTO.getCategoryName().equals("")) {
             advertisements = advertisementRepository.findAllByPriceBetween(filterDTO.getStartPrice(), filterDTO.getEndPrice());
         } else {
-            advertisements = advertisementRepository.findAllByPriceBetweenAndCategory(filterDTO.getStartPrice(), filterDTO.getEndPrice(),categoriesRepository.findByCategoryName(filterDTO.getCategoryName()));
+            advertisements = advertisementRepository.findAllByPriceBetweenAndCategory(filterDTO.getStartPrice(), filterDTO.getEndPrice(), categoriesRepository.findByCategoryName(filterDTO.getCategoryName()));
         }
 
         if (advertisements == null) {
@@ -87,6 +86,21 @@ public class AdvertisementService {
         }
         return advertisements;
     }
+
+    public Iterable<AdvertisementEntity> getAllByUser(long userId) throws AdvertisementNotFoundException {
+        Iterable<AdvertisementEntity> advertisements = null;
+        if (!userRepository.findById(userId).isPresent()) {
+            throw new AdvertisementNotFoundException("The user doesn't have any advertisements");
+        } else {
+            advertisements = advertisementRepository.findAllByUser(userRepository.findById(userId).get());
+            if (advertisements != null) {
+                return advertisements;
+            } else {
+                throw new AdvertisementNotFoundException("The user doesn't have any advertisements");
+            }
+        }
+    }
+
     public Iterable<AdvertisementEntity> getAllAdvertisements() {
         return advertisementRepository.findAll();
     }

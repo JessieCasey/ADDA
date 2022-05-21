@@ -100,7 +100,7 @@ public class AdvertisementController {
     }
 
     @GetMapping("/category/{category_id}")
-    public ResponseEntity getAdvertisementByCategory(@PathVariable String category_id) {
+    public ResponseEntity getAdvertisementByCategory(@PathVariable long category_id) {
         try {
             return ResponseEntity.ok(advertisementService.getAdvertisementsByCategory(category_id));
         } catch (Exception e) {
@@ -112,6 +112,15 @@ public class AdvertisementController {
     public ResponseEntity getAdvertisementByPriceInRangeAndCategory(@RequestBody FilterDTO filterDTO) {
         try {
             return ResponseEntity.ok(advertisementService.getAdvertisementsByFilters(filterDTO));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Advertisement isn't available");
+        }
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity getAdvertisementsByUser(@PathVariable long userId) {
+        try {
+            return ResponseEntity.ok(advertisementService.getAllByUser(userId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Advertisement isn't available");
         }
