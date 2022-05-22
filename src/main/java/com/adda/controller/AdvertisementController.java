@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.adda.service.UserService.getBearerTokenHeader;
 
@@ -89,10 +90,10 @@ public class AdvertisementController {
         }
     }
 
-    @GetMapping("/{advertisementTitle}")
-    public ResponseEntity getAdvertisementByTitle(@PathVariable String advertisementTitle) {
+    @GetMapping("/{advertisementId}")
+    public ResponseEntity getAdvertisementByTitle(@PathVariable UUID advertisementId) {
         try {
-            return ResponseEntity.ok(advertisementService.getOneAdvertisementByTitle(advertisementTitle));
+            return ResponseEntity.ok(advertisementService.getOneAdvertisementById(advertisementId));
         } catch (AdvertisementNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {

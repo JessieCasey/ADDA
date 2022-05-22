@@ -58,8 +58,8 @@ public class AdvertisementService {
         return Advertisement.toModel(advertisementRepository.save(advertisement));
     }
 
-    public Iterable<AdvertisementEntity> getOneAdvertisementByTitle(String id) throws AdvertisementNotFoundException {
-        Iterable<AdvertisementEntity> advertisements = advertisementRepository.findAllByTitle(id);
+    public AdvertisementEntity getOneAdvertisementById(UUID id) throws AdvertisementNotFoundException {
+        AdvertisementEntity advertisements = advertisementRepository.findById(id);
         if (advertisements == null) {
             throw new AdvertisementNotFoundException("Advert is not found");
         }
