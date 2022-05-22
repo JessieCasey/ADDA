@@ -91,13 +91,24 @@ public class AdvertisementController {
     }
 
     @GetMapping("/{advertisementId}")
-    public ResponseEntity getAdvertisementByTitle(@PathVariable UUID advertisementId) {
+    public ResponseEntity getAdvertisementById(@PathVariable UUID advertisementId) {
         try {
             return ResponseEntity.ok(advertisementService.getOneAdvertisementById(advertisementId));
         } catch (AdvertisementNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Advertisement isn't available");
+        }
+    }
+
+    @DeleteMapping("/{advertisementId}")
+    public ResponseEntity deleteAdvertisementById(@PathVariable UUID advertisementId) {
+        try {
+            return ResponseEntity.ok("Advertisement with title \"" + advertisementService.deleteOneAdvertisementById(advertisementId) + "\" was deleted");
+        } catch (AdvertisementNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Advertisement wasn't deleted");
         }
     }
 

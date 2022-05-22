@@ -66,6 +66,14 @@ public class AdvertisementService {
         return advertisements;
     }
 
+    public String deleteOneAdvertisementById(UUID id) throws AdvertisementNotFoundException {
+        AdvertisementEntity advertisement = getOneAdvertisementById(id);
+        String title = advertisement.getTitle();
+        advertisementRepository.deleteById(id);
+
+        return title;
+    }
+
     public Iterable<AdvertisementEntity> getAdvertisementsByCategory(Long categoryId) throws AdvertisementNotFoundException {
         Iterable<AdvertisementEntity> advertisements = advertisementRepository.findAllByCategory(categoriesRepository.findById(categoryId).get());
         if (advertisements == null || (!StreamSupport.stream(advertisements.spliterator(), false).findAny().isPresent())) {

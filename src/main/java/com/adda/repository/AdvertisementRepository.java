@@ -12,6 +12,8 @@ public interface AdvertisementRepository extends CrudRepository<AdvertisementEnt
 
     AdvertisementEntity findById(UUID id);
 
+    void deleteById(UUID id);
+
     Iterable<AdvertisementEntity> findAllByPriceBetweenAndCategory(Integer startPrice, Integer endPrice, CategoriesEntity category);
 
     Iterable<AdvertisementEntity> findAllByPriceBetween(Integer startPrice, Integer endPrice);

@@ -19,7 +19,7 @@ public class QRcodeController {
     @GetMapping("/")
     public ResponseEntity<String> getQRCode(@RequestBody String url) {
         String medium = "https://rahul26021999.medium.com/";
-        String github = "https://www.google.com/";
+        String github = "https://adda-advertisement.herokuapp.com/api/advert/126925c4-082e-497f-bd61-aced8fd1aac7";
 
         byte[] image = new byte[0];
         try {

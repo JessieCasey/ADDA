@@ -21,7 +21,6 @@ public class UserEntity {
     private String firstName;
     private String lastName;
     private String username;
-
     private String email;
 
     public UserEntity(long id, String firstName, String lastName, String username, String email, Set<RoleEntity> roles) {

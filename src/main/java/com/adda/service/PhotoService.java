@@ -1,6 +1,5 @@
 package com.adda.service;
 
-import com.adda.domain.AdvertisementEntity;
 import com.adda.domain.PhotoEntity;
 import com.adda.service.photoService.UploadClient;
 import com.adda.service.photoService.parameters.ExpirationTime;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -50,7 +48,7 @@ public class PhotoService {
         OptionalResponse[] uploadedImages = new OptionalResponse[imagesInBase64.length];
         for (int i = 0; i < imagesInBase64.length; i++) {
             if (imagesInBase64[i] != null) {
-                UploadParameters uploadParameters = new UploadParameters(API_KEY, imagesInBase64[i], fileNames[i], ExpirationTime.fromLong(5000000));
+                UploadParameters uploadParameters = new UploadParameters(API_KEY, imagesInBase64[i], fileNames[i], ExpirationTime.fromLong(5530000));
                 uploadedImages[i] = UploadClient.upload(uploadParameters);
             }
         }
