@@ -32,11 +32,10 @@ public class WishListController {
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
             return ResponseEntity.ok(wishListService.getWishList(user));
-
         } catch (AdvertisementNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("WishList isn't available" + e);
+            return ResponseEntity.badRequest().body("Wish list isn't available \n" + e);
         }
     }
 
@@ -48,7 +47,7 @@ public class WishListController {
         } catch (AdvertisementNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Advertisement isn't available");
+            return ResponseEntity.badRequest().body("Wish list isn't available \n" + e);
         }
     }
 
@@ -60,7 +59,7 @@ public class WishListController {
         } catch (AdvertisementNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Advertisement isn't available \n" + e);
+            return ResponseEntity.badRequest().body("Wish list isn't available \n" + e);
         }
     }
 

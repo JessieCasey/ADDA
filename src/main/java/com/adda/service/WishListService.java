@@ -3,6 +3,7 @@ package com.adda.service;
 import com.adda.domain.AdvertisementEntity;
 import com.adda.domain.UserEntity;
 import com.adda.domain.WishListEntity;
+import com.adda.repository.AdvertisementRepository;
 import com.adda.repository.UserRepository;
 import com.adda.repository.WishListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import java.util.UUID;
 
 @Service
 public class WishListService {
+    @Autowired
+    private AdvertisementRepository advertisementRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -35,6 +38,8 @@ public class WishListService {
         advertisement.setWishListList(wishListEntity);
         wishListEntity.getAdvertisements().add(advertisement);
         wishListRepository.save(wishListEntity);
+
+
         return "Added";
     }
 
@@ -43,7 +48,7 @@ public class WishListService {
             createWishList(user);
         }
         WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).get();
-        advertisement.setWishListList(null);
+        //advertisement.setWishListList(null);
         wishListEntity.getAdvertisements().remove(advertisement);
         wishListRepository.save(wishListEntity);
         return "Deleted";
@@ -61,12 +66,11 @@ public class WishListService {
     public void createWishList(UserEntity user) {
         WishListEntity wishListEntity = getWishListEntity(user.getId());
         user.setWishList(wishListEntity.getId());
+        wishListRepository.save(wishListEntity);
         userRepository.save(user);
     }
 
     private WishListEntity getWishListEntity(long id) {
-        WishListEntity wishListEntity = new WishListEntity(UUID.randomUUID(), id);
-        wishListRepository.save(wishListEntity);
-        return wishListEntity;
+        return new WishListEntity(UUID.randomUUID(), id);
     }
 }
