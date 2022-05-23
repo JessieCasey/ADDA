@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -82,7 +81,7 @@ public class AdvertisementController {
     @DeleteMapping("/{advertisementId}")
     public ResponseEntity deleteAdvertisementById(@PathVariable UUID advertisementId) {
         try {
-            return ResponseEntity.ok("Advertisement with title \"" + advertisementService.deleteOneAdvertisementById(advertisementId) + "\" was deleted");
+            return ResponseEntity.ok("Advertisement with the title \"" + advertisementService.deleteOneAdvertisementById(advertisementId) + "\" was deleted");
         } catch (AdvertisementNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
