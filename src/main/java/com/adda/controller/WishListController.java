@@ -33,7 +33,7 @@ public class WishListController {
     public ResponseEntity getWishListFromUser() {
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
-            return ResponseEntity.ok(wishListService.getWishList(user));
+            return ResponseEntity.ok(wishListService.getWishList(user).getAdvertisements());
         } catch (AdvertisementNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
