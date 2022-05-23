@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.StreamSupport;
@@ -93,6 +94,7 @@ public class AdvertisementService {
         return advertisement;
     }
 
+    @Transactional
     public String deleteOneAdvertisementById(UUID id) throws AdvertisementNotFoundException {
         AdvertisementEntity advertisement = getOneAdvertisementById(id, null);
         String title = advertisement.getTitle();
