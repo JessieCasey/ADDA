@@ -60,7 +60,7 @@ public class WishListController {
         } catch (AdvertisementNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Advertisement isn't available");
+            return ResponseEntity.badRequest().body("Advertisement isn't available \n" + e);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.adda.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -23,7 +24,6 @@ public class UserEntity {
     private String username;
     private String email;
     private UUID wishList;
-
 
     public UserEntity(long id, String firstName, String lastName, String username, String email, Set<RoleEntity> roles, UUID wishList) {
         this.id = id;

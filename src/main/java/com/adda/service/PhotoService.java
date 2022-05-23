@@ -58,7 +58,6 @@ public class PhotoService {
     public static String uploadPhotoOfQRcodeToAdvertisement(String qrCodeInBase64, String url) {
 
         OptionalResponse optionalResponse = PhotoService.uploadPhotoOfQRcodeToServer(qrCodeInBase64, url);
-        System.out.println(optionalResponse.get().getResponseData().getImageUrl());
         return optionalResponse.get().getResponseData().getImageUrl();
     }
     public static OptionalResponse uploadPhotoOfQRcodeToServer(String qrCodeInBase64, String fileNames) {

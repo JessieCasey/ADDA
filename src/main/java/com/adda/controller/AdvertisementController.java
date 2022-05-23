@@ -70,7 +70,8 @@ public class AdvertisementController {
     @GetMapping("/{advertisementId}")
     public ResponseEntity getAdvertisementById(@PathVariable UUID advertisementId) {
         try {
-            return ResponseEntity.ok(advertisementService.getOneAdvertisementById(advertisementId));
+            UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
+            return ResponseEntity.ok(advertisementService.getOneAdvertisementById(advertisementId, user));
         } catch (AdvertisementNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {

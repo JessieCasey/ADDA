@@ -17,11 +17,20 @@ public class WishListService {
     @Autowired
     private WishListRepository wishListRepository;
 
+    public WishListEntity getWishList(UserEntity user) {
+        if (isWishListCreated(user)) {
+            return wishListRepository.findById(user.getWishList()).get();
+        }
+        createWishList(user);
+
+        return wishListRepository.findById(user.getWishList()).get();
+    }
 
     public String addAdvertToWishList(UserEntity user, AdvertisementEntity advertisement) {
         if (!isWishListCreated(user)) {
             createWishList(user);
         }
+
         WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).get();
         advertisement.setWishListList(wishListEntity);
         wishListEntity.getAdvertisements().add(advertisement);
@@ -46,15 +55,6 @@ public class WishListService {
             return wishListRepository.existsById(user.getWishList());
         }
         return false;
-    }
-
-    public WishListEntity getWishList(UserEntity user) {
-        if (isWishListCreated(user)) {
-            return wishListRepository.findById(user.getWishList()).get();
-        }
-        createWishList(user);
-
-        return wishListRepository.findById(user.getWishList()).get();
     }
 
 

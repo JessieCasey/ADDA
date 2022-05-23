@@ -11,6 +11,12 @@ create table users_table
     PRIMARY KEY (id)
 );
 
+create table history_table
+(
+    id      UUID,
+    user_id integer,
+    PRIMARY KEY (id)
+);
 
 create table roles
 (

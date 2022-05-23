@@ -3,12 +3,14 @@ package com.adda.service;
 import com.adda.DTO.AdvertisementDTO;
 import com.adda.DTO.FilterDTO;
 import com.adda.domain.AdvertisementEntity;
+import com.adda.domain.HistoryEntity;
 import com.adda.domain.PhotoEntity;
 import com.adda.domain.UserEntity;
 import com.adda.exception.AdvertisementNotFoundException;
 import com.adda.model.Advertisement;
 import com.adda.repository.AdvertisementRepository;
 import com.adda.repository.CategoriesRepository;
+import com.adda.repository.HistoryRepository;
 import com.adda.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,10 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class AdvertisementService {
+
+    @Autowired
+    private HistoryRepository historyRepository;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -68,12 +74,19 @@ public class AdvertisementService {
         return Advertisement.toModel(advertisementRepository.save(advertisement));
     }
 
-    public AdvertisementEntity getOneAdvertisementById(UUID id) throws AdvertisementNotFoundException {
+    public AdvertisementEntity getOneAdvertisementById(UUID id, UserEntity user) throws AdvertisementNotFoundException {
         AdvertisementEntity advertisement = advertisementRepository.findById(id);
 
-        advertisement.setViewers(advertisement.getViewers() + 1);
+        if (user != null) {
+            if (!historyRepository.existsByIdAndUser(id, user.getId())) {
+                HistoryEntity historyEntity = new HistoryEntity(id, user.getId());
+                historyRepository.save(historyEntity);
+                advertisement.setViewers(advertisement.getViewers() + 1);
+                advertisementRepository.save(advertisement);
+            }
+        }
 
-        advertisementRepository.save(advertisement);
+
         if (advertisement == null) {
             throw new AdvertisementNotFoundException("Advert is not found");
         }
@@ -81,7 +94,7 @@ public class AdvertisementService {
     }
 
     public String deleteOneAdvertisementById(UUID id) throws AdvertisementNotFoundException {
-        AdvertisementEntity advertisement = getOneAdvertisementById(id);
+        AdvertisementEntity advertisement = getOneAdvertisementById(id, null);
         String title = advertisement.getTitle();
         advertisementRepository.deleteById(id);
 
