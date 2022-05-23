@@ -2,6 +2,7 @@ package com.adda.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+
 import javax.persistence.*;
 
 @Data
@@ -37,7 +38,7 @@ public class PhotoEntity {
 
     @Override
     public String toString() {
-        return "{" +
+        return "PhotoEntity{" +
                 "photo1='" + photo1 + '\'' +
                 ", photo2='" + photo2 + '\'' +
                 ", photo3='" + photo3 + '\'' +

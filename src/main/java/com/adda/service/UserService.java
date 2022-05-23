@@ -7,6 +7,7 @@ import com.adda.exception.UserNotFoundException;
 import com.adda.model.User;
 import com.adda.repository.RoleRepository;
 import com.adda.repository.UserRepository;
+import com.adda.repository.WishListRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 
@@ -47,6 +47,7 @@ public class UserService {
         user.setRoles(Collections.singleton(roles));
 
         userRepository.save(user);
+
         return new ResponseEntity<>("Done", HttpStatus.OK);
     }
 
@@ -54,7 +55,7 @@ public class UserService {
     public User getOneUser(Long id) throws UserNotFoundException {
         UserEntity user = userRepository.findById(id).get();
         if (user == null) {
-            throw new UserNotFoundException("Пользователь не найден");
+            throw new UserNotFoundException("User is not found");
         }
         return User.toModel(user);
     }
@@ -95,7 +96,6 @@ public class UserService {
         return userRepository.findById(id).get();
     }
 
-    private static final String AUTHORIZATION_HEADER = "Authorization";
     public static String getBearerTokenHeader() {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getHeader("Authorization");
     }

@@ -30,10 +30,6 @@ public class PhotoController {
     @Autowired
     private AdvertisementRepository advertisementRepository;
 
-
-    @Autowired
-    private PhotoService photoService;
-
     @PostMapping
     public ResponseEntity<Object> uploadPhotoToAdvertisement(
             @RequestParam UUID advertId,

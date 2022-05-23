@@ -2,19 +2,20 @@ package com.adda.service;
 
 import com.adda.DTO.AdvertisementDTO;
 import com.adda.DTO.FilterDTO;
+import com.adda.domain.AdvertisementEntity;
 import com.adda.domain.PhotoEntity;
 import com.adda.domain.UserEntity;
-import com.adda.domain.AdvertisementEntity;
 import com.adda.exception.AdvertisementNotFoundException;
 import com.adda.model.Advertisement;
+import com.adda.repository.AdvertisementRepository;
 import com.adda.repository.CategoriesRepository;
 import com.adda.repository.UserRepository;
-import com.adda.repository.AdvertisementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -36,6 +37,7 @@ public class AdvertisementService {
         UUID advertisementID = Optional.ofNullable(id).orElse(UUID.randomUUID());
         PhotoEntity photoEntity = new PhotoEntity();
         photoEntity.setPhotos(new String[8]);
+
         AdvertisementEntity advertisement = new AdvertisementEntity(
                 advertisementID,
                 advertisementDTO.getTitle(),
@@ -45,10 +47,18 @@ public class AdvertisementService {
                 user.getUsername(),
                 photoEntity,
                 categoriesRepository.findById(advertisementDTO.getCategoryId()).get(),
-                user
+                user,
+                getCurrentTime(),
+                QRcodeService.getUrlOfAdvertisement(advertisementID)
         );
         Advertisement.toModel(advertisementRepository.save(advertisement));
         return advertisement;
+    }
+
+    public String getCurrentTime() {
+        String pattern = "dd-MM-yyyy";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        return simpleDateFormat.format(new Date());
     }
 
     public Advertisement addPhoto(PhotoEntity photoEntity, UUID id) {
@@ -59,11 +69,15 @@ public class AdvertisementService {
     }
 
     public AdvertisementEntity getOneAdvertisementById(UUID id) throws AdvertisementNotFoundException {
-        AdvertisementEntity advertisements = advertisementRepository.findById(id);
-        if (advertisements == null) {
+        AdvertisementEntity advertisement = advertisementRepository.findById(id);
+
+        advertisement.setViewers(advertisement.getViewers() + 1);
+
+        advertisementRepository.save(advertisement);
+        if (advertisement == null) {
             throw new AdvertisementNotFoundException("Advert is not found");
         }
-        return advertisements;
+        return advertisement;
     }
 
     public String deleteOneAdvertisementById(UUID id) throws AdvertisementNotFoundException {
@@ -112,6 +126,28 @@ public class AdvertisementService {
 
     public Iterable<AdvertisementEntity> getAllAdvertisements() {
         return advertisementRepository.findAll();
+    }
+
+    public List<MultipartFile> getMultipartFiles(MultipartFile file1, MultipartFile file2, MultipartFile file3, MultipartFile file4, MultipartFile file5, MultipartFile file6, MultipartFile file7, MultipartFile file8) {
+        List<MultipartFile> fileList = new ArrayList();
+
+        if (file1 != null)
+            fileList.add(file1);
+        if (file2 != null)
+            fileList.add(file2);
+        if (file3 != null)
+            fileList.add(file3);
+        if (file4 != null)
+            fileList.add(file4);
+        if (file5 != null)
+            fileList.add(file5);
+        if (file6 != null)
+            fileList.add(file6);
+        if (file7 != null)
+            fileList.add(file7);
+        if (file8 != null)
+            fileList.add(file8);
+        return fileList;
     }
 
 }

@@ -52,7 +52,17 @@ public class PhotoService {
                 uploadedImages[i] = UploadClient.upload(uploadParameters);
             }
         }
-
         return uploadedImages;
+    }
+
+    public static String uploadPhotoOfQRcodeToAdvertisement(String qrCodeInBase64, String url) {
+
+        OptionalResponse optionalResponse = PhotoService.uploadPhotoOfQRcodeToServer(qrCodeInBase64, url);
+        System.out.println(optionalResponse.get().getResponseData().getImageUrl());
+        return optionalResponse.get().getResponseData().getImageUrl();
+    }
+    public static OptionalResponse uploadPhotoOfQRcodeToServer(String qrCodeInBase64, String fileNames) {
+        UploadParameters uploadParameters = new UploadParameters(API_KEY, qrCodeInBase64, fileNames, ExpirationTime.fromLong(5530000));
+        return UploadClient.upload(uploadParameters);
     }
 }

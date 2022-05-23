@@ -7,9 +7,7 @@ import com.adda.domain.PhotoEntity;
 import com.adda.domain.UserEntity;
 import com.adda.exception.AdvertisementNotFoundException;
 import com.adda.repository.AdvertisementRepository;
-import com.adda.repository.UserRepository;
 import com.adda.service.AdvertisementService;
-import com.adda.service.CustomUserDetailsService;
 import com.adda.service.PhotoService;
 import com.adda.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +25,6 @@ import static com.adda.service.UserService.getBearerTokenHeader;
 @RestController
 @RequestMapping("api/advert")
 public class AdvertisementController {
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private AdvertisementService advertisementService;
@@ -54,7 +47,6 @@ public class AdvertisementController {
             @RequestParam(name = "file8", required = false) MultipartFile file8
     ) throws Exception {
         UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
-
         try {
             if (advertisementRepository.existsByTitleAndUsername(advertisementDTO.getTitle(), user.getUsername())) {
                 return ResponseEntity.badRequest().body("advertisement is already existed in your profile");
@@ -62,24 +54,7 @@ public class AdvertisementController {
 
             AdvertisementEntity advertisement = advertisementService.addAdvert(advertisementDTO, user);
 
-            List<MultipartFile> fileList = new ArrayList();
-
-            if (file1 != null)
-                fileList.add(file1);
-            if (file2 != null)
-                fileList.add(file2);
-            if (file3 != null)
-                fileList.add(file3);
-            if (file4 != null)
-                fileList.add(file4);
-            if (file5 != null)
-                fileList.add(file5);
-            if (file6 != null)
-                fileList.add(file6);
-            if (file7 != null)
-                fileList.add(file7);
-            if (file8 != null)
-                fileList.add(file8);
+            List<MultipartFile> fileList = advertisementService.getMultipartFiles(file1, file2, file3, file4, file5, file6, file7, file8);
 
             PhotoEntity photoEntity = PhotoService.uploadPhotoToAdvertisement(fileList);
             advertisementService.addPhoto(photoEntity, advertisement.getId());
@@ -89,6 +64,8 @@ public class AdvertisementController {
             return ResponseEntity.badRequest().body("advertisement is not added \n" + e);
         }
     }
+
+
 
     @GetMapping("/{advertisementId}")
     public ResponseEntity getAdvertisementById(@PathVariable UUID advertisementId) {

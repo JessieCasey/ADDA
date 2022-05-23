@@ -19,7 +19,13 @@ public class AdvertisementEntity {
     private String description;
     private String email;
     private String username;
-    // назва, категорія, ціна, фотки, опис
+    private String date;
+
+    private Integer viewers = 0;
+
+    @Column(name = "qr_code")
+    private String qrCode;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "photos")
     private PhotoEntity photos;
@@ -32,6 +38,11 @@ public class AdvertisementEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "wishlist_table_id")
+    private WishListEntity wishListList;
+
     public AdvertisementEntity(UUID id,
                                String title,
                                Integer price,
@@ -40,7 +51,10 @@ public class AdvertisementEntity {
                                String username,
                                PhotoEntity photos,
                                CategoriesEntity category,
-                               UserEntity user) {
+                               UserEntity user,
+                               String date,
+                               String qrCode
+                               ) {
         this.id = id;
         this.title = title;
         this.price = price;
@@ -50,6 +64,8 @@ public class AdvertisementEntity {
         this.photos = photos;
         this.category = category;
         this.user = user;
+        this.date = date;
+        this.qrCode = qrCode;
     }
 
 
