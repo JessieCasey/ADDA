@@ -6,5 +6,5 @@ import java.util.UUID;
 
 @Data
 public class IdDTO {
-    private UUID advertisementId;
+    private String  advertisementId;
 }
