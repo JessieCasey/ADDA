@@ -86,7 +86,7 @@ public class AdvertisementController {
         } catch (AdvertisementNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Advertisement wasn't deleted");
+            return ResponseEntity.badRequest().body("Advertisement wasn't deleted \n" + e);
         }
     }
 
