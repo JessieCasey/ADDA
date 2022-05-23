@@ -1,5 +1,6 @@
 package com.adda.controller;
 
+import com.adda.DTO.IdDTO;
 import com.adda.domain.UserEntity;
 import com.adda.exception.AdvertisementNotFoundException;
 import com.adda.repository.AdvertisementRepository;
@@ -40,8 +41,8 @@ public class WishListController {
         }
     }
 
-    @PutMapping("/")
-    public ResponseEntity addAdvertisementByIdToWishList(@RequestParam UUID advertisementId) {
+    @PostMapping("/add")
+    public ResponseEntity addAdvertisementByIdToWishList(@RequestBody IdDTO advertisementId) {
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
             return ResponseEntity.ok(wishListService.addAdvertToWishList(user, advertisementRepository.findById(advertisementId)));
@@ -52,8 +53,8 @@ public class WishListController {
         }
     }
 
-    @DeleteMapping("/")
-    public ResponseEntity deleteAdvertisementByIdFromWishList(@RequestParam UUID advertisementId) {
+    @PostMapping("/delete")
+    public ResponseEntity deleteAdvertisementByIdFromWishList(@RequestBody IdDTO advertisementId) {
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
             return ResponseEntity.ok(wishListService.deleteAdvertFromWishList(user, advertisementRepository.findById(advertisementId)));
