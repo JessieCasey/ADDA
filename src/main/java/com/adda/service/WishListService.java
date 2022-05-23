@@ -49,9 +49,11 @@ public class WishListService {
             createWishList(user);
         }
         WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).get();
-        //advertisement.setWishListList(null);
+
         List<AdvertisementEntity> advertisements = wishListEntity.getAdvertisements();
         advertisements.remove(advertisement);
+
+        advertisement.setWishListList(null);
         wishListEntity.setAdvertisements(advertisements);
         wishListRepository.save(wishListEntity);
 
