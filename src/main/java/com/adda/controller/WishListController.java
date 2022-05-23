@@ -41,7 +41,7 @@ public class WishListController {
         }
     }
 
-    @PostMapping("/add")
+    @PutMapping("/add")
     public ResponseEntity addAdvertisementByIdToWishList(@RequestBody IdDTO advertisementId) {
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
@@ -53,7 +53,7 @@ public class WishListController {
         }
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity deleteAdvertisementByIdFromWishList(@RequestBody IdDTO advertisementId) {
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
