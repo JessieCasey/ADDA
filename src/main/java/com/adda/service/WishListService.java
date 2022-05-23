@@ -48,8 +48,8 @@ public class WishListService {
             createWishList(user);
         }
         WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).get();
-        //advertisement.setWishListList(null);
-        wishListEntity.getAdvertisements().remove(advertisement);
+        advertisement.setWishListList(null);
+        boolean remove = wishListEntity.getAdvertisements().remove(advertisement);
         wishListRepository.save(wishListEntity);
         return "Deleted";
 
