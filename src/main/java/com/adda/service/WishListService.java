@@ -9,6 +9,7 @@ import com.adda.repository.WishListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -49,8 +50,11 @@ public class WishListService {
         }
         WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).get();
         //advertisement.setWishListList(null);
-        boolean remove = wishListEntity.getAdvertisements().remove(advertisement);
+        List<AdvertisementEntity> advertisements = wishListEntity.getAdvertisements();
+        advertisements.remove(advertisement);
+        wishListEntity.setAdvertisements(advertisements);
         wishListRepository.save(wishListEntity);
+
         return "Deleted";
 
     }
