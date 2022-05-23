@@ -41,8 +41,8 @@ public class WishListController {
         }
     }
 
-    @PostMapping("/add/{advertisementId}")
-    public ResponseEntity addAdvertisementByIdToWishList(@PathVariable UUID advertisementId) {
+    @PostMapping("/add/}")
+    public ResponseEntity addAdvertisementByIdToWishList(@RequestParam UUID advertisementId) {
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
             return ResponseEntity.ok(wishListService.addAdvertToWishList(user, advertisementRepository.findById(advertisementId)));
