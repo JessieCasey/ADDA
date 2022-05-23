@@ -52,12 +52,12 @@ public class UserService {
     }
 
 
-    public User getOneUser(Long id) throws UserNotFoundException {
+    public UserEntity getOneUser(Long id) throws UserNotFoundException {
         UserEntity user = userRepository.findById(id).get();
         if (user == null) {
             throw new UserNotFoundException("User is not found");
         }
-        return User.toModel(user);
+        return user;
     }
 
     public Iterable<UserEntity> getAll() {
