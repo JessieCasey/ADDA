@@ -5,6 +5,7 @@ import com.adda.exception.AdvertisementNotFoundException;
 import com.adda.repository.AdvertisementRepository;
 import com.adda.service.UserService;
 import com.adda.service.WishListService;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +40,8 @@ public class WishListController {
         }
     }
 
-    @PutMapping("/{advertisementId}")
-    public ResponseEntity addAdvertisementByIdToWishList(@PathVariable UUID advertisementId) {
+    @PutMapping("/")
+    public ResponseEntity addAdvertisementByIdToWishList(@RequestBody UUID advertisementId) {
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
             return ResponseEntity.ok(wishListService.addAdvertToWishList(user, advertisementRepository.findById(advertisementId)));
@@ -51,8 +52,8 @@ public class WishListController {
         }
     }
 
-    @DeleteMapping("/{advertisementId}")
-    public ResponseEntity deleteAdvertisementByIdFromWishList(@PathVariable UUID advertisementId) {
+    @DeleteMapping("/")
+    public ResponseEntity deleteAdvertisementByIdFromWishList(@RequestBody UUID advertisementId) {
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
             return ResponseEntity.ok(wishListService.deleteAdvertFromWishList(user, advertisementRepository.findById(advertisementId)));
