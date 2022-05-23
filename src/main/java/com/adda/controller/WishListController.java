@@ -41,11 +41,11 @@ public class WishListController {
         }
     }
 
-    @PutMapping("/add")
-    public ResponseEntity addAdvertisementByIdToWishList(@RequestBody IdDTO advertisementId) {
+    @PutMapping("/add/{advertisementId}")
+    public ResponseEntity addAdvertisementByIdToWishList(@PathVariable UUID advertisementId) {
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
-            return ResponseEntity.ok(wishListService.addAdvertToWishList(user, advertisementRepository.findById(UUID.fromString(advertisementId.getAdvertisementId()))));
+            return ResponseEntity.ok(wishListService.addAdvertToWishList(user, advertisementRepository.findById(advertisementId)));
         } catch (AdvertisementNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
@@ -53,11 +53,11 @@ public class WishListController {
         }
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity deleteAdvertisementByIdFromWishList(@RequestBody IdDTO advertisementId) {
+    @DeleteMapping("/delete/{advertisementId}")
+    public ResponseEntity deleteAdvertisementByIdFromWishList(@PathVariable UUID advertisementId) {
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
-            return ResponseEntity.ok(wishListService.deleteAdvertFromWishList(user, advertisementRepository.findById(UUID.fromString(advertisementId.getAdvertisementId()))));
+            return ResponseEntity.ok(wishListService.deleteAdvertFromWishList(user, advertisementRepository.findById(advertisementId)));
         } catch (AdvertisementNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
