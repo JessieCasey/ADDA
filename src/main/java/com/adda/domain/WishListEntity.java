@@ -16,12 +16,10 @@ public class WishListEntity {
     @Column(name = "user_id")
     private long userId;
 
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "wishListList")
     private List<AdvertisementEntity> advertisements;
 
     public WishListEntity() {
-
     }
 
     public WishListEntity(UUID id, long userId) {

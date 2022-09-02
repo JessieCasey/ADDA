@@ -1,7 +1,6 @@
-package com.adda.service;
+package com.adda.service.photoService;
 
 import com.adda.domain.PhotoEntity;
-import com.adda.service.photoService.UploadClient;
 import com.adda.service.photoService.parameters.ExpirationTime;
 import com.adda.service.photoService.parameters.UploadParameters;
 import com.adda.service.photoService.responses.OptionalResponse;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class PhotoService {
+public class PhotoServiceImpl {
     private static final String API_KEY = "3bcf090f1603553d4218e2cea8b30549";
 
     public static PhotoEntity uploadPhotoToAdvertisement(List<MultipartFile> fileList) throws IOException {
@@ -33,7 +32,7 @@ public class PhotoService {
         }
 
         PhotoEntity photoEntity = new PhotoEntity();
-        OptionalResponse[] optionalResponse = PhotoService.uploadPhotoToServer(imagesBase64, fileNames);
+        OptionalResponse[] optionalResponse = PhotoServiceImpl.uploadPhotoToServer(imagesBase64, fileNames);
         for (int i = 0; i < optionalResponse.length; i++) {
             if (optionalResponse[i] != null) {
                 arrayOfPath[i] = optionalResponse[i].get().getResponseData().getImageUrl();
@@ -57,9 +56,10 @@ public class PhotoService {
 
     public static String uploadPhotoOfQRcodeToAdvertisement(String qrCodeInBase64, String url) {
 
-        OptionalResponse optionalResponse = PhotoService.uploadPhotoOfQRcodeToServer(qrCodeInBase64, url);
+        OptionalResponse optionalResponse = PhotoServiceImpl.uploadPhotoOfQRcodeToServer(qrCodeInBase64, url);
         return optionalResponse.get().getResponseData().getImageUrl();
     }
+
     public static OptionalResponse uploadPhotoOfQRcodeToServer(String qrCodeInBase64, String fileNames) {
         UploadParameters uploadParameters = new UploadParameters(API_KEY, qrCodeInBase64, fileNames, ExpirationTime.fromLong(5530000));
         return UploadClient.upload(uploadParameters);

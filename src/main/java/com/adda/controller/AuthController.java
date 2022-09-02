@@ -6,6 +6,7 @@ import com.adda.domain.RoleEntity;
 import com.adda.domain.UserEntity;
 import com.adda.repository.RoleRepository;
 import com.adda.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,19 +23,25 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/api/auth")
+@Slf4j
 public class AuthController {
-    @Autowired
-    private AuthenticationManager authenticationManager;
+
+    private final AuthenticationManager authenticationManager;
+
+    private final UserRepository userRepository;
+
+    private final RoleRepository roleRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
+    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository) {
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+    }
 
     @PostMapping("/signin")
     public ResponseEntity<String> authenticateUser(@RequestBody LoginDTO loginDto) {
+        log.info("[Post] Request to method 'authenticateUser'");
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getUsernameOrEmail(), loginDto.getPassword()));
 
@@ -44,12 +51,12 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
-        // add check for email exists in DB
-        if(userRepository.existsByEmail(userDTO.getEmail())){
+        log.info("[Post] Request to method 'registerUser'");
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            log.warn("Warning in method 'registerUser': email is already taken!");
             return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
         }
 
-        // create user object
         UserEntity user = new UserEntity();
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());

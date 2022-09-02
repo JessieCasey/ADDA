@@ -3,80 +3,18 @@ package com.adda.service;
 import com.adda.domain.AdvertisementEntity;
 import com.adda.domain.UserEntity;
 import com.adda.domain.WishListEntity;
-import com.adda.repository.AdvertisementRepository;
-import com.adda.repository.UserRepository;
-import com.adda.repository.WishListRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+public interface WishListService {
 
-@Service
-public class WishListService {
-    @Autowired
-    private AdvertisementRepository advertisementRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private WishListRepository wishListRepository;
+    WishListEntity getWishList(UserEntity user);
 
-    public WishListEntity getWishList(UserEntity user) {
-        if (isWishListCreated(user)) {
-            return wishListRepository.findById(user.getWishList()).get();
-        }
-        createWishList(user);
+    String addAdvertToWishList(UserEntity user, AdvertisementEntity advertisement);
 
-        return wishListRepository.findById(user.getWishList()).get();
-    }
+    String deleteAdvertFromWishList(UserEntity user, AdvertisementEntity advertisement);
 
-    public String addAdvertToWishList(UserEntity user, AdvertisementEntity advertisement) {
-        if (!isWishListCreated(user)) {
-            createWishList(user);
-        }
+    boolean isWishListCreated(UserEntity user);
 
-        WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).get();
-        advertisement.setWishListList(wishListEntity);
-        wishListEntity.getAdvertisements().add(advertisement);
-        wishListRepository.save(wishListEntity);
+    void createWishList(UserEntity user);
 
-
-        return "Added";
-    }
-
-    public String deleteAdvertFromWishList(UserEntity user, AdvertisementEntity advertisement) {
-        if (!isWishListCreated(user)) {
-            createWishList(user);
-        }
-        WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).get();
-
-        List<AdvertisementEntity> advertisements = wishListEntity.getAdvertisements();
-        advertisements.remove(advertisement);
-
-        advertisement.setWishListList(null);
-        wishListEntity.setAdvertisements(advertisements);
-        wishListRepository.save(wishListEntity);
-
-        return "Deleted";
-
-    }
-
-    public boolean isWishListCreated(UserEntity user) {
-        if (user.getWishList() != null) {
-            return wishListRepository.existsById(user.getWishList());
-        }
-        return false;
-    }
-
-
-    public void createWishList(UserEntity user) {
-        WishListEntity wishListEntity = getWishListEntity(user.getId());
-        user.setWishList(wishListEntity.getId());
-        wishListRepository.save(wishListEntity);
-        userRepository.save(user);
-    }
-
-    private WishListEntity getWishListEntity(long id) {
-        return new WishListEntity(UUID.randomUUID(), id);
-    }
+    WishListEntity getWishListEntity(long id);
 }

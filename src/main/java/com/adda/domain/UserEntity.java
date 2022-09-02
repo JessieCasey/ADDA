@@ -1,15 +1,15 @@
 package com.adda.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "users_table", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"username"}),

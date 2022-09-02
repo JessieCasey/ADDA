@@ -68,12 +68,4 @@ public class AdvertisementEntity {
         this.qrCode = qrCode;
     }
 
-
-    public PhotoEntity getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(PhotoEntity photos) {
-        this.photos = photos;
-    }
 }

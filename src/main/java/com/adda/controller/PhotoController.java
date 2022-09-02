@@ -3,8 +3,9 @@ package com.adda.controller;
 import com.adda.domain.AdvertisementEntity;
 import com.adda.domain.PhotoEntity;
 import com.adda.repository.AdvertisementRepository;
-import com.adda.service.AdvertisementService;
-import com.adda.service.PhotoService;
+import com.adda.service.impl.AdvertisementServiceImpl;
+import com.adda.service.photoService.PhotoServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,16 +23,21 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/upload")
+@Slf4j
 public class PhotoController {
 
-    @Autowired
-    private AdvertisementService advertisementService;
+    private final AdvertisementServiceImpl advertisementService;
+
+    private final AdvertisementRepository advertisementRepository;
 
     @Autowired
-    private AdvertisementRepository advertisementRepository;
+    public PhotoController(AdvertisementServiceImpl advertisementService, AdvertisementRepository advertisementRepository) {
+        this.advertisementService = advertisementService;
+        this.advertisementRepository = advertisementRepository;
+    }
 
     @PostMapping
-    public ResponseEntity<Object> uploadPhotoToAdvertisement(
+    public ResponseEntity<?> uploadPhotoToAdvertisement(
             @RequestParam UUID advertId,
             @RequestParam(name = "file1", required = false) MultipartFile file1,
             @RequestParam(name = "file2", required = false) MultipartFile file2,
@@ -42,9 +48,11 @@ public class PhotoController {
             @RequestParam(name = "file7", required = false) MultipartFile file7,
             @RequestParam(name = "file8", required = false) MultipartFile file8) throws IOException {
 
-        // check if the current user has the advertisement
+        log.info("[Post] Request to method 'uploadPhotoToAdvertisement'");
+
         AdvertisementEntity advertisement = advertisementRepository.findById(advertId);
         if (advertisement == null) {
+            log.warn("Warning in method 'uploadPhotoToAdvertisement': advertisement is null");
             return new ResponseEntity<>("Files are NOT uploaded successfully" + "advertisement is null", HttpStatus.BAD_REQUEST);
         }
 
@@ -67,7 +75,7 @@ public class PhotoController {
         if (file8 != null)
             fileList.add(file8);
 
-        PhotoEntity photoEntity = PhotoService.uploadPhotoToAdvertisement(fileList);
+        PhotoEntity photoEntity = PhotoServiceImpl.uploadPhotoToAdvertisement(fileList);
         advertisementService.addPhoto(photoEntity, advertisement.getId());
         return new ResponseEntity<>("Files are uploaded successfully", HttpStatus.OK);
     }
