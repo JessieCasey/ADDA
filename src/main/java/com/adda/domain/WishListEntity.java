@@ -1,14 +1,17 @@
 package com.adda.domain;
 
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Table(name = "wishlist_table")
-@Data
+@Getter
+@Setter
 public class WishListEntity {
     @Id
     private UUID id;
@@ -17,6 +20,7 @@ public class WishListEntity {
     private long userId;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "wishListList")
+    @ToString.Exclude
     private List<AdvertisementEntity> advertisements;
 
     public WishListEntity() {
@@ -27,4 +31,16 @@ public class WishListEntity {
         this.userId = userId;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        WishListEntity that = (WishListEntity) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

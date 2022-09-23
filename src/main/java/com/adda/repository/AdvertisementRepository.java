@@ -5,6 +5,7 @@ import com.adda.domain.CategoriesEntity;
 import com.adda.domain.UserEntity;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface AdvertisementRepository extends CrudRepository<AdvertisementEntity, Long> {
@@ -13,14 +14,14 @@ public interface AdvertisementRepository extends CrudRepository<AdvertisementEnt
 
     void deleteById(UUID id);
 
-    Iterable<AdvertisementEntity> findAllByPriceBetweenAndCategory(Integer startPrice, Integer endPrice, CategoriesEntity category);
+    List<AdvertisementEntity> findAllByPriceBetweenAndCategory(Integer startPrice, Integer endPrice, CategoriesEntity category);
 
-    Iterable<AdvertisementEntity> findAllByPriceBetween(Integer startPrice, Integer endPrice);
+    List<AdvertisementEntity> findAllByPriceBetween(Integer startPrice, Integer endPrice);
 
     boolean existsByTitleAndUsername(String advertisementName, String username);
 
-    Iterable<AdvertisementEntity> findAllByCategory(CategoriesEntity category);
+    List<AdvertisementEntity> findAllByCategory(CategoriesEntity category);
 
-    Iterable<AdvertisementEntity> findAllByUser(UserEntity user);
+    List<AdvertisementEntity> findAllByUser(UserEntity user);
 
 }

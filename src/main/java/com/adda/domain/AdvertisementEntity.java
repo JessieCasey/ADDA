@@ -1,19 +1,23 @@
 package com.adda.domain;
 
+import com.adda.DTO.advertisements.AdvertTransferDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "advertisement_table")
 public class AdvertisementEntity {
     @Id
     private UUID id;
+
     private String title;
     private Integer price;
     private String description;
@@ -41,31 +45,52 @@ public class AdvertisementEntity {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wishlist_table_id")
+    @ToString.Exclude
     private WishListEntity wishListList;
 
-    public AdvertisementEntity(UUID id,
-                               String title,
-                               Integer price,
-                               String description,
-                               String email,
-                               String username,
-                               PhotoEntity photos,
-                               CategoriesEntity category,
-                               UserEntity user,
-                               String date,
-                               String qrCode
-                               ) {
-        this.id = id;
-        this.title = title;
-        this.price = price;
-        this.description = description;
-        this.email = email;
-        this.username = username;
-        this.photos = photos;
-        this.category = category;
-        this.user = user;
-        this.date = date;
-        this.qrCode = qrCode;
+    public AdvertisementEntity(AdvertTransferDTO advertDTO) {
+        this.id = advertDTO.getId();
+        this.title = advertDTO.getTitle();
+        this.price = advertDTO.getPrice();
+        this.description = advertDTO.getDescription();
+        this.email = advertDTO.getEmail();
+        this.username = advertDTO.getUsername();
+        this.photos = advertDTO.getPhotos();
+        this.category = advertDTO.getCategory();
+        this.user = advertDTO.getUser();
+        this.date = advertDTO.getDate();
+        this.qrCode = advertDTO.getQrCode();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        AdvertisementEntity that = (AdvertisementEntity) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "AdvertisementEntity{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", price=" + price +
+                ", description='" + description + '\'' +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", date='" + date + '\'' +
+                ", viewers=" + viewers +
+                ", qrCode='" + qrCode + '\'' +
+                ", photos=" + photos.getId() +
+                ", category=" + category +
+                ", user=" + user.getId() +
+                ", wishListList=" + wishListList.getId() +
+                '}';
+    }
 }

@@ -25,22 +25,21 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public WishListEntity getWishList(UserEntity user) {
+    public WishListEntity getWishList(UserEntity user) throws IllegalAccessException {
         if (isWishListCreated(user)) {
-            return wishListRepository.findById(user.getWishList()).get();
+            return wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
         }
         createWishList(user);
-
-        return wishListRepository.findById(user.getWishList()).get();
+        return wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
     }
 
     @Override
-    public String addAdvertToWishList(UserEntity user, AdvertisementEntity advertisement) {
+    public String addAdvertToWishList(UserEntity user, AdvertisementEntity advertisement) throws IllegalAccessException {
         if (!isWishListCreated(user)) {
             createWishList(user);
         }
 
-        WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).get();
+        WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
         advertisement.setWishListList(wishListEntity);
         wishListEntity.getAdvertisements().add(advertisement);
         wishListRepository.save(wishListEntity);
@@ -49,11 +48,11 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public String deleteAdvertFromWishList(UserEntity user, AdvertisementEntity advertisement) {
+    public String deleteAdvertFromWishList(UserEntity user, AdvertisementEntity advertisement) throws IllegalAccessException {
         if (!isWishListCreated(user)) {
             createWishList(user);
         }
-        WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).get();
+        WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
 
         List<AdvertisementEntity> advertisements = wishListEntity.getAdvertisements();
         advertisements.remove(advertisement);

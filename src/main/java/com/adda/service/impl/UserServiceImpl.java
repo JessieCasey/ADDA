@@ -9,6 +9,7 @@ import com.adda.repository.UserRepository;
 import com.adda.service.UserService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,8 @@ public class UserServiceImpl implements UserService {
         user.setUsername(signUpDto.getUsername());
         user.setEmail((signUpDto.getEmail()));
 
-        RoleEntity roles = roleRepository.findByName("ROLE_ADMIN").get();
+        System.out.println(roleRepository.findAll());
+        RoleEntity roles = roleRepository.findByName("ROLE_ADMIN").orElseThrow(IllegalArgumentException::new);
         user.setRoles(Collections.singleton(roles));
 
         userRepository.save(user);
@@ -85,8 +87,6 @@ public class UserServiceImpl implements UserService {
         }
 
         Base64.Decoder decoder = Base64.getUrlDecoder();
-
-        String header = new String(decoder.decode(chunks[0]));
         String payload = new String(decoder.decode(chunks[1]));
 
         JSONObject obj = new JSONObject(payload);

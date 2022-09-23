@@ -21,6 +21,9 @@ public interface UserService {
     UserEntity encodeUserFromToken(String token) throws Exception;
 
     static String getBearerTokenHeader() {
-        return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest().getHeader("Authorization");
+        return ((ServletRequestAttributes) Objects.requireNonNull(
+                RequestContextHolder.getRequestAttributes()))
+                .getRequest()
+                .getHeader("Authorization");
     }
 }

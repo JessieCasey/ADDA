@@ -6,11 +6,11 @@ import com.adda.domain.WishListEntity;
 
 public interface WishListService {
 
-    WishListEntity getWishList(UserEntity user);
+    WishListEntity getWishList(UserEntity user) throws IllegalAccessException;
 
-    String addAdvertToWishList(UserEntity user, AdvertisementEntity advertisement);
+    String addAdvertToWishList(UserEntity user, AdvertisementEntity advertisement) throws IllegalAccessException;
 
-    String deleteAdvertFromWishList(UserEntity user, AdvertisementEntity advertisement);
+    String deleteAdvertFromWishList(UserEntity user, AdvertisementEntity advertisement) throws IllegalAccessException;
 
     boolean isWishListCreated(UserEntity user);
 

@@ -19,15 +19,15 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOneUser(@PathVariable Long id) {
-        log.info("[Get] Request to method 'getOneUser'");
+    public ResponseEntity<?> getUser(@PathVariable Long id) {
+        log.info("[Get] Request to method 'getUser'");
         try {
             return ResponseEntity.ok(userService.getOneUser(id));
         } catch (UserNotFoundException e) {
-            log.error("Error type 'UserNotFoundException' in method 'getAllUsers': " + e.getMessage());
+            log.error("Error type 'UserNotFoundException' in method 'getUser': " + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            log.error("Error in method 'getAllUsers': " + e.getMessage());
+            log.error("Error in method 'getUser': " + e.getMessage());
             return ResponseEntity.badRequest().body("No user found");
         }
     }

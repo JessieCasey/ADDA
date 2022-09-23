@@ -4,6 +4,7 @@ import com.adda.domain.PhotoEntity;
 import com.adda.service.photoService.parameters.ExpirationTime;
 import com.adda.service.photoService.parameters.UploadParameters;
 import com.adda.service.photoService.responses.OptionalResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,11 +15,14 @@ import java.util.UUID;
 
 @Service
 public class PhotoServiceImpl {
-    private static final String API_KEY = "3bcf090f1603553d4218e2cea8b30549";
+
+    private static String API_KEY;
+
+    public PhotoServiceImpl(@Value("${api.key}") String API_KEY) {
+        PhotoServiceImpl.API_KEY = API_KEY;
+    }
 
     public static PhotoEntity uploadPhotoToAdvertisement(List<MultipartFile> fileList) throws IOException {
-        // check if the current user has the advertisement
-
         String[] arrayOfPath = new String[8];
         String[] fileNames = new String[8];
 
@@ -55,13 +59,12 @@ public class PhotoServiceImpl {
     }
 
     public static String uploadPhotoOfQRcodeToAdvertisement(String qrCodeInBase64, String url) {
-
         OptionalResponse optionalResponse = PhotoServiceImpl.uploadPhotoOfQRcodeToServer(qrCodeInBase64, url);
         return optionalResponse.get().getResponseData().getImageUrl();
     }
 
     public static OptionalResponse uploadPhotoOfQRcodeToServer(String qrCodeInBase64, String fileNames) {
-        UploadParameters uploadParameters = new UploadParameters(API_KEY, qrCodeInBase64, fileNames, ExpirationTime.fromLong(5530000));
+        UploadParameters uploadParameters = new UploadParameters(API_KEY, qrCodeInBase64, fileNames, ExpirationTime.fromLong(1000));
         return UploadClient.upload(uploadParameters);
     }
 }

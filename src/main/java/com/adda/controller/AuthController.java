@@ -27,9 +27,7 @@ import java.util.Collections;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-
     private final UserRepository userRepository;
-
     private final RoleRepository roleRepository;
 
     @Autowired
@@ -42,28 +40,24 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<String> authenticateUser(@RequestBody LoginDTO loginDto) {
         log.info("[Post] Request to method 'authenticateUser'");
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.getUsernameOrEmail(), loginDto.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginDto.getUsernameOrEmail(), loginDto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return new ResponseEntity<>("User signed-in successfully!.", HttpStatus.OK);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> registerUser(@RequestBody UserDTO dto) {
         log.info("[Post] Request to method 'registerUser'");
-        if (userRepository.existsByEmail(userDTO.getEmail())) {
+        if (userRepository.existsByEmail(dto.getEmail())) {
             log.warn("Warning in method 'registerUser': email is already taken!");
             return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
         }
 
-        UserEntity user = new UserEntity();
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setUsername(userDTO.getUsername());
-        user.setEmail(userDTO.getEmail());
+        UserEntity user = new UserEntity(dto.getFirstName(), dto.getLastName(), dto.getUsername(), dto.getEmail());
 
-        RoleEntity roles = roleRepository.findByName("ROLE_ADMIN").get();
+        RoleEntity roles = roleRepository.findByName("ROLE_ADMIN").orElseThrow(IllegalArgumentException::new);
         user.setRoles(Collections.singleton(roles));
 
         userRepository.save(user);

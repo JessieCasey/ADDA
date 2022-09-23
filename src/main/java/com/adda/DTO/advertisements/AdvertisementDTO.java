@@ -1,9 +1,11 @@
-package com.adda.DTO;
+package com.adda.DTO.advertisements;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class AdvertisementDTO {
     private String title;
     @JsonProperty("category_id")

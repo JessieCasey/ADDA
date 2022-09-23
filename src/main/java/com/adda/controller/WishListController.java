@@ -20,9 +20,7 @@ import static com.adda.service.UserService.getBearerTokenHeader;
 public class WishListController {
 
     private final AdvertisementRepository advertisementRepository;
-
     private final UserService userService;
-
     private final WishListServiceImpl wishListService;
 
     public WishListController(AdvertisementRepository advertisementRepository, UserService userService, WishListServiceImpl wishListService) {
@@ -32,16 +30,16 @@ public class WishListController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getWishListFromUser() {
-        log.info("[Get] Request to method 'getWishListFromUser'");
+    public ResponseEntity<?> getWishListOfUser() {
+        log.info("[Get] Request to method 'getWishListOfUser'");
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
             return ResponseEntity.ok(wishListService.getWishList(user).getAdvertisements());
         } catch (AdvertisementNotFoundException e) {
-            log.error("Error type 'AdvertisementNotFoundException' in method 'getWishListFromUser': " + e.getMessage());
+            log.error("Error type 'AdvertisementNotFoundException' in method 'getWishListOfUser': " + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            log.error("Error in method 'getWishListFromUser': " + e.getMessage());
+            log.error("Error in method 'getWishListOfUser': " + e.getMessage());
             return ResponseEntity.badRequest().body("Wish list isn't available \n" + e);
         }
     }
