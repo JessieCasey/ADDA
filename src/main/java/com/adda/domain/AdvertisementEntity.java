@@ -19,7 +19,7 @@ public class AdvertisementEntity {
     private UUID id;
 
     private String title;
-    private Integer price;
+    private String price;
     private String description;
     private String email;
     private String username;
@@ -73,24 +73,5 @@ public class AdvertisementEntity {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "AdvertisementEntity{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", price=" + price +
-                ", description='" + description + '\'' +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", date='" + date + '\'' +
-                ", viewers=" + viewers +
-                ", qrCode='" + qrCode + '\'' +
-                ", photos=" + photos.getId() +
-                ", category=" + category +
-                ", user=" + user.getId() +
-                ", wishListList=" + wishListList.getId() +
-                '}';
     }
 }

@@ -10,6 +10,6 @@ public class AdvertisementDTO {
     private String title;
     @JsonProperty("category_id")
     private Long categoryId;
-    private Integer price;
+    private String price;
     private String description;
 }

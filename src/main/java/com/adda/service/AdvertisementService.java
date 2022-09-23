@@ -1,9 +1,7 @@
 package com.adda.service;
 
 import com.adda.DTO.advertisements.AdvertisementDTO;
-import com.adda.DTO.FilterDTO;
 import com.adda.domain.AdvertisementEntity;
-import com.adda.domain.PhotoEntity;
 import com.adda.domain.UserEntity;
 import com.adda.exception.AdvertisementNotFoundException;
 import com.adda.model.AdvertPage;
@@ -29,14 +27,12 @@ public interface AdvertisementService {
 
     List<AdvertisementEntity> getAdvertsByCategory(Long categoryId) throws AdvertisementNotFoundException;
 
-    List<AdvertisementEntity> getAdvertsByFilters(FilterDTO filterDTO) throws AdvertisementNotFoundException;
-
     List<AdvertisementEntity> getAllByUser(long userId) throws AdvertisementNotFoundException;
 
     List<AdvertisementEntity> getAll();
 
     Page<AdvertisementEntity> getAdverts(AdvertPage advertPage,
-                                         AdvertSearchCriteria advertSearchCriteria);
+                                       AdvertSearchCriteria advertSearchCriteria);
     List<MultipartFile> getMultipartFiles(MultipartFile file1, MultipartFile file2, MultipartFile file3, MultipartFile file4, MultipartFile file5, MultipartFile file6, MultipartFile file7, MultipartFile file8);
 
 }

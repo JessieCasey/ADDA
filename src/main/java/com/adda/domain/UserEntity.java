@@ -20,6 +20,7 @@ public class UserEntity {
     private String firstName;
     private String lastName;
     private String username;
+    private String password;
     private String email;
     private UUID wishList;
 
@@ -30,16 +31,17 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<RoleEntity> roles;
 
-    public UserEntity(String firstName, String lastName, String username, String email) {
+    public UserEntity(String firstName, String lastName, String username, String password, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
+        this.password = password;
     }
 
-    public UserEntity(long id, String firstName, String lastName, String username, String email,
+    public UserEntity(long id, String firstName, String lastName, String username, String password, String email,
                       Set<RoleEntity> roles, UUID wishList) {
-        this(firstName, lastName, username, email);
+        this(firstName, lastName, username, password, email);
         this.id = id;
         this.roles = roles;
         this.wishList = wishList;

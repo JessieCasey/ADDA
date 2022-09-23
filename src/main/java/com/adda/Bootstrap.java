@@ -7,6 +7,7 @@ import com.adda.repository.RoleRepository;
 import com.adda.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -20,7 +21,7 @@ public class Bootstrap {
 
     @Bean
     CommandLineRunner runner(RoleRepository roleRepository, CategoriesRepository categoriesRepository,
-                             AdvertisementRepository advertisementRepository, UserRepository userRepository) {
+                             AdvertisementRepository advertisementRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         roleRepository.deleteAll();
         categoriesRepository.deleteAll();
         userRepository.deleteAll();
@@ -42,6 +43,7 @@ public class Bootstrap {
                 user.setLastName("White");
                 user.setUsername("Heritage");
                 user.setEmail("heritageWhite@icloud.com");
+                user.setPassword(passwordEncoder.encode("admin"));
                 RoleEntity roles = roleRepository.findByName("ROLE_ADMIN").orElseThrow(IllegalArgumentException::new);
                 user.setRoles(Collections.singleton(roles));
 
@@ -51,10 +53,10 @@ public class Bootstrap {
                 advert.setId(UUID.fromString("f96401d2-7f63-4891-aafb-0608919b2a03"));
                 advert.setTitle("BMW M5");
                 advert.setCategory(categoriesRepository.findByCategoryName("Car"));
-                advert.setPrice(67895);
+                advert.setPrice("67895");
                 advert.setDescription("M-packet auto");
                 advert.setViewers(0);
-                advert.setPhotos(new PhotoEntity());
+                advert.setPhotos(new PhotoEntity(0));
                 advert.setDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
                 advert.setUsername(user.getUsername());
                 advert.setEmail(user.getEmail());
@@ -65,10 +67,10 @@ public class Bootstrap {
                 advert2.setId(UUID.fromString("f96401d2-7f63-4891-aafb-0608919b2a04"));
                 advert2.setTitle("Iphone 12 PRO EDITION");
                 advert2.setCategory(categoriesRepository.findByCategoryName("Electronic"));
-                advert2.setPrice(1300);
+                advert2.setPrice("1300");
                 advert2.setDescription("256 GB, GOLD COLOR");
                 advert2.setViewers(100);
-                advert2.setPhotos(new PhotoEntity());
+                advert2.setPhotos(new PhotoEntity(0));
                 advert2.setDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
                 advert2.setUsername(user.getUsername());
                 advert2.setEmail(user.getEmail());
@@ -79,10 +81,10 @@ public class Bootstrap {
                 advert3.setId(UUID.fromString("f96401d2-7f63-4891-aafb-0608919b2a05"));
                 advert3.setTitle("House in Kiev");
                 advert3.setCategory(categoriesRepository.findByCategoryName("Real Estate"));
-                advert3.setPrice(100350);
+                advert3.setPrice("100350");
                 advert3.setDescription("4-room apartment");
                 advert3.setViewers(120);
-                advert3.setPhotos(new PhotoEntity());
+                advert3.setPhotos(new PhotoEntity(1));
                 advert3.setDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
                 advert3.setUsername(user.getUsername());
                 advert3.setEmail(user.getEmail());

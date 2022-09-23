@@ -9,9 +9,10 @@ import com.adda.repository.UserRepository;
 import com.adda.service.UserService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
@@ -21,8 +22,11 @@ import java.util.Collections;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
     private final RoleRepository roleRepository;
+
+    @Lazy
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
@@ -45,6 +49,7 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(signUpDto.getFirstName());
         user.setLastName(signUpDto.getLastName());
         user.setUsername(signUpDto.getUsername());
+        user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
         user.setEmail((signUpDto.getEmail()));
 
         System.out.println(roleRepository.findAll());
@@ -90,14 +95,10 @@ public class UserServiceImpl implements UserService {
         String payload = new String(decoder.decode(chunks[1]));
 
         JSONObject obj = new JSONObject(payload);
-        Long id = obj.getLong("user_id");
-        String firstName = obj.getString("first_name");
-        String lastName = obj.getString("last_name");
-        String username = obj.getString("username");
-        String email = obj.getString("email");
+        Long id = obj.getLong("id");
 
         if (!userRepository.findById(id).isPresent()) {
-            registerUser(new UserDTO(id, firstName, lastName, username, email));
+            throw new IllegalArgumentException("You are not registered");
         }
         return userRepository.findById(id).get();
     }

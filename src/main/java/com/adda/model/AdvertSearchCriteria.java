@@ -7,5 +7,4 @@ import lombok.Setter;
 @Setter
 public class AdvertSearchCriteria {
     private String title;
-    private String price;
 }

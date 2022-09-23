@@ -2,9 +2,6 @@ package com.adda.controller;
 
 import com.adda.DTO.advertisements.AdvertResponseDTO;
 import com.adda.DTO.advertisements.AdvertisementDTO;
-import com.adda.DTO.FilterDTO;
-import com.adda.domain.AdvertisementEntity;
-import com.adda.domain.RoleEntity;
 import com.adda.domain.UserEntity;
 import com.adda.exception.AdvertisementNotFoundException;
 import com.adda.model.AdvertPage;
@@ -33,9 +30,7 @@ import static com.adda.service.UserService.getBearerTokenHeader;
 public class AdvertisementController {
 
     private final AdvertisementService advertisementService;
-
     private final AdvertisementRepository advertisementRepository;
-
     private final UserServiceImpl userService;
 
     @Autowired
@@ -107,29 +102,6 @@ public class AdvertisementController {
         }
     }
 
-    @GetMapping("/category/{category_id}")
-    public ResponseEntity<?> getAdvertisementByCategory(@PathVariable(value = "category_id") long categoryId) {
-        log.info("[Get] Request to method 'getAdvertisementByCategory'");
-        try {
-            return ResponseEntity.ok(advertisementService.getAdvertsByCategory(categoryId));
-        } catch (Exception e) {
-            log.error("Error in method 'getAdvertisementByCategory': " + e.getMessage());
-            return ResponseEntity.badRequest().body("There's no advertisements in that category");
-        }
-    }
-
-    @GetMapping("/filter")
-    public ResponseEntity<?> getAdvertByPriceInRangeAndCategory(@RequestBody FilterDTO filterDTO) {
-        log.info("[Get] Request to method 'getAdvertisementByPriceInRangeAndCategory'");
-        try {
-            return ResponseEntity.ok(advertisementService.getAdvertsByFilters(filterDTO));
-        } catch (Exception e) {
-            log.error("Error in method 'getAdvertisementByPriceInRangeAndCategory': " + e.getMessage());
-            return ResponseEntity.badRequest().body("There's no advertisement in the price range: ["
-                    + filterDTO.getStartPrice() + "-" + filterDTO.getEndPrice() + "] and in the category: [" + filterDTO.getCategoryName() + "]");
-        }
-    }
-
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getAdvertisementsByUser(@PathVariable long userId) {
         log.info("[Get] Request to method 'getAdvertisementsByUser'");
@@ -147,7 +119,8 @@ public class AdvertisementController {
     public ResponseEntity<?> getAllAdvertisement(AdvertPage advertPage, AdvertSearchCriteria advertSearchCriteria) {
         log.info("[Get] Request to method 'getAllAdvertisement'");
         try {
-            return new ResponseEntity<>(advertisementService.getAdverts(advertPage, advertSearchCriteria), HttpStatus.OK);
+            Page<AdvertResponseDTO> dtoPage = advertisementService.getAdverts(advertPage, advertSearchCriteria).map(AdvertResponseDTO::new);
+            return new ResponseEntity<>(dtoPage, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Error in method 'getAllAdvertisement': " + e.getMessage());
             return ResponseEntity.badRequest().body("Advertisements aren't available" + e);

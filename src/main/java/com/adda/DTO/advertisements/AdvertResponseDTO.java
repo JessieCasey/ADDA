@@ -11,15 +11,15 @@ import java.util.UUID;
 public class AdvertResponseDTO {
     UUID id;
     String title;
-    Integer price;
+    String price;
     String description;
     String email;
     String username;
     String date;
     Integer viewers;
     String qrCode;
-    PhotoEntity photos;
-    CategoriesEntity category;
+    String[] photos;
+    String category;
 
     public AdvertResponseDTO(AdvertisementEntity advertisement) {
         this.id = advertisement.getId();
@@ -31,7 +31,7 @@ public class AdvertResponseDTO {
         this.date = advertisement.getDate();
         this.viewers = advertisement.getViewers();
         this.qrCode = advertisement.getQrCode();
-        this.photos = advertisement.getPhotos();
-        this.category = advertisement.getCategory();
+        this.photos = advertisement.getPhotos().getArray();
+        this.category = advertisement.getCategory().getCategoryName();
     }
 }

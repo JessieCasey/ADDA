@@ -1,5 +1,6 @@
 package com.adda.service.impl;
 
+import com.adda.config.security.SecurityUser;
 import com.adda.domain.RoleEntity;
 import com.adda.domain.UserEntity;
 import com.adda.repository.UserRepository;
@@ -9,27 +10,28 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Service
-public class CustomUserDetailsServiceImpl implements UserDetailsService {
+@Service("userDetailsServiceImpl")
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public CustomUserDetailsServiceImpl(UserRepository userRepository) {
+    public UserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found with username or email:" + usernameOrEmail));
+    @Transactional
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UsernameNotFoundException("User doesn't exists"));
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getEmail(), mapRolesToAuthorities(user.getRoles()));
+        return SecurityUser.fromUser(user);
     }
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<RoleEntity> roles) {

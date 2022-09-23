@@ -6,6 +6,7 @@ create table users_table
     first_name varchar(64) not null,
     last_name  varchar(64) not null,
     username   varchar(64) not null,
+    password   varchar(64) not null,
     email      varchar(64) not null,
     wishList   UUID,
     PRIMARY KEY (id)
@@ -51,7 +52,7 @@ create table advertisement_table
     title       varchar(64)   not null,
     category_id integer,
     photo_id    integer,
-    price       integer,
+    price       varchar(64),
     description varchar(1024) not null,
     email       varchar(100)  not null,
     user_name   varchar(64),

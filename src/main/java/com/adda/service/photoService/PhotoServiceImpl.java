@@ -35,7 +35,7 @@ public class PhotoServiceImpl {
             imagesBase64[i] = Base64.getEncoder().encodeToString(fileList.get(i).getBytes());
         }
 
-        PhotoEntity photoEntity = new PhotoEntity();
+        PhotoEntity photoEntity = new PhotoEntity(fileList.size());
         OptionalResponse[] optionalResponse = PhotoServiceImpl.uploadPhotoToServer(imagesBase64, fileNames);
         for (int i = 0; i < optionalResponse.length; i++) {
             if (optionalResponse[i] != null) {

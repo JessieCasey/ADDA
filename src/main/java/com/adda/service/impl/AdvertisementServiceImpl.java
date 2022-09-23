@@ -1,6 +1,5 @@
 package com.adda.service.impl;
 
-import com.adda.DTO.FilterDTO;
 import com.adda.DTO.advertisements.AdvertTransferDTO;
 import com.adda.DTO.advertisements.AdvertisementDTO;
 import com.adda.domain.AdvertisementEntity;
@@ -58,7 +57,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 advertID,
                 dto,
                 user,
-                new PhotoEntity(),
+                new PhotoEntity(photos.size()),
                 categoriesRepository.findById(dto.getCategoryId()).orElseThrow(IllegalArgumentException::new),
                 getCurrentTime(),
                 QRcodeServiceImpl.getUrlOfAdvertisement(advertID)
@@ -121,23 +120,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public List<AdvertisementEntity> getAdvertsByFilters(FilterDTO filterDTO) throws AdvertisementNotFoundException {
-        List<AdvertisementEntity> adverts = null;
-        if (filterDTO.getCategoryName() == null || filterDTO.getCategoryName().equals("")) {
-            adverts = advertisementRepository.findAllByPriceBetween(filterDTO.getStartPrice(), filterDTO.getEndPrice());
-        } else {
-            adverts = advertisementRepository.findAllByPriceBetweenAndCategory(filterDTO.getStartPrice(), filterDTO.getEndPrice(), categoriesRepository.findByCategoryName(filterDTO.getCategoryName()));
-        }
-
-        if (adverts == null) {
-            throw new AdvertisementNotFoundException("No adverts in that category");
-        } else {
-            return adverts;
-        }
-
-    }
-
-    @Override
     public List<AdvertisementEntity> getAllByUser(long userId) throws AdvertisementNotFoundException {
         List<AdvertisementEntity> adverts = null;
         if (!userRepository.findById(userId).isPresent()) {
@@ -160,6 +142,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     public Page<AdvertisementEntity> getAdverts(AdvertPage advertPage,
                                                 AdvertSearchCriteria advertSearchCriteria) {
+
         return advertCriteriaRepository.findAllWithFilters(advertPage, advertSearchCriteria);
     }
 

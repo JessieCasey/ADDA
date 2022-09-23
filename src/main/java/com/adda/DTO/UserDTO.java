@@ -10,7 +10,17 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private String username;
+    private String password;
     private String email;
+
+    public UserDTO(Long id, String firstName, String lastName, String username, String password, String email) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
 
     public UserDTO(Long id, String firstName, String lastName, String username, String email) {
         this.id = id;

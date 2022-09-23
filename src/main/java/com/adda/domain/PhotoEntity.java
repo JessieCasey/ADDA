@@ -25,12 +25,19 @@ public class PhotoEntity {
     private String photo7;
     private String photo8;
 
+    private Integer size;
+
     @JsonIgnore
     @OneToOne(mappedBy = "photos", cascade = CascadeType.ALL)
     private AdvertisementEntity advert;
 
     public PhotoEntity() {
         setPhotos(new String[8]);
+    }
+
+    public PhotoEntity(Integer size) {
+        this();
+        this.size = size;
     }
 
     public void setPhotos(String[] photos) {
@@ -42,6 +49,28 @@ public class PhotoEntity {
         this.photo6 = photos[5];
         this.photo7 = photos[6];
         this.photo8 = photos[7];
+    }
+
+    public String[] getArray() {
+        String[] array = new String[getSize()];
+        if (photo1 != null) {
+            array[0] = photo1;
+        } else if (photo2 != null) {
+            array[1] = photo2;
+        } else if (photo3 != null) {
+            array[2] = photo3;
+        } else if (photo4 != null) {
+            array[3] = photo4;
+        } else if (photo5 != null) {
+            array[4] = photo5;
+        } else if (photo6 != null) {
+            array[5] = photo6;
+        } else if (photo7 != null) {
+            array[6] = photo7;
+        } else if (photo8 != null) {
+            array[7] = photo8;
+        }
+        return array;
     }
 
     @Override
