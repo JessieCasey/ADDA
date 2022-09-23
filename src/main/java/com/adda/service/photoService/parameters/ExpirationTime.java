@@ -1,8 +1,5 @@
 package com.adda.service.photoService.parameters;
 
-/*
- * An instance of 'expiration time' upload parameter, provides easy access to long and string value.
- */
 public class ExpirationTime {
 
     /**

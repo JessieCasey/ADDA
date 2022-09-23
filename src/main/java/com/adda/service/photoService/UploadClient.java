@@ -27,7 +27,7 @@ public class UploadClient {
 
             return OptionalResponse.of(response);
         } catch (IOException ex) {
-            throw new RuntimeException("I/O exception was catched while try to upload image!", ex);
+            throw new RuntimeException("I/O exception was caught while try to upload image!", ex);
         }
     }
 

@@ -7,15 +7,15 @@ import com.adda.domain.RoleEntity;
 import com.adda.domain.UserEntity;
 import com.adda.repository.RoleRepository;
 import com.adda.repository.UserRepository;
+import com.adda.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,14 +37,17 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final RoleRepository roleRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Lazy
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository,
-                          RoleRepository roleRepository, JwtTokenProvider jwtTokenProvider) {
+                          UserService userService, RoleRepository roleRepository, JwtTokenProvider jwtTokenProvider) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
+        this.userService = userService;
         this.roleRepository = roleRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -63,7 +66,8 @@ public class AuthController {
             Map<Object, Object> response = new HashMap<>();
             response.put("email", request.getEmail());
             response.put("token", token);
-            response.put("user_id", user.getId());
+            response.put("userId", user.getId());
+
             return ResponseEntity.ok(response);
 
         } catch (AuthenticationException e) {
@@ -79,12 +83,8 @@ public class AuthController {
             return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
         }
 
-        UserEntity user = new UserEntity(dto.getFirstName(), dto.getLastName(), dto.getUsername(), dto.getPassword(), dto.getEmail());
+        userService.registerUser(dto);
 
-        RoleEntity roles = roleRepository.findByName("ROLE_ADMIN").orElseThrow(IllegalArgumentException::new);
-        user.setRoles(Collections.singleton(roles));
-
-        userRepository.save(user);
         return new ResponseEntity<>("User is registered successfully", HttpStatus.OK);
 
     }

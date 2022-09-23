@@ -1,7 +1,6 @@
 package com.adda.service.impl;
 
 import com.adda.DTO.UserDTO;
-import com.adda.domain.RoleEntity;
 import com.adda.domain.UserEntity;
 import com.adda.exception.UserNotFoundException;
 import com.adda.repository.RoleRepository;
@@ -17,62 +16,46 @@ import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Lazy
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public void registerUser(UserDTO signUpDto) {
-
-        // add check for email exists in DB
-        if (userRepository.existsByEmail(signUpDto.getEmail())) {
+    public void registerUser(UserDTO dto) {
+        if (userRepository.existsByEmail(dto.getEmail())) {
             new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
             return;
         }
 
-        // create user object
-        UserEntity user = new UserEntity();
-        user.setId(signUpDto.getId());
-        user.setFirstName(signUpDto.getFirstName());
-        user.setLastName(signUpDto.getLastName());
-        user.setUsername(signUpDto.getUsername());
-        user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
-        user.setEmail((signUpDto.getEmail()));
+        UserEntity user = new UserEntity(
+                dto.getFirstName(), dto.getLastName(),
+                dto.getUsername(), passwordEncoder.encode(dto.getPassword()), dto.getEmail());
 
-        System.out.println(roleRepository.findAll());
-        RoleEntity roles = roleRepository.findByName("ROLE_ADMIN").orElseThrow(IllegalArgumentException::new);
-        user.setRoles(Collections.singleton(roles));
-
+        user.setRoles(Collections.singleton(roleRepository.findByName("ROLE_ADMIN").orElseThrow(IllegalArgumentException::new)));
         userRepository.save(user);
-
-        new ResponseEntity<>("Done", HttpStatus.OK);
     }
 
 
     @Override
     public UserEntity getOneUser(Long id) throws UserNotFoundException {
-        UserEntity user = userRepository.findById(id).get();
-        if (user == null) {
-            throw new UserNotFoundException("User is not found");
-        }
-        return user;
+        return userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
-    public Iterable<UserEntity> getAll() {
+    public List<UserEntity> getAll() {
         return userRepository.findAll();
     }
 
@@ -83,13 +66,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity encodeUserFromToken(String token) throws Exception {
-        String[] chunks;
-        if (!token.contains(" ")) {
-            chunks = token.split("\\.");
-        } else {
-            chunks = token.substring(token.indexOf(" ")).trim().split("\\.");
-        }
+    public UserEntity encodeUserFromToken(String token) {
+        String[] chunks = token.split("\\.");
 
         Base64.Decoder decoder = Base64.getUrlDecoder();
         String payload = new String(decoder.decode(chunks[1]));

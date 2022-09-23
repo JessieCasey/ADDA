@@ -7,6 +7,7 @@ import com.adda.repository.UserRepository;
 import com.adda.repository.WishListRepository;
 import com.adda.service.WishListService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class WishListServiceImpl implements WishListService {
     private final UserRepository userRepository;
     private final WishListRepository wishListRepository;
 
+    @Lazy
     @Autowired
     public WishListServiceImpl(UserRepository userRepository, WishListRepository wishListRepository) {
         this.userRepository = userRepository;

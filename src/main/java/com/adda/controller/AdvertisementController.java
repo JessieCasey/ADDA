@@ -46,7 +46,7 @@ public class AdvertisementController {
                                               @RequestParam(name = "file3", required = false) MultipartFile file3, @RequestParam(name = "file4", required = false) MultipartFile file4,
                                               @RequestParam(name = "file5", required = false) MultipartFile file5, @RequestParam(name = "file6", required = false) MultipartFile file6,
                                               @RequestParam(name = "file7", required = false) MultipartFile file7, @RequestParam(name = "file8", required = false) MultipartFile file8
-    ) throws Exception {
+    ) {
         log.info("[Post] Request to method 'addAdvertisement'");
         UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
         try {

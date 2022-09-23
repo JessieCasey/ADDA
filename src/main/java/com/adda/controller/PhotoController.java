@@ -5,6 +5,7 @@ import com.adda.repository.AdvertisementRepository;
 import com.adda.service.impl.AdvertisementServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ public class PhotoController {
     private final AdvertisementServiceImpl advertisementService;
     private final AdvertisementRepository advertisementRepository;
 
+    @Lazy
     @Autowired
     public PhotoController(AdvertisementServiceImpl advertisementService, AdvertisementRepository advertisementRepository) {
         this.advertisementService = advertisementService;

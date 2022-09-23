@@ -36,6 +36,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private final CategoriesRepository categoriesRepository;
     private final AdvertisementRepository advertisementRepository;
     private final AdvertisementCriteriaRepository advertCriteriaRepository;
+
     @Autowired
     public AdvertisementServiceImpl(HistoryRepository historyRepository, UserRepository userRepository, CategoriesRepository categoriesRepository, AdvertisementRepository advertisementRepository, AdvertisementCriteriaRepository advertCriteriaRepository) {
         this.historyRepository = historyRepository;
@@ -53,19 +54,17 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public AdvertisementEntity create(UUID id, AdvertisementDTO dto, UserEntity user, List<MultipartFile> photos) throws IOException {
         UUID advertID = Optional.ofNullable(id).orElse(UUID.randomUUID());
+
         AdvertTransferDTO transferDTO = new AdvertTransferDTO(
-                advertID,
-                dto,
-                user,
+                advertID, dto, user,
                 new PhotoEntity(photos.size()),
                 categoriesRepository.findById(dto.getCategoryId()).orElseThrow(IllegalArgumentException::new),
                 getCurrentTime(),
                 QRcodeServiceImpl.getUrlOfAdvertisement(advertID)
         );
-        log.warn(transferDTO.getId() + "");
+
         AdvertisementEntity saved = advertisementRepository.save(new AdvertisementEntity(transferDTO));
         addPhoto(photos, saved.getId());
-        log.warn("HERE" + "");
         return saved;
     }
 
@@ -109,17 +108,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public List<AdvertisementEntity> getAdvertsByCategory(Long categoryId) throws AdvertisementNotFoundException {
-        List<AdvertisementEntity> adverts = advertisementRepository
-                .findAllByCategory(categoriesRepository.findById(categoryId).orElseThrow(IllegalArgumentException::new));
-
-        if (adverts == null || (!adverts.stream().findAny().isPresent())) {
-            throw new AdvertisementNotFoundException("No adverts in that category");
-        }
-        return adverts;
-    }
-
-    @Override
     public List<AdvertisementEntity> getAllByUser(long userId) throws AdvertisementNotFoundException {
         List<AdvertisementEntity> adverts = null;
         if (!userRepository.findById(userId).isPresent()) {
@@ -132,12 +120,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 throw new AdvertisementNotFoundException("The user doesn't have any adverts");
             }
         }
-    }
-
-    @Override
-    public List<AdvertisementEntity> getAll() {
-        Iterable<AdvertisementEntity> source = advertisementRepository.findAll();
-        return new ArrayList<>((Collection<? extends AdvertisementEntity>) source);
     }
 
     public Page<AdvertisementEntity> getAdverts(AdvertPage advertPage,

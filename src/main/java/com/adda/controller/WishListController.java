@@ -6,6 +6,8 @@ import com.adda.repository.AdvertisementRepository;
 import com.adda.service.UserService;
 import com.adda.service.impl.WishListServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,8 @@ public class WishListController {
     private final UserService userService;
     private final WishListServiceImpl wishListService;
 
+    @Lazy
+    @Autowired
     public WishListController(AdvertisementRepository advertisementRepository, UserService userService, WishListServiceImpl wishListService) {
         this.advertisementRepository = advertisementRepository;
         this.userService = userService;

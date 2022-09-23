@@ -6,6 +6,7 @@ import com.adda.exception.UserNotFoundException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.List;
 import java.util.Objects;
 
 public interface UserService {
@@ -14,7 +15,7 @@ public interface UserService {
 
     UserEntity getOneUser(Long id) throws UserNotFoundException;
 
-    Iterable<UserEntity> getAll();
+    List<UserEntity> getAll();
 
     Long delete(Long id);
 

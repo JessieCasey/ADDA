@@ -25,14 +25,13 @@ public interface AdvertisementService {
 
     String deleteAdvertById(UUID id) throws AdvertisementNotFoundException;
 
-    List<AdvertisementEntity> getAdvertsByCategory(Long categoryId) throws AdvertisementNotFoundException;
-
     List<AdvertisementEntity> getAllByUser(long userId) throws AdvertisementNotFoundException;
-
-    List<AdvertisementEntity> getAll();
 
     Page<AdvertisementEntity> getAdverts(AdvertPage advertPage,
                                        AdvertSearchCriteria advertSearchCriteria);
-    List<MultipartFile> getMultipartFiles(MultipartFile file1, MultipartFile file2, MultipartFile file3, MultipartFile file4, MultipartFile file5, MultipartFile file6, MultipartFile file7, MultipartFile file8);
+    List<MultipartFile> getMultipartFiles(MultipartFile file1, MultipartFile file2,
+                                          MultipartFile file3, MultipartFile file4,
+                                          MultipartFile file5, MultipartFile file6,
+                                          MultipartFile file7, MultipartFile file8);
 
 }

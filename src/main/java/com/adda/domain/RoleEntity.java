@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Setter
 @Getter
@@ -30,7 +31,7 @@ public class RoleEntity {
 
         RoleEntity that = (RoleEntity) o;
 
-        return name != null ? name.equals(that.name) : that.name == null;
+        return Objects.equals(name, that.name);
     }
 
     @Override

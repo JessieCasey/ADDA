@@ -7,6 +7,7 @@ import com.adda.repository.RoleRepository;
 import com.adda.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Component
 public class Bootstrap {
 
+    @Lazy
     @Bean
     CommandLineRunner runner(RoleRepository roleRepository, CategoriesRepository categoriesRepository,
                              AdvertisementRepository advertisementRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
