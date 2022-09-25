@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public interface UserService {
 
-    void registerUser(UserDTO signUpDto);
+    UserEntity registerUser(UserDTO signUpDto);
 
     UserEntity getOneUser(Long id) throws UserNotFoundException;
 
@@ -19,7 +19,13 @@ public interface UserService {
 
     Long delete(Long id);
 
-    UserEntity encodeUserFromToken(String token) throws Exception;
+    UserEntity encodeUserFromToken(String token);
+
+    UserEntity findByEmail(String email);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByUsername(String username);
 
     static String getBearerTokenHeader() {
         return ((ServletRequestAttributes) Objects.requireNonNull(

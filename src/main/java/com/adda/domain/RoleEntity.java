@@ -13,6 +13,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Table(name = "roles")
 public class RoleEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

@@ -1,5 +1,6 @@
 package com.adda.service.impl;
 
+import com.adda.DTO.advertisements.AdvertResponseDTO;
 import com.adda.domain.AdvertisementEntity;
 import com.adda.domain.UserEntity;
 import com.adda.domain.WishListEntity;
@@ -28,63 +29,42 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     public WishListEntity getWishList(UserEntity user) throws IllegalAccessException {
-        if (isWishListCreated(user)) {
-            return wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
-        }
-        createWishList(user);
         return wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
+
     }
 
     @Override
-    public String addAdvertToWishList(UserEntity user, AdvertisementEntity advertisement) throws IllegalAccessException {
-        if (!isWishListCreated(user)) {
-            createWishList(user);
-        }
-
+    public AdvertResponseDTO addAdvertToWishList(UserEntity user, AdvertisementEntity advertisement) throws IllegalAccessException {
         WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
-        advertisement.setWishListList(wishListEntity);
         wishListEntity.getAdvertisements().add(advertisement);
-        wishListRepository.save(wishListEntity);
 
-        return "Added";
+        wishListRepository.save(wishListEntity);
+        userRepository.save(user);
+
+        return new AdvertResponseDTO(advertisement);
     }
 
     @Override
-    public String deleteAdvertFromWishList(UserEntity user, AdvertisementEntity advertisement) throws IllegalAccessException {
-        if (!isWishListCreated(user)) {
-            createWishList(user);
-        }
+    public AdvertResponseDTO deleteAdvertFromWishList(UserEntity user, AdvertisementEntity advertisement) throws IllegalAccessException {
         WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
 
         List<AdvertisementEntity> advertisements = wishListEntity.getAdvertisements();
         advertisements.remove(advertisement);
 
-        advertisement.setWishListList(null);
         wishListEntity.setAdvertisements(advertisements);
+
         wishListRepository.save(wishListEntity);
+        userRepository.save(user);
 
-        return "Deleted";
+        return new AdvertResponseDTO(advertisement);
 
-    }
-
-    @Override
-    public boolean isWishListCreated(UserEntity user) {
-        if (user.getWishList() != null) {
-            return wishListRepository.existsById(user.getWishList());
-        }
-        return false;
     }
 
     @Override
     public void createWishList(UserEntity user) {
-        WishListEntity wishListEntity = getWishListEntity(user.getId());
+        WishListEntity wishListEntity = new WishListEntity(UUID.randomUUID(), user.getId());
         user.setWishList(wishListEntity.getId());
         wishListRepository.save(wishListEntity);
         userRepository.save(user);
-    }
-
-    @Override
-    public WishListEntity getWishListEntity(long id) {
-        return new WishListEntity(UUID.randomUUID(), id);
     }
 }

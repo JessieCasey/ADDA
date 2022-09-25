@@ -3,7 +3,6 @@ package com.adda.service.photoService.responses;
 import com.adda.service.photoService.parameters.ExpirationTime;
 import lombok.NoArgsConstructor;
 
-
 import java.util.Date;
 
 /**

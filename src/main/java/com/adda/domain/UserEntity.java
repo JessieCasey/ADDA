@@ -1,8 +1,10 @@
 package com.adda.domain;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -15,15 +17,25 @@ import java.util.UUID;
         @UniqueConstraint(columnNames = {"email"})
 })
 public class UserEntity {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Pattern(regexp = "[A-Z][a-z]+",
+            message = "Must start with a capital letter followed by one or more lowercase letters")
     private String firstName;
+
+    @Pattern(regexp = "[A-Z][a-z]+",
+            message = "Must start with a capital letter followed by one or more lowercase letters")
     private String lastName;
     private String username;
     private String password;
-    private String email;
-    private UUID wishList;
 
+    @Pattern(regexp = "[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}", message = "Must be a valid e-mail address")
+    private String email;
+
+    private UUID wishList;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",

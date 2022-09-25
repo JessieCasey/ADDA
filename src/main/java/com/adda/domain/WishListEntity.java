@@ -1,6 +1,7 @@
 package com.adda.domain;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -19,8 +20,7 @@ public class WishListEntity {
     @Column(name = "user_id")
     private long userId;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "wishListList")
-    @ToString.Exclude
+    @OneToMany(cascade = CascadeType.ALL)
     private List<AdvertisementEntity> advertisements;
 
     public WishListEntity() {

@@ -1,13 +1,9 @@
 package com.adda;
 
 import com.adda.domain.*;
-import com.adda.repository.AdvertisementRepository;
-import com.adda.repository.CategoriesRepository;
-import com.adda.repository.RoleRepository;
-import com.adda.repository.UserRepository;
+import com.adda.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -20,17 +16,13 @@ import java.util.UUID;
 @Component
 public class Bootstrap {
 
-    @Lazy
     @Bean
     CommandLineRunner runner(RoleRepository roleRepository, CategoriesRepository categoriesRepository,
-                             AdvertisementRepository advertisementRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        roleRepository.deleteAll();
-        categoriesRepository.deleteAll();
-        userRepository.deleteAll();
-        advertisementRepository.deleteAll();
+                             AdvertisementRepository advertisementRepository, UserRepository userRepository, PasswordEncoder passwordEncoder,
+                             WishListRepository wishListRepository) {
         return args -> {
             if (!roleRepository.existsByName("ROLE_ADMIN")) {
-                roleRepository.save(new RoleEntity("ROLE_ADMIN"));
+                RoleEntity role_admin = roleRepository.save(new RoleEntity("ROLE_ADMIN"));
 
                 categoriesRepository.saveAll(List.of(
                         new CategoriesEntity("Car"),
@@ -39,17 +31,24 @@ public class Bootstrap {
                         new CategoriesEntity("Real Estate"),
                         new CategoriesEntity("Sport")));
 
+                //
                 UserEntity user = new UserEntity();
-                user.setId(4);
+                user.setId(1);
                 user.setFirstName("Alex");
                 user.setLastName("White");
                 user.setUsername("Heritage");
                 user.setEmail("heritageWhite@icloud.com");
                 user.setPassword(passwordEncoder.encode("admin"));
-                RoleEntity roles = roleRepository.findByName("ROLE_ADMIN").orElseThrow(IllegalArgumentException::new);
-                user.setRoles(Collections.singleton(roles));
+                user.setRoles(Collections.singleton(role_admin));
 
                 userRepository.save(user);
+
+                //
+                WishListEntity wishListEntity = new WishListEntity(UUID.randomUUID(), user.getId());
+                user.setWishList(wishListEntity.getId());
+                wishListRepository.save(wishListEntity);
+                userRepository.save(user);
+                //
 
                 AdvertisementEntity advert = new AdvertisementEntity();
                 advert.setId(UUID.fromString("f96401d2-7f63-4891-aafb-0608919b2a03"));
@@ -92,6 +91,7 @@ public class Bootstrap {
                 advert3.setEmail(user.getEmail());
                 advert3.setUser(user);
                 advert3.setQrCode("https://i.ibb.co/GQZXmb3/qr-code-f96401d2-7f63-4891-aafb-0608919b2a03.png");
+
                 advertisementRepository.saveAll(List.of(advert, advert2, advert3));
             }
         };

@@ -2,15 +2,14 @@ package com.adda.service.impl;
 
 import com.adda.DTO.UserDTO;
 import com.adda.domain.UserEntity;
-import com.adda.exception.UserNotFoundException;
 import com.adda.repository.RoleRepository;
 import com.adda.repository.UserRepository;
 import com.adda.service.UserService;
+import com.adda.service.WishListService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,33 +23,30 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final WishListService wishListService;
     @Lazy
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, WishListService wishListService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.wishListService = wishListService;
     }
 
     @Override
-    public void registerUser(UserDTO dto) {
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
-            return;
-        }
-
+    public UserEntity registerUser(UserDTO dto) {
         UserEntity user = new UserEntity(
                 dto.getFirstName(), dto.getLastName(),
                 dto.getUsername(), passwordEncoder.encode(dto.getPassword()), dto.getEmail());
-
         user.setRoles(Collections.singleton(roleRepository.findByName("ROLE_ADMIN").orElseThrow(IllegalArgumentException::new)));
-        userRepository.save(user);
+        UserEntity save = userRepository.save(user);
+        wishListService.createWishList(user);
+        return save;
     }
 
 
     @Override
-    public UserEntity getOneUser(Long id) throws UserNotFoundException {
+    public UserEntity getOneUser(Long id) {
         return userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
@@ -66,6 +62,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserEntity findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User doesn't exists"));
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    @Override
     public UserEntity encodeUserFromToken(String token) {
         String[] chunks = token.split("\\.");
 
@@ -75,7 +86,7 @@ public class UserServiceImpl implements UserService {
         JSONObject obj = new JSONObject(payload);
         Long id = obj.getLong("id");
 
-        if (!userRepository.findById(id).isPresent()) {
+        if (userRepository.findById(id).isEmpty()) {
             throw new IllegalArgumentException("You are not registered");
         }
         return userRepository.findById(id).get();

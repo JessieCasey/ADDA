@@ -6,9 +6,8 @@ import com.adda.domain.UserEntity;
 import com.adda.exception.AdvertisementNotFoundException;
 import com.adda.model.AdvertPage;
 import com.adda.model.AdvertSearchCriteria;
-import com.adda.repository.AdvertisementRepository;
 import com.adda.service.AdvertisementService;
-import com.adda.service.impl.UserServiceImpl;
+import com.adda.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,43 +29,42 @@ import static com.adda.service.UserService.getBearerTokenHeader;
 public class AdvertisementController {
 
     private final AdvertisementService advertisementService;
-    private final AdvertisementRepository advertisementRepository;
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @Autowired
-    public AdvertisementController(AdvertisementService advertisementService, AdvertisementRepository advertisementRepository, UserServiceImpl userService) {
+    public AdvertisementController(AdvertisementService advertisementService, UserService userService) {
         this.advertisementService = advertisementService;
-        this.advertisementRepository = advertisementRepository;
         this.userService = userService;
     }
 
     @PostMapping
-    public ResponseEntity<?> addAdvertisement(@RequestPart(name = "advertisement") AdvertisementDTO advertisementDTO,
-                                              @RequestParam(name = "file1", required = false) MultipartFile file1, @RequestParam(name = "file2", required = false) MultipartFile file2,
-                                              @RequestParam(name = "file3", required = false) MultipartFile file3, @RequestParam(name = "file4", required = false) MultipartFile file4,
-                                              @RequestParam(name = "file5", required = false) MultipartFile file5, @RequestParam(name = "file6", required = false) MultipartFile file6,
-                                              @RequestParam(name = "file7", required = false) MultipartFile file7, @RequestParam(name = "file8", required = false) MultipartFile file8
+    public ResponseEntity<?> addAdvertisement(
+            @RequestPart(name = "advertisement") AdvertisementDTO advertisementDTO,
+            @RequestParam(name = "file1", required = false) MultipartFile file1, @RequestParam(name = "file2", required = false) MultipartFile file2,
+            @RequestParam(name = "file3", required = false) MultipartFile file3, @RequestParam(name = "file4", required = false) MultipartFile file4,
+            @RequestParam(name = "file5", required = false) MultipartFile file5, @RequestParam(name = "file6", required = false) MultipartFile file6,
+            @RequestParam(name = "file7", required = false) MultipartFile file7, @RequestParam(name = "file8", required = false) MultipartFile file8
     ) {
         log.info("[Post] Request to method 'addAdvertisement'");
         UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
         try {
-            if (advertisementRepository.existsByTitleAndUsername(advertisementDTO.getTitle(), user.getUsername())) {
+            if (advertisementService.existsByTitleAndUsername(advertisementDTO.getTitle(), user.getUsername())) {
                 log.warn("Warning in method 'addAdvertisement': " + "Advertisement is already existed in your profile");
-                return ResponseEntity.badRequest().body("advertisement is already existed in your profile");
+                return ResponseEntity.badRequest().body("Advertisement is already existed in your profile");
             }
 
             List<MultipartFile> photos = advertisementService.getMultipartFiles(file1, file2, file3, file4, file5, file6, file7, file8);
             advertisementService.create(advertisementDTO, user, photos);
 
-            return ResponseEntity.ok("advertisement is successfully added");
+            return ResponseEntity.ok("Advertisement is successfully added");
         } catch (Exception e) {
             log.error("Error in method 'addAdvertisement': " + e.getMessage());
             return ResponseEntity.badRequest().body("advertisement is not added \n" + e);
         }
     }
 
-    @GetMapping("/{advertisement_id}")
-    public ResponseEntity<?> getAdvertisementById(@PathVariable(value = "advertisement_id") UUID advertisementId) {
+    @GetMapping("/{advertisementId}")
+    public ResponseEntity<?> getAdvertisementById(@PathVariable UUID advertisementId) {
         log.info("[Get] Request to method 'getAdvertisementById'");
         try {
             if (getBearerTokenHeader() == null) {
@@ -84,8 +82,8 @@ public class AdvertisementController {
         }
     }
 
-    @DeleteMapping("/{advertisement_id}")
-    public ResponseEntity<?> deleteAdvertisementById(@PathVariable(value = "advertisement_id") UUID advertisementId) {
+    @DeleteMapping("/{advertisementId}")
+    public ResponseEntity<?> deleteAdvertisementById(@PathVariable UUID advertisementId) {
         log.info("[Delete] Request to method 'deleteAdvertisementById'");
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());

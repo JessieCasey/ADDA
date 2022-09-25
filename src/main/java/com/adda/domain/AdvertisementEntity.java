@@ -1,8 +1,9 @@
 package com.adda.domain;
 
 import com.adda.DTO.advertisements.AdvertTransferDTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -42,11 +43,11 @@ public class AdvertisementEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "wishlist_table_id")
-    @ToString.Exclude
-    private WishListEntity wishListList;
+//    @JsonIgnore
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "wishlist_table_id")
+//    @ToString.Exclude
+//    private WishListEntity wishListList;
 
     public AdvertisementEntity(AdvertTransferDTO advertDTO) {
         this.id = advertDTO.getId();

@@ -1,8 +1,6 @@
 package com.adda.DTO.advertisements;
 
 import com.adda.domain.AdvertisementEntity;
-import com.adda.domain.CategoriesEntity;
-import com.adda.domain.PhotoEntity;
 import lombok.Value;
 
 import java.util.UUID;

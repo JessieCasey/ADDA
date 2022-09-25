@@ -1,9 +1,10 @@
 package com.adda.controller;
 
+import com.adda.DTO.advertisements.AdvertResponseDTO;
 import com.adda.domain.UserEntity;
-import com.adda.exception.AdvertisementNotFoundException;
 import com.adda.repository.AdvertisementRepository;
 import com.adda.service.UserService;
+import com.adda.service.WishListService;
 import com.adda.service.impl.WishListServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,18 +13,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.adda.service.UserService.getBearerTokenHeader;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping("api/advert/wishlist/")
+@RequestMapping("api/advert/wishlist")
 @Slf4j
 public class WishListController {
 
     private final AdvertisementRepository advertisementRepository;
     private final UserService userService;
-    private final WishListServiceImpl wishListService;
+    private final WishListService wishListService;
 
     @Lazy
     @Autowired
@@ -38,10 +40,14 @@ public class WishListController {
         log.info("[Get] Request to method 'getWishListOfUser'");
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
-            return ResponseEntity.ok(wishListService.getWishList(user).getAdvertisements());
-        } catch (AdvertisementNotFoundException e) {
-            log.error("Error type 'AdvertisementNotFoundException' in method 'getWishListOfUser': " + e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
+            if (user.getWishList() != null) {
+                return ResponseEntity.ok(wishListService.getWishList(user).getAdvertisements().stream()
+                        .map(AdvertResponseDTO::new)
+                        .collect(Collectors.toList()));
+
+            } else
+                return ResponseEntity.ok("No adverts in list");
+
         } catch (Exception e) {
             log.error("Error in method 'getWishListOfUser': " + e.getMessage());
             return ResponseEntity.badRequest().body("Wish list isn't available \n" + e);
@@ -54,9 +60,6 @@ public class WishListController {
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
             return ResponseEntity.ok(wishListService.addAdvertToWishList(user, advertisementRepository.findById(advertisementId)));
-        } catch (AdvertisementNotFoundException e) {
-            log.error("Error type 'AdvertisementNotFoundException' in method 'addById': " + e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             log.error("Error in method 'addById': " + e.getMessage());
             return ResponseEntity.badRequest().body("Wish list isn't available \n" + e);
@@ -69,9 +72,6 @@ public class WishListController {
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
             return ResponseEntity.ok(wishListService.deleteAdvertFromWishList(user, advertisementRepository.findById(advertisementId)));
-        } catch (AdvertisementNotFoundException e) {
-            log.error("Error type 'AdvertisementNotFoundException' in method 'deleteById': " + e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             log.error("Error in method 'deleteById': " + e.getMessage());
             return ResponseEntity.badRequest().body("Wish list isn't available \n" + e);

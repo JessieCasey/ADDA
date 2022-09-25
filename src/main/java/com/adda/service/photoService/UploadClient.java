@@ -1,12 +1,12 @@
 package com.adda.service.photoService;
 
-import java.io.IOException;
-
 import com.adda.service.photoService.parameters.UploadParameters;
 import com.adda.service.photoService.responses.OptionalResponse;
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
+
+import java.io.IOException;
 
 public class UploadClient {
 

@@ -128,6 +128,10 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         return advertCriteriaRepository.findAllWithFilters(advertPage, advertSearchCriteria);
     }
 
+    @Override
+    public boolean existsByTitleAndUsername(String title, String username) {
+        return advertisementRepository.existsByTitleAndUsername(title, username);
+    }
 
     @Override
     public List<MultipartFile> getMultipartFiles(MultipartFile file1, MultipartFile file2,

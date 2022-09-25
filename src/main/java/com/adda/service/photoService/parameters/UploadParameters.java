@@ -1,10 +1,10 @@
 package com.adda.service.photoService.parameters;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * A wrapper for upload POST-request parameters.

@@ -1,11 +1,10 @@
 package com.adda.service.photoService.responses;
 
-import java.util.NoSuchElementException;
-
-import org.jsoup.Connection.Response;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.jsoup.Connection.Response;
+
+import java.util.NoSuchElementException;
 
 /**
  * Represents optional response which may be presented or not.

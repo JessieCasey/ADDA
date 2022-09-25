@@ -1,6 +1,7 @@
 package com.adda.domain;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
