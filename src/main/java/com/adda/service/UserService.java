@@ -1,6 +1,6 @@
 package com.adda.service;
 
-import com.adda.DTO.UserDTO;
+import com.adda.DTO.user.UserDTO;
 import com.adda.domain.UserEntity;
 import com.adda.exception.UserNotFoundException;
 import org.springframework.web.context.request.RequestContextHolder;

@@ -1,7 +1,7 @@
 package com.adda.controller;
 
 import com.adda.DTO.AuthenticationRequestDto;
-import com.adda.DTO.UserDTO;
+import com.adda.DTO.user.UserDTO;
 import com.adda.DTO.user.UserResponseDTO;
 import com.adda.config.security.JwtTokenProvider;
 import com.adda.domain.UserEntity;

@@ -1,6 +1,6 @@
 package com.adda.service.impl;
 
-import com.adda.DTO.UserDTO;
+import com.adda.DTO.user.UserDTO;
 import com.adda.domain.UserEntity;
 import com.adda.repository.RoleRepository;
 import com.adda.repository.UserRepository;

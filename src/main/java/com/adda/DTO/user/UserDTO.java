@@ -1,4 +1,4 @@
-package com.adda.DTO;
+package com.adda.DTO.user;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

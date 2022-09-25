@@ -110,7 +110,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public List<AdvertisementEntity> getAllByUser(long userId) throws AdvertisementNotFoundException {
         List<AdvertisementEntity> adverts = null;
-        if (!userRepository.findById(userId).isPresent()) {
+        if (userRepository.findById(userId).isEmpty()) {
             throw new AdvertisementNotFoundException("The user doesn't have any adverts");
         } else {
             adverts = advertisementRepository.findAllByUser(userRepository.findById(userId).get());
