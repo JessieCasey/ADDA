@@ -66,7 +66,7 @@ public class Bootstrap {
 
                 AdvertisementEntity advert2 = new AdvertisementEntity();
                 advert2.setId(UUID.fromString("f96401d2-7f63-4891-aafb-0608919b2a04"));
-                advert2.setTitle("Iphone 12 PRO EDITION");
+                advert2.setTitle("Iphone 12 PRO");
                 advert2.setCategory(categoriesRepository.findByCategoryName("Electronic"));
                 advert2.setPrice("1300");
                 advert2.setDescription("256 GB, GOLD COLOR");
@@ -85,7 +85,7 @@ public class Bootstrap {
                 advert3.setPrice("100350");
                 advert3.setDescription("4-room apartment");
                 advert3.setViewers(120);
-                advert3.setPhotos(new PhotoEntity(1));
+                advert3.setPhotos(new PhotoEntity(0));
                 advert3.setDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
                 advert3.setUsername(user.getUsername());
                 advert3.setEmail(user.getEmail());

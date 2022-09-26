@@ -1,7 +1,10 @@
 package com.adda.controller;
 
+import com.adda.DTO.advertisements.AdvertResponseDTO;
 import com.adda.DTO.user.UserResponseDTO;
+import com.adda.domain.HistoryEntity;
 import com.adda.exception.UserNotFoundException;
+import com.adda.service.HistoryService;
 import com.adda.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +19,10 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
+    private final HistoryService historyService;
+    public UserController(UserService userService, HistoryService historyService) {
         this.userService = userService;
+        this.historyService = historyService;
     }
 
     @GetMapping("/{id}")
@@ -51,6 +55,18 @@ public class UserController {
         log.info("[Delete] Request to method 'deleteUser'");
         try {
             return ResponseEntity.ok(userService.delete(id));
+        } catch (Exception e) {
+            log.error("Error in method 'deleteUser': " + e.getMessage());
+            return ResponseEntity.badRequest().body("No user found");
+        }
+    }
+
+    @GetMapping("/history/{id}")
+    public ResponseEntity<?> getHistoryOfUser(@PathVariable Long id) {
+        log.info("[Delete] Request to method 'deleteUser'");
+        try {
+            return ResponseEntity.ok(historyService.getUserHistory(id)
+                    .getAdverts().stream().map(AdvertResponseDTO::new).collect(Collectors.toList()));
         } catch (Exception e) {
             log.error("Error in method 'deleteUser': " + e.getMessage());
             return ResponseEntity.badRequest().body("No user found");

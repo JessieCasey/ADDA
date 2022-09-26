@@ -82,20 +82,21 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public AdvertisementEntity getAdvertById(UUID id, UserEntity user) throws AdvertisementNotFoundException {
         AdvertisementEntity advert = advertisementRepository.findById(id);
+        if (advert == null) {
+            throw new AdvertisementNotFoundException("Advert is not found");
+        }
+
         if (user != null) {
-            if (!historyRepository.existsByIdAndUser(id, user.getId())) {
-                HistoryEntity historyEntity = new HistoryEntity(id, user.getId());
+            if (!historyRepository.existsByIdAndAdvertsIsContaining(user.getId(), advert)) {
+                HistoryEntity historyEntity = new HistoryEntity(user.getId());
+                historyEntity.getAdverts().add(advert);
                 historyRepository.save(historyEntity);
                 advert.setViewers(advert.getViewers() + 1);
                 advertisementRepository.save(advert);
             }
         }
 
-        if (advert == null) {
-            throw new AdvertisementNotFoundException("Advert is not found");
-        } else {
-            return advert;
-        }
+        return advert;
     }
 
     @Override

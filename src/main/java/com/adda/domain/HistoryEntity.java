@@ -4,10 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -17,26 +16,19 @@ import java.util.UUID;
 @Table(name = "history_table")
 public class HistoryEntity {
     @Id
-    private UUID id;
+    private long id;
 
-    @Column(name = "user_id")
-    private long user;
+    @Column(name = "adverts_id")
+    @OneToMany
+    private List<AdvertisementEntity> adverts = new ArrayList<>();
 
-    public HistoryEntity(UUID id, long user) {
+    public HistoryEntity(long id) {
         this.id = id;
-        this.user = user;
     }
 
     public HistoryEntity() {
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        HistoryEntity that = (HistoryEntity) o;
-        return id != null && Objects.equals(id, that.id);
-    }
 
     @Override
     public int hashCode() {
