@@ -8,7 +8,7 @@ The idea of the project is to launch an online advertising platform that brings 
 
 ### How to run
 
-Before we start, you need to create a DB, then you need to open PSQL Terminal.
+Before we start, you need to open PSQL Terminal and you create a DB, 
 
 ![Psql terminal](./imgs/psql.png)
 
