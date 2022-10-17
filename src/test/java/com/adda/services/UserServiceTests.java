@@ -1,9 +1,12 @@
 package com.adda.services;
 
 import com.adda.DTO.user.UserDTO;
+import com.adda.DTO.user.UserUpdateDTO;
+import com.adda.domain.RoleEntity;
 import com.adda.domain.UserEntity;
 import com.adda.exception.NullEntityReferenceException;
 import com.adda.exception.UserNotFoundException;
+import com.adda.repository.RoleRepository;
 import com.adda.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,10 +30,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserServiceTests {
 
     private final UserService userService;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserServiceTests(UserService userService) {
+    public UserServiceTests(UserService userService, RoleRepository roleRepository) {
         this.userService = userService;
+        this.roleRepository = roleRepository;
     }
 
     @Test
@@ -66,12 +71,18 @@ public class UserServiceTests {
     @Transactional
     public void updateUserTest() {
         String expected = "Peter";
-
+        RoleEntity expectedRole = roleRepository.findByName("ROLE_USER").get();
+        RoleEntity expectedRoleAdmin = roleRepository.findByName("ROLE_ADMIN").get();
         UserEntity user = userService.getOneUser(1L);
-        user.setFirstName(expected);
-        UserEntity actual = userService.update(user);
+        UserUpdateDTO updateDTO = new UserUpdateDTO(user);
+        updateDTO.getRoles().add(expectedRoleAdmin);
+        updateDTO.getRoles().add(expectedRole);
+        updateDTO.setFirstName("Peter");
+        UserEntity actual = userService.update(updateDTO);
 
         assertEquals(expected, actual.getFirstName());
+        assertTrue(actual.getRoles().contains(expectedRole));
+        assertTrue(actual.getRoles().contains(expectedRoleAdmin));
     }
 
     @Test

@@ -23,6 +23,7 @@ public class Bootstrap {
         return args -> {
             if (!roleRepository.existsByName("ROLE_ADMIN")) {
                 RoleEntity role_admin = roleRepository.save(new RoleEntity("ROLE_ADMIN"));
+                RoleEntity role_user = roleRepository.save(new RoleEntity("ROLE_USER"));
 
                 categoriesRepository.saveAll(List.of(
                         new CategoriesEntity("Car"),

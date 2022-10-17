@@ -3,7 +3,9 @@ package com.adda.service.impl;
 import com.adda.DTO.user.UserDTO;
 import com.adda.DTO.user.UserDeletedDTO;
 import com.adda.DTO.user.UserResponseDTO;
+import com.adda.DTO.user.UserUpdateDTO;
 import com.adda.domain.AdvertisementEntity;
+import com.adda.domain.RoleEntity;
 import com.adda.domain.UserEntity;
 import com.adda.exception.NullEntityReferenceException;
 import com.adda.repository.RoleRepository;
@@ -62,21 +64,33 @@ public class UserServiceImpl implements UserService {
         return save;
     }
 
-
     @Override
     public UserEntity getOneUser(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User with id: '" + id + "' is not found"));
     }
 
     @Override
-    public UserEntity update(UserEntity user) {
-        if (user != null) {
-            UserEntity oldUser = getOneUser(user.getId());
-            if (oldUser != null) {
-                return userRepository.save(user);
-            }
+    public UserEntity update(UserUpdateDTO userDTO) {
+        UserEntity user = null;
+        if (userDTO != null) {
+            user = getOneUser(userDTO.getId());
         }
-        throw new NullEntityReferenceException("User cannot be 'null'");
+
+        if (user == null) {
+            throw new NullEntityReferenceException("User cannot be 'null'");
+        } else {
+            user.setFirstName(userDTO.getFirstName());
+            user.setLastName(userDTO.getLastName());
+            user.setEmail(userDTO.getEmail());
+            user.setPassword(userDTO.getPassword());
+
+            if (!user.getRoles().equals(userDTO.getRoles())) {
+                user.setRoles(userDTO.getRoles());
+            }
+
+            return userRepository.save(user);
+        }
+
     }
 
     @Override
