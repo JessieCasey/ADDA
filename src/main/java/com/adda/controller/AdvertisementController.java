@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -72,20 +70,21 @@ public class AdvertisementController {
 
     @PutMapping("/{advertId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> updateAdvertisement(@PathVariable UUID advertId,
-                                                 @Valid @RequestBody AdvertisementUpdateDTO advertDTO) {
+    public ResponseEntity<?> updateAdvertisement(@PathVariable UUID advertId, @Valid @RequestBody AdvertisementUpdateDTO advertDTO) {
         log.info("[PUT] Request to 'updateAdvertisement'");
 
         UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
 
-        AdvertisementEntity advertById = advertisementService.getAdvertById(advertId, null);
+        AdvertisementEntity advertById = advertisementService.getAdvertById(advertId);
+        log.info("[PUT] Request to 'updateAdvertisement': Advert is found in DB");
 
         if (!(user.getRoles().stream().anyMatch(o -> "ROLE_ADMIN".equals(o.getName())) || advertById.getUser().equals(user))) {
-            return ResponseEntity.badRequest().body("You are not admin");
+            log.warn("[PUT] Request to 'updateAdvertisement': User is not an admin and is not the owner of the advert");
+            return ResponseEntity.badRequest().body("You are not admin and not the owner of advert");
         }
 
-
         AdvertisementEntity update = advertisementService.update(advertById, advertDTO);
+
         log.info("[PUT] Request to 'updateAdvertisement': Advert is updated");
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -101,7 +100,7 @@ public class AdvertisementController {
         log.info("[Get] Request to method 'getAdvertisementById'");
         try {
             if (getBearerTokenHeader() == null) {
-                return ResponseEntity.ok(new AdvertResponseDTO(advertisementService.getAdvertById(advertisementId, null)));
+                return ResponseEntity.ok(new AdvertResponseDTO(advertisementService.getAdvertById(advertisementId)));
             } else {
                 UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
                 return ResponseEntity.ok(new AdvertResponseDTO(advertisementService.getAdvertById(advertisementId, user)));

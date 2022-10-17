@@ -24,6 +24,8 @@ public interface AdvertisementService {
 
     AdvertisementEntity update(AdvertisementEntity user, AdvertisementUpdateDTO advertDTO);
 
+    AdvertisementEntity getAdvertById(UUID id) throws AdvertisementNotFoundException;
+
     AdvertisementEntity getAdvertById(UUID id, UserEntity user) throws AdvertisementNotFoundException;
 
     String deleteAdvertById(UUID id) throws AdvertisementNotFoundException;

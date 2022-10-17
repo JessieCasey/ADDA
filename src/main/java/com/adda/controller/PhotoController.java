@@ -40,7 +40,7 @@ public class PhotoController {
 
         log.info("[Post] Request to method 'uploadPhotoToAdvert'");
 
-        AdvertisementEntity advert = advertisementService.getAdvertById(advertId, null);
+        AdvertisementEntity advert = advertisementService.getAdvertById(advertId);
         if (advert == null) {
             log.warn("Warning in method 'uploadPhotoToAdvert': advert is null");
             return new ResponseEntity<>("Files are NOT uploaded successfully" + "advert is null", HttpStatus.BAD_REQUEST);

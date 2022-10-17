@@ -59,7 +59,7 @@ public class WishListController {
         log.info("[Post] Request to method 'addById'");
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
-            return ResponseEntity.ok(wishListService.addAdvertToWishList(user, advertisementRepository.findById(advertisementId)));
+            return ResponseEntity.ok(wishListService.addAdvertToWishList(user, advertisementRepository.getById(advertisementId)));
         } catch (Exception e) {
             log.error("Error in method 'addById': " + e.getMessage());
             return ResponseEntity.badRequest().body("Wish list isn't available \n" + e);
@@ -71,7 +71,7 @@ public class WishListController {
         log.info("[Delete] Request to method 'deleteById'");
         try {
             UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
-            return ResponseEntity.ok(wishListService.deleteAdvertFromWishList(user, advertisementRepository.findById(advertisementId)));
+            return ResponseEntity.ok(wishListService.deleteAdvertFromWishList(user, advertisementRepository.getById(advertisementId)));
         } catch (Exception e) {
             log.error("Error in method 'deleteById': " + e.getMessage());
             return ResponseEntity.badRequest().body("Wish list isn't available \n" + e);

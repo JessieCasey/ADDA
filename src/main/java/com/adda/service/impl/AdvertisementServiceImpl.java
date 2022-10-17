@@ -78,7 +78,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public void addPhoto(List<MultipartFile> photos, UUID id) throws IOException {
-        AdvertisementEntity advert = advertisementRepository.findById(id);
+        AdvertisementEntity advert = advertisementRepository.findById(id).get();
         advert.setPhotos(PhotoServiceImpl.uploadPhotoToAdvertisement(photos));
         advertisementRepository.save(advert);
     }
@@ -86,7 +86,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public AdvertisementEntity update(AdvertisementEntity advert, AdvertisementUpdateDTO advertDTO) {
         if (advert != null) {
-            getAdvertById(advert.getId(), null);
+            getAdvertById(advert.getId());
 
             advert.setDescription(advertDTO.getDescription());
             advert.setPrice(advertDTO.getPrice());
@@ -97,8 +97,13 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
+    public AdvertisementEntity getAdvertById(UUID id) throws AdvertisementNotFoundException {
+        return getAdvertById(id, null);
+    }
+
+    @Override
     public AdvertisementEntity getAdvertById(UUID id, UserEntity user) throws AdvertisementNotFoundException {
-        AdvertisementEntity advert = advertisementRepository.findById(id);
+        AdvertisementEntity advert = advertisementRepository.findById(id).get();
         if (advert == null) {
             throw new AdvertisementNotFoundException("Advert is not found");
         }
@@ -119,7 +124,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     @Transactional
     public String deleteAdvertById(UUID id) throws AdvertisementNotFoundException {
-        AdvertisementEntity advert = getAdvertById(id, null);
+        AdvertisementEntity advert = getAdvertById(id);
         advertisementRepository.deleteById(id);
         log.info("Method 'advertService.deleteAdvertById(UUID id)': Advert is deleted from the DB");
 

@@ -8,9 +8,9 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 import java.util.UUID;
 
-public interface AdvertisementRepository extends CrudRepository<AdvertisementEntity, Long> {
+public interface AdvertisementRepository extends CrudRepository<AdvertisementEntity, UUID> {
 
-    AdvertisementEntity findById(UUID id);
+    AdvertisementEntity getById(UUID id);
 
     void deleteById(UUID id);
 
