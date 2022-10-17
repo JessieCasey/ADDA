@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.util.Objects;
 import java.util.UUID;
@@ -19,15 +20,16 @@ import java.util.UUID;
 public class AdvertisementEntity {
     @Id
     private UUID id;
-
-    @Pattern(regexp = "[A-Z][a-z]+",
-            message = "Must start with a capital letter followed by one or more lowercase letters")
+    @NotBlank
     private String title;
+
+    @Pattern(regexp = "^[0-9]*$",
+            message = "Must start and end with digits only")
     private String price;
 
-    @Pattern(regexp = "[A-Z][a-z]+",
-            message = "Must start with a capital letter followed by one or more lowercase letters")
+    @NotBlank
     private String description;
+
     private String email;
     private String username;
     private String date;

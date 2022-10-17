@@ -2,7 +2,6 @@ package com.adda.controller;
 
 import com.adda.DTO.advertisements.AdvertResponseDTO;
 import com.adda.DTO.user.UserResponseDTO;
-import com.adda.domain.HistoryEntity;
 import com.adda.exception.UserNotFoundException;
 import com.adda.service.HistoryService;
 import com.adda.service.UserService;

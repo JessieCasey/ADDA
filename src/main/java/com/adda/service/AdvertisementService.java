@@ -1,6 +1,7 @@
 package com.adda.service;
 
 import com.adda.DTO.advertisements.AdvertisementDTO;
+import com.adda.DTO.advertisements.AdvertisementUpdateDTO;
 import com.adda.domain.AdvertisementEntity;
 import com.adda.domain.UserEntity;
 import com.adda.exception.AdvertisementNotFoundException;
@@ -20,6 +21,8 @@ public interface AdvertisementService {
     AdvertisementEntity create(UUID id, AdvertisementDTO dto, UserEntity user, List<MultipartFile> photos) throws IOException;
 
     void addPhoto(List<MultipartFile> photos, UUID id) throws IOException;
+
+    AdvertisementEntity update(AdvertisementEntity user, AdvertisementUpdateDTO advertDTO);
 
     AdvertisementEntity getAdvertById(UUID id, UserEntity user) throws AdvertisementNotFoundException;
 

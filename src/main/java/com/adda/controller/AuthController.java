@@ -15,14 +15,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,6 +65,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserDTO dto) {
         log.info("[Post] Request to method 'registerUser'");
         if (userService.existsByEmail(dto.getEmail()) || userService.existsByUsername(dto.getUsername())) {
@@ -73,9 +73,15 @@ public class AuthController {
             return new ResponseEntity<>("Email or Username is already taken!", HttpStatus.BAD_REQUEST);
         }
 
-        UserEntity userEntity = userService.registerUser(dto);
+        UserEntity user = userService.registerUser(dto);
 
-        return new ResponseEntity<>(new UserResponseDTO(userEntity), HttpStatus.OK);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(user.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(new UserResponseDTO(user));
     }
 
     @PostMapping("/logout")

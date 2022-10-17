@@ -1,6 +1,8 @@
 package com.adda.service;
 
 import com.adda.DTO.user.UserDTO;
+import com.adda.DTO.user.UserDeletedDTO;
+import com.adda.DTO.user.UserResponseDTO;
 import com.adda.domain.UserEntity;
 import com.adda.exception.UserNotFoundException;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -15,9 +17,11 @@ public interface UserService {
 
     UserEntity getOneUser(Long id) throws UserNotFoundException;
 
+    UserEntity update(UserEntity user);
+
     List<UserEntity> getAll();
 
-    Long delete(Long id);
+    UserDeletedDTO delete(Long id);
 
     UserEntity encodeUserFromToken(String token);
 

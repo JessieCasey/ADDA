@@ -2,6 +2,7 @@ package com.adda.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
@@ -16,6 +17,7 @@ import java.util.UUID;
         @UniqueConstraint(columnNames = {"username"}),
         @UniqueConstraint(columnNames = {"email"})
 })
+@ToString
 public class UserEntity {
 
     @Id

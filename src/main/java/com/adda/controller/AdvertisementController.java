@@ -2,6 +2,8 @@ package com.adda.controller;
 
 import com.adda.DTO.advertisements.AdvertResponseDTO;
 import com.adda.DTO.advertisements.AdvertisementDTO;
+import com.adda.DTO.advertisements.AdvertisementUpdateDTO;
+import com.adda.domain.AdvertisementEntity;
 import com.adda.domain.UserEntity;
 import com.adda.exception.AdvertisementNotFoundException;
 import com.adda.model.AdvertPage;
@@ -13,10 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -62,6 +68,32 @@ public class AdvertisementController {
             log.error("Error in method 'addAdvertisement': " + e.getMessage());
             return ResponseEntity.badRequest().body("advertisement is not added \n" + e);
         }
+    }
+
+    @PutMapping("/{advertId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> updateAdvertisement(@PathVariable UUID advertId,
+                                                 @Valid @RequestBody AdvertisementUpdateDTO advertDTO) {
+        log.info("[PUT] Request to 'updateAdvertisement'");
+
+        UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
+
+        AdvertisementEntity advertById = advertisementService.getAdvertById(advertId, null);
+
+        if (!(user.getRoles().stream().anyMatch(o -> "ROLE_ADMIN".equals(o.getName())) || advertById.getUser().equals(user))) {
+            return ResponseEntity.badRequest().body("You are not admin");
+        }
+
+
+        AdvertisementEntity update = advertisementService.update(advertById, advertDTO);
+        log.info("[PUT] Request to 'updateAdvertisement': Advert is updated");
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(update.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(new AdvertResponseDTO(update));
     }
 
     @GetMapping("/{advertisementId}")

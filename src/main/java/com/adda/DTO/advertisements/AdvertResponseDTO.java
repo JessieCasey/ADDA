@@ -1,6 +1,7 @@
 package com.adda.DTO.advertisements;
 
 import com.adda.domain.AdvertisementEntity;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;
 
 import java.util.UUID;
@@ -15,6 +16,7 @@ public class AdvertResponseDTO {
     String username;
     String date;
     Integer viewers;
+    @JsonProperty("qr_code_link")
     String qrCode;
     String[] photos;
     String category;

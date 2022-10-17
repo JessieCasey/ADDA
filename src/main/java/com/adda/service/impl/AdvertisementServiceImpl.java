@@ -2,11 +2,13 @@ package com.adda.service.impl;
 
 import com.adda.DTO.advertisements.AdvertTransferDTO;
 import com.adda.DTO.advertisements.AdvertisementDTO;
+import com.adda.DTO.advertisements.AdvertisementUpdateDTO;
 import com.adda.domain.AdvertisementEntity;
 import com.adda.domain.HistoryEntity;
 import com.adda.domain.PhotoEntity;
 import com.adda.domain.UserEntity;
 import com.adda.exception.AdvertisementNotFoundException;
+import com.adda.exception.NullEntityReferenceException;
 import com.adda.model.AdvertPage;
 import com.adda.model.AdvertSearchCriteria;
 import com.adda.repository.AdvertisementRepository;
@@ -38,7 +40,9 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private final AdvertisementCriteriaRepository advertCriteriaRepository;
 
     @Autowired
-    public AdvertisementServiceImpl(HistoryRepository historyRepository, UserRepository userRepository, CategoriesRepository categoriesRepository, AdvertisementRepository advertisementRepository, AdvertisementCriteriaRepository advertCriteriaRepository) {
+    public AdvertisementServiceImpl(HistoryRepository historyRepository, UserRepository userRepository,
+                                    CategoriesRepository categoriesRepository, AdvertisementRepository advertisementRepository,
+                                    AdvertisementCriteriaRepository advertCriteriaRepository) {
         this.historyRepository = historyRepository;
         this.userRepository = userRepository;
         this.categoriesRepository = categoriesRepository;
@@ -80,6 +84,19 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
+    public AdvertisementEntity update(AdvertisementEntity advert, AdvertisementUpdateDTO advertDTO) {
+        if (advert != null) {
+            getAdvertById(advert.getId(), null);
+
+            advert.setDescription(advertDTO.getDescription());
+            advert.setPrice(advertDTO.getPrice());
+
+            return advertisementRepository.save(advert);
+        }
+        throw new NullEntityReferenceException("User cannot be 'null'");
+    }
+
+    @Override
     public AdvertisementEntity getAdvertById(UUID id, UserEntity user) throws AdvertisementNotFoundException {
         AdvertisementEntity advert = advertisementRepository.findById(id);
         if (advert == null) {
@@ -104,22 +121,17 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     public String deleteAdvertById(UUID id) throws AdvertisementNotFoundException {
         AdvertisementEntity advert = getAdvertById(id, null);
         advertisementRepository.deleteById(id);
+        log.info("Method 'advertService.deleteAdvertById(UUID id)': Advert is deleted from the DB");
 
         return advert.getTitle();
     }
 
     @Override
     public List<AdvertisementEntity> getAllByUser(long userId) throws AdvertisementNotFoundException {
-        List<AdvertisementEntity> adverts = null;
         if (userRepository.findById(userId).isEmpty()) {
             throw new AdvertisementNotFoundException("The user doesn't have any adverts");
         } else {
-            adverts = advertisementRepository.findAllByUser(userRepository.findById(userId).get());
-            if (adverts != null) {
-                return adverts;
-            } else {
-                throw new AdvertisementNotFoundException("The user doesn't have any adverts");
-            }
+            return advertisementRepository.findAllByUser(userRepository.findById(userId).get());
         }
     }
 
@@ -139,7 +151,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                                                  MultipartFile file3, MultipartFile file4,
                                                  MultipartFile file5, MultipartFile file6,
                                                  MultipartFile file7, MultipartFile file8) {
-        List<MultipartFile> fileList = new ArrayList();
+        List<MultipartFile> fileList = new ArrayList<>();
 
         if (file1 != null)
             fileList.add(file1);
