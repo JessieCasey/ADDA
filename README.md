@@ -200,6 +200,7 @@ to provide it you need to make a request with 'Authorization' header:
   ],
   ...
 ```
+The rest you can find in Swagger.
 ---
 ### Functionality
 
