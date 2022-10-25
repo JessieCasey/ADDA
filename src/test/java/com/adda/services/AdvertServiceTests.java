@@ -1,12 +1,12 @@
 package com.adda.services;
 
-import com.adda.DTO.advertisements.AdvertisementDTO;
-import com.adda.DTO.advertisements.AdvertisementUpdateDTO;
-import com.adda.domain.AdvertisementEntity;
-import com.adda.domain.UserEntity;
-import com.adda.repository.AdvertisementRepository;
-import com.adda.repository.UserRepository;
-import com.adda.service.AdvertisementService;
+import com.adda.advert.dto.AdvertisementDTO;
+import com.adda.advert.dto.AdvertisementUpdateDTO;
+import com.adda.advert.AdvertisementEntity;
+import com.adda.user.UserEntity;
+import com.adda.advert.AdvertisementRepository;
+import com.adda.user.UserRepository;
+import com.adda.advert.AdvertisementService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;

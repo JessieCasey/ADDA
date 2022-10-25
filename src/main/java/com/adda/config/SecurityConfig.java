@@ -1,6 +1,6 @@
 package com.adda.config;
 
-import com.adda.config.security.JwtConfigurer;
+import com.adda.auth.jwt.JwtConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;

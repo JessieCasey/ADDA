@@ -1,7 +1,16 @@
 package com.adda;
 
-import com.adda.domain.*;
-import com.adda.repository.*;
+import com.adda.advert.AdvertisementEntity;
+import com.adda.advert.AdvertisementRepository;
+import com.adda.advert.category.CategoriesEntity;
+import com.adda.advert.category.CategoriesRepository;
+import com.adda.advert.photo.PhotoEntity;
+import com.adda.user.UserEntity;
+import com.adda.user.UserRepository;
+import com.adda.user.role.RoleEntity;
+import com.adda.user.role.RoleRepository;
+import com.adda.user.wishlist.WishListEntity;
+import com.adda.user.wishlist.WishListRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;

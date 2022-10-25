@@ -1,13 +1,13 @@
 package com.adda.services;
 
-import com.adda.DTO.user.UserDTO;
-import com.adda.DTO.user.UserUpdateDTO;
-import com.adda.domain.RoleEntity;
-import com.adda.domain.UserEntity;
+import com.adda.user.dto.UserDTO;
+import com.adda.user.dto.UserUpdateDTO;
+import com.adda.user.role.RoleEntity;
+import com.adda.user.UserEntity;
 import com.adda.exception.NullEntityReferenceException;
-import com.adda.exception.UserNotFoundException;
-import com.adda.repository.RoleRepository;
-import com.adda.service.UserService;
+import com.adda.user.exception.UserNotFoundException;
+import com.adda.user.role.RoleRepository;
+import com.adda.user.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
