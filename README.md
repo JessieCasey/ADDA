@@ -215,6 +215,7 @@ The rest you can find in Swagger
 - Logging implementation
 - Global Exception Handler implementation
 - History of visiting
+- URL Shorter
 
 ### 🛠 Skills
 Maven, Spring boot (Data, Security...), JUnit, PostgresQL, AWS, Heroku
