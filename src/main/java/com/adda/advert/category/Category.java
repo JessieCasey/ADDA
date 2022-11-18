@@ -13,14 +13,14 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @Table(name = "categories_table")
-public class CategoriesEntity {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
     private String categoryName;
 
-    public CategoriesEntity(String categoryName) {
+    public Category(String categoryName) {
         this.categoryName = categoryName;
     }
 
@@ -28,7 +28,7 @@ public class CategoriesEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        CategoriesEntity that = (CategoriesEntity) o;
+        Category that = (Category) o;
         return categoryId != null && Objects.equals(categoryId, that.categoryId);
     }
 

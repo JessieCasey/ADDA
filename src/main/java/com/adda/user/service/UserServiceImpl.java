@@ -1,7 +1,7 @@
 package com.adda.user.service;
 
-import com.adda.advert.AdvertisementEntity;
-import com.adda.advert.AdvertisementService;
+import com.adda.advert.Advertisement;
+import com.adda.advert.service.AdvertisementService;
 import com.adda.auth.dto.SignInDTO;
 import com.adda.auth.dto.SignupDTO;
 import com.adda.auth.jwt.JwtResponse;
@@ -13,6 +13,7 @@ import com.adda.user.User;
 import com.adda.user.UserRepository;
 import com.adda.user.dto.UserDeletedDTO;
 import com.adda.user.dto.UserUpdateDTO;
+import com.adda.user.exception.UserNotFoundException;
 import com.adda.user.role.ERole;
 import com.adda.user.role.Role;
 import com.adda.user.role.RoleRepository;
@@ -106,8 +107,20 @@ public class UserServiceImpl implements UserService {
                 request.getUsername(), passwordEncoder.encode(request.getPassword()), request.getEmail());
 
         Set<String> strRoles = request.getRole();
-        Set<Role> roles = new HashSet<>();
+        Set<Role> roles = getRolesList(strRoles);
 
+        user.setRoles(roles);
+
+        user.setVerificationCode(RandomString.make(64));
+        user.setEnabled(false);
+
+        User save = userRepository.save(user);
+        wishListService.createWishList(save);
+        return save;
+    }
+
+    private Set<Role> getRolesList(Set<String> strRoles) {
+        Set<Role> roles = new HashSet<>();
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -133,14 +146,7 @@ public class UserServiceImpl implements UserService {
                 }
             });
         }
-        user.setRoles(roles);
-
-        user.setVerificationCode(RandomString.make(64));
-        user.setEnabled(false);
-
-        User save = userRepository.save(user);
-        wishListService.createWishList(save);
-        return save;
+        return roles;
     }
 
     public void sendEmail(User user, String content, String subject) {
@@ -175,18 +181,19 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new NullEntityReferenceException("User cannot be 'null'");
         } else {
-            user.setFirstName(userDTO.getFirstName());
-            user.setLastName(userDTO.getLastName());
-            user.setEmail(userDTO.getEmail());
-            user.setPassword(userDTO.getPassword());
-
-            if (!user.getRoles().equals(userDTO.getRoles())) {
-                user.setRoles(userDTO.getRoles());
-            }
+            if (userDTO.getFirstName() != null)
+                user.setFirstName(userDTO.getFirstName());
+            if (userDTO.getLastName() != null)
+                user.setLastName(userDTO.getLastName());
+            if (userDTO.getEmail() != null)
+                user.setEmail(userDTO.getEmail());
+            if (userDTO.getPassword() != null)
+                user.setPassword(userDTO.getPassword());
+            if (userDTO.getRoles() != null && userDTO.getRoles().size() != 0)
+                user.setRoles(getRolesList(userDTO.getRoles()));
 
             return userRepository.save(user);
         }
-
     }
 
     public List<User> getAll() {
@@ -195,21 +202,22 @@ public class UserServiceImpl implements UserService {
 
     public UserDeletedDTO delete(Long id) {
         if (userRepository.existsById(id)) {
-            List<AdvertisementEntity> allByUser = advertisementService.getAllByUser(id);
-            UserDeletedDTO userDeletedDTO = new UserDeletedDTO(userRepository.getById(id), allByUser.size(), LocalDateTime.now());
+            List<Advertisement> allByUser = advertisementService.getAllByUser(id);
+            UserDeletedDTO userDeletedDTO =
+                    new UserDeletedDTO(userRepository.getById(id), allByUser.size(), LocalDateTime.now());
 
             allByUser.forEach(x -> advertisementService.deleteAdvertById(x.getId()));
             userRepository.deleteById(id);
 
-            log.info("Method 'delete(Long id)': User is deleted from the DB");
+            log.info("Method 'delete()': User is deleted from the DB");
             return userDeletedDTO;
         } else {
-            throw new EntityNotFoundException("User with id " + id + " not found");
+            throw new UserNotFoundException("User with id '" + id + "' is not found");
         }
     }
 
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User with email: '" + email + "' is not found"));
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email: '" + email + "' is not found"));
     }
 
     public boolean existsByEmail(String email) {

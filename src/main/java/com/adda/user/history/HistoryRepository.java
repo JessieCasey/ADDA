@@ -1,12 +1,12 @@
 package com.adda.user.history;
 
-import com.adda.advert.AdvertisementEntity;
+import com.adda.advert.Advertisement;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface HistoryRepository extends CrudRepository<HistoryEntity, Long> {
-    boolean existsByIdAndAdvertsIsContaining(long userId, AdvertisementEntity id);
+public interface HistoryRepository extends CrudRepository<History, Long> {
+    boolean existsByIdAndAdvertsIsContaining(long userId, Advertisement id);
 
-    Optional<HistoryEntity> findById(long userId);
+    Optional<History> findById(long userId);
 }

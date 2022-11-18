@@ -22,7 +22,7 @@ public class UserUpdateDTO {
     private String username;
     private String password;
     private String email;
-    private Set<Role> roles;
+    private Set<String> roles;
 
     public UserUpdateDTO(User user) {
         Id = user.getId();
@@ -31,6 +31,5 @@ public class UserUpdateDTO {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.email = user.getEmail();
-        this.roles = user.getRoles();
     }
 }

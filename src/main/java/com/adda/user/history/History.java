@@ -1,6 +1,6 @@
 package com.adda.user.history;
 
-import com.adda.advert.AdvertisementEntity;
+import com.adda.advert.Advertisement;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,19 +12,19 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "history_table")
-public class HistoryEntity {
+public class History {
     @Id
     private long id;
 
     @Column(name = "adverts_id")
     @OneToMany
-    private List<AdvertisementEntity> adverts = new ArrayList<>();
+    private List<Advertisement> adverts = new ArrayList<>();
 
-    public HistoryEntity(long id) {
+    public History(long id) {
         this.id = id;
     }
 
-    public HistoryEntity() {
+    public History() {
     }
 
 

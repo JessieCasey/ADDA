@@ -1,11 +1,12 @@
 package com.adda.advert;
 
 import com.adda.advert.dto.AdvertResponseDTO;
-import com.adda.advert.dto.AdvertisementDTO;
-import com.adda.advert.dto.AdvertisementUpdateDTO;
-import com.adda.advert.exception.AdvertisementNotFoundException;
+import com.adda.advert.dto.AdvertDTO;
+import com.adda.advert.dto.AdvertUpdateDTO;
+import com.adda.advert.exception.AdvertNotFoundException;
 import com.adda.advert.filter.AdvertPage;
 import com.adda.advert.filter.AdvertSearchCriteria;
+import com.adda.advert.service.AdvertisementService;
 import com.adda.user.User;
 import com.adda.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,7 @@ public class AdvertisementController {
 
     @PostMapping
     public ResponseEntity<?> addAdvertisement(
-            @Valid @RequestPart(name = "advertisement") AdvertisementDTO advertisementDTO,
+            @Valid @RequestPart(name = "advertisement") AdvertDTO advertDTO,
             @RequestParam(name = "file1", required = false) MultipartFile file1, @RequestParam(name = "file2", required = false) MultipartFile file2,
             @RequestParam(name = "file3", required = false) MultipartFile file3, @RequestParam(name = "file4", required = false) MultipartFile file4,
             @RequestParam(name = "file5", required = false) MultipartFile file5, @RequestParam(name = "file6", required = false) MultipartFile file6,
@@ -51,13 +52,13 @@ public class AdvertisementController {
         log.info("[Post] Request to method 'addAdvertisement'");
         User user = userService.encodeUserFromToken(getBearerTokenHeader());
         try {
-            if (advertisementService.existsByTitleAndUsername(advertisementDTO.getTitle(), user.getUsername())) {
+            if (advertisementService.existsByTitleAndUsername(advertDTO.getTitle(), user.getUsername())) {
                 log.warn("Warning in method 'addAdvertisement': " + "Advertisement is already existed in your profile");
                 return ResponseEntity.badRequest().body("Advertisement is already existed in your profile");
             }
 
             List<MultipartFile> photos = advertisementService.getMultipartFiles(file1, file2, file3, file4, file5, file6, file7, file8);
-            advertisementService.create(advertisementDTO, user, photos);
+            advertisementService.create(advertDTO, user, photos);
 
             return ResponseEntity.ok("Advertisement is successfully added");
         } catch (Exception e) {
@@ -69,12 +70,12 @@ public class AdvertisementController {
 
     @PutMapping("/{advertId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> updateAdvertisement(@PathVariable UUID advertId, @Valid @RequestBody AdvertisementUpdateDTO advertDTO) {
+    public ResponseEntity<?> updateAdvertisement(@PathVariable UUID advertId, @Valid @RequestBody AdvertUpdateDTO advertDTO) {
         log.info("[PUT] Request to 'updateAdvertisement'");
 
         User user = userService.encodeUserFromToken(getBearerTokenHeader());
 
-        AdvertisementEntity advertById = advertisementService.getAdvertById(advertId);
+        Advertisement advertById = advertisementService.getAdvertById(advertId);
         log.info("[PUT] Request to 'updateAdvertisement': Advert is found in DB");
 
         if (!(user.getRoles().stream().anyMatch(o -> "ROLE_ADMIN".equals(o.getName())) || advertById.getUser().equals(user))) {
@@ -82,7 +83,7 @@ public class AdvertisementController {
             return ResponseEntity.badRequest().body("You are not admin and not the owner of advert");
         }
 
-        AdvertisementEntity update = advertisementService.update(advertById, advertDTO);
+        Advertisement update = advertisementService.update(advertById, advertDTO);
 
         log.info("[PUT] Request to 'updateAdvertisement': Advert is updated");
         URI location = ServletUriComponentsBuilder
@@ -104,7 +105,7 @@ public class AdvertisementController {
                 User user = userService.encodeUserFromToken(getBearerTokenHeader());
                 return ResponseEntity.ok(new AdvertResponseDTO(advertisementService.getAdvertById(advertisementId, user)));
             }
-        } catch (AdvertisementNotFoundException e) {
+        } catch (AdvertNotFoundException e) {
             log.error("Error in method 'getAdvertisementById': " + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
@@ -122,7 +123,7 @@ public class AdvertisementController {
                 return ResponseEntity.ok("Advert \"" + advertisementService.deleteAdvertById(advertisementId) + "\" was deleted");
             }
             return ResponseEntity.badRequest().body("You are not admin");
-        } catch (AdvertisementNotFoundException e) {
+        } catch (AdvertNotFoundException e) {
             log.error("Error type 'AdvertisementNotFoundException' in method 'deleteAdvertisementById': " + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {

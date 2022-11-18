@@ -1,6 +1,6 @@
 package com.adda.user.wishlist;
 
-import com.adda.advert.AdvertisementEntity;
+import com.adda.advert.Advertisement;
 import com.adda.advert.dto.AdvertResponseDTO;
 import com.adda.user.User;
 import com.adda.user.UserRepository;
@@ -27,31 +27,31 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public WishListEntity getWishList(User user) throws IllegalAccessException {
+    public WishList getWishList(User user) throws IllegalAccessException {
         return wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
     }
 
     @Override
-    public AdvertResponseDTO addAdvertToWishList(User user, AdvertisementEntity advertisement) throws IllegalAccessException {
-        WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
-        wishListEntity.getAdvertisements().add(advertisement);
+    public AdvertResponseDTO addAdvertToWishList(User user, Advertisement advertisement) throws IllegalAccessException {
+        WishList wishList = wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
+        wishList.getAdvertisements().add(advertisement);
 
-        wishListRepository.save(wishListEntity);
+        wishListRepository.save(wishList);
         userRepository.save(user);
 
         return new AdvertResponseDTO(advertisement);
     }
 
     @Override
-    public AdvertResponseDTO deleteAdvertFromWishList(User user, AdvertisementEntity advertisement) throws IllegalAccessException {
-        WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
+    public AdvertResponseDTO deleteAdvertFromWishList(User user, Advertisement advertisement) throws IllegalAccessException {
+        WishList wishList = wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
 
-        List<AdvertisementEntity> advertisements = wishListEntity.getAdvertisements();
+        List<Advertisement> advertisements = wishList.getAdvertisements();
         advertisements.remove(advertisement);
 
-        wishListEntity.setAdvertisements(advertisements);
+        wishList.setAdvertisements(advertisements);
 
-        wishListRepository.save(wishListEntity);
+        wishListRepository.save(wishList);
         userRepository.save(user);
 
         return new AdvertResponseDTO(advertisement);
@@ -60,9 +60,9 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     public void createWishList(User user) {
-        WishListEntity wishListEntity = new WishListEntity(UUID.randomUUID(), user.getId());
-        user.setWishList(wishListEntity.getId());
-        wishListRepository.save(wishListEntity);
+        WishList wishList = new WishList(UUID.randomUUID(), user.getId());
+        user.setWishList(wishList.getId());
+        wishListRepository.save(wishList);
         log.info("Method 'createWishList': WishList is saved to DB: " + user.getUsername());
     }
 }

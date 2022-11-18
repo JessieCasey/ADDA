@@ -1,6 +1,6 @@
 package com.adda.advert.photo.service;
 
-import com.adda.advert.photo.PhotoEntity;
+import com.adda.advert.photo.Photo;
 import com.adda.advert.photo.service.parameters.ExpirationTime;
 import com.adda.advert.photo.service.parameters.UploadParameters;
 import com.adda.advert.photo.service.responses.OptionalResponse;
@@ -22,7 +22,7 @@ public class PhotoServiceImpl {
         PhotoServiceImpl.API_KEY = API_KEY;
     }
 
-    public static PhotoEntity uploadPhotoToAdvertisement(List<MultipartFile> fileList) throws IOException {
+    public static Photo uploadPhotoToAdvertisement(List<MultipartFile> fileList) throws IOException {
         String[] arrayOfPath = new String[8];
         String[] fileNames = new String[8];
 
@@ -35,7 +35,7 @@ public class PhotoServiceImpl {
             imagesBase64[i] = Base64.getEncoder().encodeToString(fileList.get(i).getBytes());
         }
 
-        PhotoEntity photoEntity = new PhotoEntity(fileList.size());
+        Photo photo = new Photo(fileList.size());
         OptionalResponse[] optionalResponse = PhotoServiceImpl.uploadPhotoToServer(imagesBase64, fileNames);
         for (int i = 0; i < optionalResponse.length; i++) {
             if (optionalResponse[i] != null) {
@@ -43,8 +43,8 @@ public class PhotoServiceImpl {
             }
         }
 
-        photoEntity.setPhotos(arrayOfPath);
-        return photoEntity;
+        photo.setPhotos(arrayOfPath);
+        return photo;
     }
 
     public static OptionalResponse[] uploadPhotoToServer(String[] imagesInBase64, String[] fileNames) {

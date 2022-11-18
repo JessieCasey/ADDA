@@ -19,7 +19,7 @@ public class JwtUtils {
     private int jwtExpirationMs;
 
     public String generateJwtToken(UserDetailsImpl userPrincipal) {
-        return generateTokenFromUsername(userPrincipal.getUsername());
+        return generateTokenFromUsername(userPrincipal.getEmail());
     }
 
     public String generateTokenFromUsername(String username) {
@@ -28,7 +28,7 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String getUserNameFromJwtToken(String token) {
+    public String getEmailFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 

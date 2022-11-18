@@ -1,6 +1,6 @@
 package com.adda.user.wishlist;
 
-import com.adda.advert.AdvertisementEntity;
+import com.adda.advert.Advertisement;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Table(name = "wishlist_table")
 @Getter
 @Setter
-public class WishListEntity {
+public class WishList {
     @Id
     private UUID id;
 
@@ -22,12 +22,12 @@ public class WishListEntity {
     private long userId;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<AdvertisementEntity> advertisements;
+    private List<Advertisement> advertisements;
 
-    public WishListEntity() {
+    public WishList() {
     }
 
-    public WishListEntity(UUID id, long userId) {
+    public WishList(UUID id, long userId) {
         this.id = id;
         this.userId = userId;
     }
@@ -36,7 +36,7 @@ public class WishListEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        WishListEntity that = (WishListEntity) o;
+        WishList that = (WishList) o;
         return id != null && Objects.equals(id, that.id);
     }
 

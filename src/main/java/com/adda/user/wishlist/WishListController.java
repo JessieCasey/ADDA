@@ -1,6 +1,6 @@
 package com.adda.user.wishlist;
 
-import com.adda.advert.AdvertisementRepository;
+import com.adda.advert.repository.AdvertRepository;
 import com.adda.advert.dto.AdvertResponseDTO;
 import com.adda.user.User;
 import com.adda.user.service.UserService;
@@ -21,14 +21,14 @@ import static com.adda.user.service.UserService.getBearerTokenHeader;
 @Slf4j
 public class WishListController {
 
-    private final AdvertisementRepository advertisementRepository;
+    private final AdvertRepository advertRepository;
     private final UserService userService;
     private final WishListService wishListService;
 
     @Lazy
     @Autowired
-    public WishListController(AdvertisementRepository advertisementRepository, UserService userService, WishListServiceImpl wishListService) {
-        this.advertisementRepository = advertisementRepository;
+    public WishListController(AdvertRepository advertRepository, UserService userService, WishListServiceImpl wishListService) {
+        this.advertRepository = advertRepository;
         this.userService = userService;
         this.wishListService = wishListService;
     }
@@ -57,7 +57,7 @@ public class WishListController {
         log.info("[Post] Request to method 'addById'");
         try {
             User user = userService.encodeUserFromToken(getBearerTokenHeader());
-            return ResponseEntity.ok(wishListService.addAdvertToWishList(user, advertisementRepository.getById(advertisementId)));
+            return ResponseEntity.ok(wishListService.addAdvertToWishList(user, advertRepository.getById(advertisementId)));
         } catch (Exception e) {
             log.error("Error in method 'addById': " + e.getMessage());
             return ResponseEntity.badRequest().body("Wish list isn't available \n" + e);
@@ -69,7 +69,7 @@ public class WishListController {
         log.info("[Delete] Request to method 'deleteById'");
         try {
             User user = userService.encodeUserFromToken(getBearerTokenHeader());
-            return ResponseEntity.ok(wishListService.deleteAdvertFromWishList(user, advertisementRepository.getById(advertisementId)));
+            return ResponseEntity.ok(wishListService.deleteAdvertFromWishList(user, advertRepository.getById(advertisementId)));
         } catch (Exception e) {
             log.error("Error in method 'deleteById': " + e.getMessage());
             return ResponseEntity.badRequest().body("Wish list isn't available \n" + e);
