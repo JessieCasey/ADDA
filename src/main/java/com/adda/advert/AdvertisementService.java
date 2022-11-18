@@ -5,7 +5,7 @@ import com.adda.advert.dto.AdvertisementUpdateDTO;
 import com.adda.advert.exception.AdvertisementNotFoundException;
 import com.adda.advert.filter.AdvertPage;
 import com.adda.advert.filter.AdvertSearchCriteria;
-import com.adda.user.UserEntity;
+import com.adda.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,9 +15,9 @@ import java.util.UUID;
 
 public interface AdvertisementService {
 
-    AdvertisementEntity create(AdvertisementDTO dto, UserEntity user, List<MultipartFile> photos) throws IOException;
+    AdvertisementEntity create(AdvertisementDTO dto, User user, List<MultipartFile> photos) throws IOException;
 
-    AdvertisementEntity create(UUID id, AdvertisementDTO dto, UserEntity user, List<MultipartFile> photos) throws IOException;
+    AdvertisementEntity create(UUID id, AdvertisementDTO dto, User user, List<MultipartFile> photos) throws IOException;
 
     void addPhoto(List<MultipartFile> photos, UUID id) throws IOException;
 
@@ -25,7 +25,7 @@ public interface AdvertisementService {
 
     AdvertisementEntity getAdvertById(UUID id) throws AdvertisementNotFoundException;
 
-    AdvertisementEntity getAdvertById(UUID id, UserEntity user) throws AdvertisementNotFoundException;
+    AdvertisementEntity getAdvertById(UUID id, User user) throws AdvertisementNotFoundException;
 
     String deleteAdvertById(UUID id) throws AdvertisementNotFoundException;
 

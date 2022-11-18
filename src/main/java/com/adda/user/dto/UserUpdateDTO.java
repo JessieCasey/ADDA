@@ -1,6 +1,7 @@
 package com.adda.user.dto;
 
-import com.adda.user.UserEntity;
+import com.adda.user.User;
+import com.adda.user.role.Role;
 import com.adda.user.role.RoleEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -21,9 +22,9 @@ public class UserUpdateDTO {
     private String username;
     private String password;
     private String email;
-    private Set<RoleEntity> roles;
+    private Set<Role> roles;
 
-    public UserUpdateDTO(UserEntity user) {
+    public UserUpdateDTO(User user) {
         Id = user.getId();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();

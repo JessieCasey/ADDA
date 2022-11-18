@@ -1,11 +1,11 @@
-package com.adda.auth;
+package com.adda.auth.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class AuthenticationRequestDto {
+public class SignInDTO {
     private String email;
     private String password;
 }

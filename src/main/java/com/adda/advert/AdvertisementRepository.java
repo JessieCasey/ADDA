@@ -1,7 +1,7 @@
 package com.adda.advert;
 
 import com.adda.advert.category.CategoriesEntity;
-import com.adda.user.UserEntity;
+import com.adda.user.User;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -21,6 +21,6 @@ public interface AdvertisementRepository extends CrudRepository<AdvertisementEnt
 
     List<AdvertisementEntity> findAllByCategory(CategoriesEntity category);
 
-    List<AdvertisementEntity> findAllByUser(UserEntity user);
+    List<AdvertisementEntity> findAllByUser(User user);
 
 }

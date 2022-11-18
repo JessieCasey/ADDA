@@ -2,7 +2,7 @@ package com.adda.user.wishlist;
 
 import com.adda.advert.AdvertisementEntity;
 import com.adda.advert.dto.AdvertResponseDTO;
-import com.adda.user.UserEntity;
+import com.adda.user.User;
 import com.adda.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +27,12 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public WishListEntity getWishList(UserEntity user) throws IllegalAccessException {
+    public WishListEntity getWishList(User user) throws IllegalAccessException {
         return wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
     }
 
     @Override
-    public AdvertResponseDTO addAdvertToWishList(UserEntity user, AdvertisementEntity advertisement) throws IllegalAccessException {
+    public AdvertResponseDTO addAdvertToWishList(User user, AdvertisementEntity advertisement) throws IllegalAccessException {
         WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
         wishListEntity.getAdvertisements().add(advertisement);
 
@@ -43,7 +43,7 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public AdvertResponseDTO deleteAdvertFromWishList(UserEntity user, AdvertisementEntity advertisement) throws IllegalAccessException {
+    public AdvertResponseDTO deleteAdvertFromWishList(User user, AdvertisementEntity advertisement) throws IllegalAccessException {
         WishListEntity wishListEntity = wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
 
         List<AdvertisementEntity> advertisements = wishListEntity.getAdvertisements();
@@ -59,7 +59,7 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public void createWishList(UserEntity user) {
+    public void createWishList(User user) {
         WishListEntity wishListEntity = new WishListEntity(UUID.randomUUID(), user.getId());
         user.setWishList(wishListEntity.getId());
         wishListRepository.save(wishListEntity);

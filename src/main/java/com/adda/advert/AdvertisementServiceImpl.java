@@ -10,7 +10,7 @@ import com.adda.advert.filter.AdvertSearchCriteria;
 import com.adda.advert.photo.PhotoEntity;
 import com.adda.advert.photo.service.PhotoServiceImpl;
 import com.adda.exception.NullEntityReferenceException;
-import com.adda.user.UserEntity;
+import com.adda.user.User;
 import com.adda.user.UserRepository;
 import com.adda.user.history.HistoryEntity;
 import com.adda.user.history.HistoryRepository;
@@ -47,12 +47,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public AdvertisementEntity create(AdvertisementDTO dto, UserEntity user, List<MultipartFile> photos) throws IOException {
+    public AdvertisementEntity create(AdvertisementDTO dto, User user, List<MultipartFile> photos) throws IOException {
         return create(null, dto, user, photos);
     }
 
     @Override
-    public AdvertisementEntity create(UUID id, AdvertisementDTO dto, UserEntity user, List<MultipartFile> photos) throws IOException {
+    public AdvertisementEntity create(UUID id, AdvertisementDTO dto, User user, List<MultipartFile> photos) throws IOException {
         UUID advertID = Optional.ofNullable(id).orElse(UUID.randomUUID());
 
         AdvertTransferDTO transferDTO = new AdvertTransferDTO(
@@ -98,7 +98,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public AdvertisementEntity getAdvertById(UUID id, UserEntity user) throws AdvertisementNotFoundException {
+    public AdvertisementEntity getAdvertById(UUID id, User user) throws AdvertisementNotFoundException {
         AdvertisementEntity advert = advertisementRepository.findById(id).get();
         if (advert == null) {
             throw new AdvertisementNotFoundException("Advert is not found");

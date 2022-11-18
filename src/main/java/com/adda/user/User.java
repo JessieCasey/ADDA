@@ -1,6 +1,6 @@
 package com.adda.user;
 
-import com.adda.user.role.RoleEntity;
+import com.adda.user.role.Role;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,12 +14,12 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "users_table", uniqueConstraints = {
+@Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"username"}),
         @UniqueConstraint(columnNames = {"email"})
 })
 @ToString
-public class UserEntity {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,11 +32,15 @@ public class UserEntity {
     @Pattern(regexp = "[A-Z][a-z]+",
             message = "Must start with a capital letter followed by one or more lowercase letters")
     private String lastName;
+
     private String username;
     private String password;
 
     @Pattern(regexp = "[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}", message = "Must be a valid e-mail address")
     private String email;
+
+    private String verificationCode;
+    private boolean enabled;
 
     private UUID wishList;
 
@@ -44,9 +48,9 @@ public class UserEntity {
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Set<RoleEntity> roles;
+    private Set<Role> roles;
 
-    public UserEntity(String firstName, String lastName, String username, String password, String email) {
+    public User(String firstName, String lastName, String username, String password, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -54,22 +58,22 @@ public class UserEntity {
         this.password = password;
     }
 
-    public UserEntity(long id, String firstName, String lastName, String username, String password, String email,
-                      Set<RoleEntity> roles, UUID wishList) {
+    public User(long id, String firstName, String lastName, String username, String password, String email,
+                Set<Role> roles, UUID wishList) {
         this(firstName, lastName, username, password, email);
         this.id = id;
         this.roles = roles;
         this.wishList = wishList;
     }
 
-    public UserEntity() {
+    public User() {
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserEntity that = (UserEntity) o;
+        User that = (User) o;
         return id == that.id && Objects.equals(firstName, that.firstName)
                 && Objects.equals(lastName, that.lastName)
                 && Objects.equals(username, that.username)
