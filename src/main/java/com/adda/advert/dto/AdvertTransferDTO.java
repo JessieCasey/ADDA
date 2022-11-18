@@ -2,7 +2,7 @@ package com.adda.advert.dto;
 
 import com.adda.advert.category.CategoriesEntity;
 import com.adda.advert.photo.PhotoEntity;
-import com.adda.user.UserEntity;
+import com.adda.user.User;
 import lombok.Getter;
 
 import java.util.UUID;
@@ -17,11 +17,11 @@ public class AdvertTransferDTO {
     String username;
     PhotoEntity photos;
     CategoriesEntity category;
-    UserEntity user;
+    User user;
     String date;
     String qrCode;
 
-    public AdvertTransferDTO(UUID id, AdvertisementDTO dto, UserEntity user, PhotoEntity photos,
+    public AdvertTransferDTO(UUID id, AdvertisementDTO dto, User user, PhotoEntity photos,
                              CategoriesEntity category, String date, String qrCode) {
         this.id = id;
         this.title = dto.getTitle();

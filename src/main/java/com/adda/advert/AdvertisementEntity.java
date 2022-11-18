@@ -3,7 +3,7 @@ package com.adda.advert;
 import com.adda.advert.category.CategoriesEntity;
 import com.adda.advert.dto.AdvertTransferDTO;
 import com.adda.advert.photo.PhotoEntity;
-import com.adda.user.UserEntity;
+import com.adda.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "advertisement_table")
+@Table(name = "advertisements")
 public class AdvertisementEntity {
     @Id
     private UUID id;
@@ -39,20 +39,16 @@ public class AdvertisementEntity {
 
     private Integer viewers = 0;
 
-    @Column(name = "qr_code")
     private String qrCode;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "photos")
     private PhotoEntity photos;
 
     @ManyToOne
-    @JoinColumn(name = "category")
     private CategoriesEntity category;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private User user;
 
     public AdvertisementEntity(AdvertTransferDTO advertDTO) {
         this.id = advertDTO.getId();

@@ -3,12 +3,12 @@
 The idea of the project is to launch an online advertising platform that brings people together to buy, sell or exchange goods and services.
 
 ### Required to install
-- Java 16
-- PostgreSQL (Any versions)
+- Java 16+
+- PostgreSQL
 
 ### How to run
 
-Before we start, you need to open PSQL Terminal and you create a DB, 
+Before we start, you need to open PSQL Terminal and create a DB, 
 
 ![Psql terminal](./imgs/psql.png)
 
@@ -16,16 +16,8 @@ Then run these commands
 ```
 CREATE DATABASE adverts;
 ```
-```
-\c adverts;
-```
-```
-/// - You are now connected to database "adverts" as user "postgres"
-```
-
 
 The server runs on 8080 port (By default), but if you have any conflicts, you can change it
-
 Username and password you can configure while creating database.
 ```
 #application.properties
@@ -45,7 +37,6 @@ api.key = 4bcf051e1603553d4218e2cea8b00555
 ```
 
 ## Run it
-
 That's all, you need to run Application class in your IDE.
 ```java
 @SpringBootApplication
@@ -57,7 +48,7 @@ public class AddaApplication {
 
 The project has a Bootstrap class,
 which  includes all pre-data you need to test the application,
-so you could avoid creating adverts or users to work with.
+so you could avoid creating adverts or users to work with or test.
 
 ```java
 @Component
@@ -215,7 +206,7 @@ The rest you can find in Swagger
 - Logging implementation
 - Global Exception Handler implementation
 - History of visiting
-- URL Shorter
+- URL shorter
 
 ### 🛠 Skills
 Maven, Spring boot (Data, Security...), JUnit, PostgresQL, AWS, Heroku

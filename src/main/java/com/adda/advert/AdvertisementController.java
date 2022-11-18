@@ -6,8 +6,8 @@ import com.adda.advert.dto.AdvertisementUpdateDTO;
 import com.adda.advert.exception.AdvertisementNotFoundException;
 import com.adda.advert.filter.AdvertPage;
 import com.adda.advert.filter.AdvertSearchCriteria;
-import com.adda.user.UserEntity;
-import com.adda.user.UserService;
+import com.adda.user.User;
+import com.adda.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.adda.user.UserService.getBearerTokenHeader;
+import static com.adda.user.service.UserService.getBearerTokenHeader;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -49,7 +49,7 @@ public class AdvertisementController {
             @RequestParam(name = "file7", required = false) MultipartFile file7, @RequestParam(name = "file8", required = false) MultipartFile file8
     ) {
         log.info("[Post] Request to method 'addAdvertisement'");
-        UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
+        User user = userService.encodeUserFromToken(getBearerTokenHeader());
         try {
             if (advertisementService.existsByTitleAndUsername(advertisementDTO.getTitle(), user.getUsername())) {
                 log.warn("Warning in method 'addAdvertisement': " + "Advertisement is already existed in your profile");
@@ -72,7 +72,7 @@ public class AdvertisementController {
     public ResponseEntity<?> updateAdvertisement(@PathVariable UUID advertId, @Valid @RequestBody AdvertisementUpdateDTO advertDTO) {
         log.info("[PUT] Request to 'updateAdvertisement'");
 
-        UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
+        User user = userService.encodeUserFromToken(getBearerTokenHeader());
 
         AdvertisementEntity advertById = advertisementService.getAdvertById(advertId);
         log.info("[PUT] Request to 'updateAdvertisement': Advert is found in DB");
@@ -101,7 +101,7 @@ public class AdvertisementController {
             if (getBearerTokenHeader() == null) {
                 return ResponseEntity.ok(new AdvertResponseDTO(advertisementService.getAdvertById(advertisementId)));
             } else {
-                UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
+                User user = userService.encodeUserFromToken(getBearerTokenHeader());
                 return ResponseEntity.ok(new AdvertResponseDTO(advertisementService.getAdvertById(advertisementId, user)));
             }
         } catch (AdvertisementNotFoundException e) {
@@ -117,7 +117,7 @@ public class AdvertisementController {
     public ResponseEntity<?> deleteAdvertisementById(@PathVariable UUID advertisementId) {
         log.info("[Delete] Request to method 'deleteAdvertisementById'");
         try {
-            UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
+            User user = userService.encodeUserFromToken(getBearerTokenHeader());
             if (user.getRoles().stream().anyMatch(o -> "ROLE_ADMIN".equals(o.getName()))) {
                 return ResponseEntity.ok("Advert \"" + advertisementService.deleteAdvertById(advertisementId) + "\" was deleted");
             }

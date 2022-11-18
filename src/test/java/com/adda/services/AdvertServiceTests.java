@@ -3,7 +3,7 @@ package com.adda.services;
 import com.adda.advert.dto.AdvertisementDTO;
 import com.adda.advert.dto.AdvertisementUpdateDTO;
 import com.adda.advert.AdvertisementEntity;
-import com.adda.user.UserEntity;
+import com.adda.user.User;
 import com.adda.advert.AdvertisementRepository;
 import com.adda.user.UserRepository;
 import com.adda.advert.AdvertisementService;
@@ -56,7 +56,7 @@ public class AdvertServiceTests {
     @Test
     @Transactional
     public void updateAdvertTest() {
-        UserEntity byId = userRepository.findById(1L).get();
+        User byId = userRepository.findById(1L).get();
         Integer viewersBefore = advertRepository.getById(UUID.fromString("f96401d2-7f63-4891-aafb-0608919b2a03")).getViewers();
         Integer viewersAfter = advertService.getAdvertById(UUID.fromString("f96401d2-7f63-4891-aafb-0608919b2a03"), byId).getViewers();
 

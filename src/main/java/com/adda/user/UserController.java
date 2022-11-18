@@ -5,6 +5,7 @@ import com.adda.user.dto.UserResponseDTO;
 import com.adda.user.dto.UserUpdateDTO;
 import com.adda.user.exception.UserNotFoundException;
 import com.adda.user.history.HistoryService;
+import com.adda.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.stream.Collectors;
 
-import static com.adda.user.UserService.getBearerTokenHeader;
+import static com.adda.user.service.UserService.getBearerTokenHeader;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -35,7 +36,7 @@ public class UserController {
                                         @RequestBody UserUpdateDTO updateDTO) {
         log.info("[PUT] Request to update user");
 
-        UserEntity user = userService.encodeUserFromToken(getBearerTokenHeader());
+        User user = userService.encodeUserFromToken(getBearerTokenHeader());
 
         if (!(user.getRoles().stream().anyMatch(o -> "ROLE_ADMIN".equals(o.getName())) || userService.getOneUser(id).equals(user))) {
             log.warn("[PUT] Request to 'updateUser': User is not an admin and is not the same user");
@@ -43,7 +44,7 @@ public class UserController {
         }
 
         updateDTO.setId(id);
-        UserEntity updated = userService.update(updateDTO);
+        User updated = userService.update(updateDTO);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

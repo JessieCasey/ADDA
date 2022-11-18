@@ -1,6 +1,6 @@
 package com.adda.user.dto;
 
-import com.adda.user.UserEntity;
+import com.adda.user.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,7 @@ public class UserDeletedDTO extends UserResponseDTO {
     @JsonProperty("deleted_time")
     private LocalDateTime localDateTime;
 
-    public UserDeletedDTO(UserEntity user, int deletedAdverts, LocalDateTime localDateTime) {
+    public UserDeletedDTO(User user, int deletedAdverts, LocalDateTime localDateTime) {
         super(user);
         this.deletedAdverts = deletedAdverts;
         this.localDateTime = localDateTime;
