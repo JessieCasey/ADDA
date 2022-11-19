@@ -1,5 +1,9 @@
 package com.adda.user.history;
 
+import com.adda.advert.Advertisement;
+
+import java.util.List;
+
 public interface HistoryService {
-    HistoryEntity getUserHistory(long id);
+    List<Advertisement> getUserHistory(long id);
 }

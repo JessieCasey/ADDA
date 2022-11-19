@@ -1,25 +1,69 @@
 package com.adda;
 
+import com.adda.user.User;
+import com.adda.user.repository.UserRepository;
 import com.adda.user.role.ERole;
 import com.adda.user.role.Role;
 import com.adda.user.role.RoleRepository;
+import com.adda.user.wishlist.WishListService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class Bootstrap {
 
     @Bean
-    CommandLineRunner runner(RoleRepository roleRepository) {
+    CommandLineRunner runner(RoleRepository roleRepository,
+                             UserRepository userRepository,
+                             PasswordEncoder passwordEncoder,
+                             WishListService wishListService) {
         return args -> {
+
             if (roleRepository.findByName(ERole.ROLE_USER).isEmpty()) {
-                Role role1 = new Role(ERole.ROLE_USER);
-                Role role2 = new Role(ERole.ROLE_MODERATOR);
-                Role role3 = new Role(ERole.ROLE_ADMIN);
-                roleRepository.save(role1);
-                roleRepository.save(role2);
-                roleRepository.save(role3);
+                Role save = roleRepository.save(new Role(ERole.ROLE_USER));
+                Role save1 = roleRepository.save( new Role(ERole.ROLE_MODERATOR));
+                Role save2 = roleRepository.save(new Role(ERole.ROLE_ADMIN));
+
+                User admin = new User();
+                admin.setEnabled(true);
+                admin.setPassword(passwordEncoder.encode("1"));
+
+                admin.setEmail("admin@gmail.com");
+                admin.setFirstName("Admin");
+                admin.setLastName("Admin");
+                admin.setUsername("Admin");
+
+                User adminSaved = userRepository.save(admin);
+
+                Set<Role> roles = new HashSet<>();
+                roles.add(save);
+                roles.add(save1);
+                roles.add(save2);
+                adminSaved.setRoles(roles);
+                wishListService.createWishList(adminSaved);
+                userRepository.save(adminSaved);
+
+                User user = new User();
+
+                user.setEnabled(true);
+                user.setPassword(passwordEncoder.encode("1"));
+                user.setEmail("user@gmail.com");
+                user.setFirstName("Tony");
+                user.setLastName("Paperoni");
+                user.setUsername("SimpleUser");
+
+                User userSaved = userRepository.save(user);
+                Set<Role> roles2 = new HashSet<>();
+                roles2.add(save);
+                userSaved.setRoles(roles2);
+
+                wishListService.createWishList(userSaved);
+                userRepository.save(userSaved);
             }
         };
     }

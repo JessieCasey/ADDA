@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.UUID;
 
-public interface WishListRepository extends CrudRepository<WishListEntity, UUID> {
+public interface WishListRepository extends CrudRepository<WishList, UUID> {
 
 }

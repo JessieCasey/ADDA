@@ -1,7 +1,7 @@
 package com.adda.user.service;
 
 import com.adda.user.User;
-import com.adda.user.UserRepository;
+import com.adda.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

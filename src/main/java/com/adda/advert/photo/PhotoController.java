@@ -1,8 +1,8 @@
 package com.adda.advert.photo;
 
-import com.adda.advert.AdvertisementEntity;
-import com.adda.advert.AdvertisementService;
-import com.adda.advert.exception.AdvertisementNotFoundException;
+import com.adda.advert.Advertisement;
+import com.adda.advert.service.AdvertisementService;
+import com.adda.advert.exception.AdvertNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -36,11 +36,11 @@ public class PhotoController {
             @RequestParam(name = "file3", required = false) MultipartFile file3, @RequestParam(name = "file4", required = false) MultipartFile file4,
             @RequestParam(name = "file5", required = false) MultipartFile file5, @RequestParam(name = "file6", required = false) MultipartFile file6,
             @RequestParam(name = "file7", required = false) MultipartFile file7, @RequestParam(name = "file8", required = false) MultipartFile file8
-    ) throws IOException, AdvertisementNotFoundException {
+    ) throws IOException, AdvertNotFoundException {
 
         log.info("[Post] Request to method 'uploadPhotoToAdvert'");
 
-        AdvertisementEntity advert = advertisementService.getAdvertById(advertId);
+        Advertisement advert = advertisementService.getAdvertById(advertId);
         if (advert == null) {
             log.warn("Warning in method 'uploadPhotoToAdvert': advert is null");
             return new ResponseEntity<>("Files are NOT uploaded successfully" + "advert is null", HttpStatus.BAD_REQUEST);

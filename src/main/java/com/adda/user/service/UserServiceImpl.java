@@ -1,7 +1,7 @@
 package com.adda.user.service;
 
-import com.adda.advert.AdvertisementEntity;
-import com.adda.advert.AdvertisementService;
+import com.adda.advert.Advertisement;
+import com.adda.advert.service.AdvertisementService;
 import com.adda.auth.dto.SignInDTO;
 import com.adda.auth.dto.SignupDTO;
 import com.adda.auth.jwt.JwtResponse;
@@ -10,9 +10,10 @@ import com.adda.auth.token.RefreshToken;
 import com.adda.auth.token.service.RefreshTokenService;
 import com.adda.exception.NullEntityReferenceException;
 import com.adda.user.User;
-import com.adda.user.UserRepository;
+import com.adda.user.repository.UserRepository;
 import com.adda.user.dto.UserDeletedDTO;
 import com.adda.user.dto.UserUpdateDTO;
+import com.adda.user.exception.UserNotFoundException;
 import com.adda.user.role.ERole;
 import com.adda.user.role.Role;
 import com.adda.user.role.RoleRepository;
@@ -22,6 +23,10 @@ import net.bytebuddy.utility.RandomString;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,14 +40,10 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -106,8 +107,20 @@ public class UserServiceImpl implements UserService {
                 request.getUsername(), passwordEncoder.encode(request.getPassword()), request.getEmail());
 
         Set<String> strRoles = request.getRole();
-        Set<Role> roles = new HashSet<>();
+        Set<Role> roles = getRolesList(strRoles);
 
+        user.setRoles(roles);
+
+        user.setVerificationCode(RandomString.make(64));
+        user.setEnabled(false);
+
+        User save = userRepository.save(user);
+        wishListService.createWishList(save);
+        return save;
+    }
+
+    private Set<Role> getRolesList(Set<String> strRoles) {
+        Set<Role> roles = new HashSet<>();
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -133,14 +146,7 @@ public class UserServiceImpl implements UserService {
                 }
             });
         }
-        user.setRoles(roles);
-
-        user.setVerificationCode(RandomString.make(64));
-        user.setEnabled(false);
-
-        User save = userRepository.save(user);
-        wishListService.createWishList(save);
-        return save;
+        return roles;
     }
 
     public void sendEmail(User user, String content, String subject) {
@@ -175,18 +181,19 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new NullEntityReferenceException("User cannot be 'null'");
         } else {
-            user.setFirstName(userDTO.getFirstName());
-            user.setLastName(userDTO.getLastName());
-            user.setEmail(userDTO.getEmail());
-            user.setPassword(userDTO.getPassword());
-
-            if (!user.getRoles().equals(userDTO.getRoles())) {
-                user.setRoles(userDTO.getRoles());
-            }
+            if (userDTO.getFirstName() != null)
+                user.setFirstName(userDTO.getFirstName());
+            if (userDTO.getLastName() != null)
+                user.setLastName(userDTO.getLastName());
+            if (userDTO.getEmail() != null)
+                user.setEmail(userDTO.getEmail());
+            if (userDTO.getPassword() != null)
+                user.setPassword(userDTO.getPassword());
+            if (userDTO.getRoles() != null && userDTO.getRoles().size() != 0)
+                user.setRoles(getRolesList(userDTO.getRoles()));
 
             return userRepository.save(user);
         }
-
     }
 
     public List<User> getAll() {
@@ -195,21 +202,22 @@ public class UserServiceImpl implements UserService {
 
     public UserDeletedDTO delete(Long id) {
         if (userRepository.existsById(id)) {
-            List<AdvertisementEntity> allByUser = advertisementService.getAllByUser(id);
-            UserDeletedDTO userDeletedDTO = new UserDeletedDTO(userRepository.getById(id), allByUser.size(), LocalDateTime.now());
+            List<Advertisement> allByUser = advertisementService.getAllByUser(id);
+            UserDeletedDTO userDeletedDTO =
+                    new UserDeletedDTO(userRepository.getById(id), allByUser.size(), LocalDateTime.now());
 
             allByUser.forEach(x -> advertisementService.deleteAdvertById(x.getId()));
             userRepository.deleteById(id);
 
-            log.info("Method 'delete(Long id)': User is deleted from the DB");
+            log.info("Method 'delete()': User is deleted from the DB");
             return userDeletedDTO;
         } else {
-            throw new EntityNotFoundException("User with id " + id + " not found");
+            throw new UserNotFoundException("User with id '" + id + "' is not found");
         }
     }
 
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User with email: '" + email + "' is not found"));
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email: '" + email + "' is not found"));
     }
 
     public boolean existsByEmail(String email) {
@@ -277,6 +285,28 @@ public class UserServiceImpl implements UserService {
 
             return new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles);
         }
+    }
+
+    @Override
+    public Page<User> fetchCustomerDataAsPageWithFilteringAndSorting(String firstNameFilter, String lastNameFilter, int page, int size, List<String> sortList, String sortOrder) {
+        // create Pageable object using the page, size and sort details
+        Pageable pageable = PageRequest.of(page, size, Sort.by(createSortOrder(sortList, sortOrder)));
+        // fetch the page object by additionally passing pageable with the filters
+        return userRepository.findByFirstNameLikeAndLastNameLike(firstNameFilter, lastNameFilter, pageable);
+    }
+
+    private List<Sort.Order> createSortOrder(List<String> sortList, String sortDirection) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        Sort.Direction direction;
+        for (String sort : sortList) {
+            if (sortDirection != null) {
+                direction = Sort.Direction.fromString(sortDirection);
+            } else {
+                direction = Sort.Direction.DESC;
+            }
+            sorts.add(new Sort.Order(direction, sort));
+        }
+        return sorts;
     }
 
 }

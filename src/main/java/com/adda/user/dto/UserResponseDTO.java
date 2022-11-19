@@ -22,6 +22,7 @@ public class UserResponseDTO {
     private String email;
     private UUID wishList;
     private List<String> roles;
+
     public UserResponseDTO(User user) {
         this.id = user.getId();
         this.firstName = user.getFirstName();

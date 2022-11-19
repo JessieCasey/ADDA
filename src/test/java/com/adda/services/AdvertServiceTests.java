@@ -1,12 +1,12 @@
 package com.adda.services;
 
-import com.adda.advert.dto.AdvertisementDTO;
-import com.adda.advert.dto.AdvertisementUpdateDTO;
-import com.adda.advert.AdvertisementEntity;
+import com.adda.advert.dto.AdvertDTO;
+import com.adda.advert.dto.AdvertUpdateDTO;
+import com.adda.advert.Advertisement;
 import com.adda.user.User;
-import com.adda.advert.AdvertisementRepository;
-import com.adda.user.UserRepository;
-import com.adda.advert.AdvertisementService;
+import com.adda.advert.repository.AdvertRepository;
+import com.adda.user.repository.UserRepository;
+import com.adda.advert.service.AdvertisementService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +28,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AdvertServiceTests {
 
     private final AdvertisementService advertService;
-    private final AdvertisementRepository advertRepository;
+    private final AdvertRepository advertRepository;
     private final UserRepository userRepository;
 
     @Autowired
-    public AdvertServiceTests(AdvertisementService advertService, AdvertisementRepository advertRepository, UserRepository userRepository) {
+    public AdvertServiceTests(AdvertisementService advertService, AdvertRepository advertRepository, UserRepository userRepository) {
         this.advertService = advertService;
         this.advertRepository = advertRepository;
         this.userRepository = userRepository;
@@ -41,13 +41,13 @@ public class AdvertServiceTests {
     @Test
     @Transactional
     public void createAdvertTest() throws IOException {
-        AdvertisementDTO advert = new AdvertisementDTO();
+        AdvertDTO advert = new AdvertDTO();
         advert.setTitle("Audi Q8");
         advert.setDescription("RS Sport, 328 HP");
         advert.setPrice("29500");
         advert.setCategoryId(1L);
 
-        AdvertisementEntity advertisement =
+        Advertisement advertisement =
                 advertService.create(advert, userRepository.getById(1L), new ArrayList<>());
 
         assertNotNull(advertRepository.findById(advertisement.getId()));
@@ -66,7 +66,7 @@ public class AdvertServiceTests {
     @Test
     @Transactional
     public void getAdvertByIdTest() {
-        AdvertisementUpdateDTO updateDTO = new AdvertisementUpdateDTO();
+        AdvertUpdateDTO updateDTO = new AdvertUpdateDTO();
         updateDTO.setDescription("Nearly 418 HP, It was fully repaired after 100.000 miles");
         updateDTO.setPrice("33219");
 

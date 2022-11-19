@@ -207,6 +207,7 @@ The rest you can find in Swagger
 - Global Exception Handler implementation
 - History of visiting
 - URL shorter
+- Email validation
 
 ### 🛠 Skills
 Maven, Spring boot (Data, Security...), JUnit, PostgresQL, AWS, Heroku

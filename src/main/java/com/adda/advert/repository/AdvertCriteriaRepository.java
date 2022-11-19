@@ -1,5 +1,6 @@
-package com.adda.advert;
+package com.adda.advert.repository;
 
+import com.adda.advert.Advertisement;
 import com.adda.advert.filter.AdvertPage;
 import com.adda.advert.filter.AdvertSearchCriteria;
 import lombok.extern.slf4j.Slf4j;
@@ -18,25 +19,25 @@ import java.util.Objects;
 
 @Repository
 @Slf4j
-public class AdvertisementCriteriaRepository {
+public class AdvertCriteriaRepository {
     private final EntityManager entityManager;
     private final CriteriaBuilder criteriaBuilder;
 
-    public AdvertisementCriteriaRepository(EntityManager entityManager) {
+    public AdvertCriteriaRepository(EntityManager entityManager) {
         this.entityManager = entityManager;
         this.criteriaBuilder = entityManager.getCriteriaBuilder();
     }
 
-    public Page<AdvertisementEntity> findAllWithFilters(AdvertPage advertPage,
-                                                        AdvertSearchCriteria searchCriteria) {
-        CriteriaQuery<AdvertisementEntity> criteriaQuery = criteriaBuilder.createQuery(AdvertisementEntity.class);
-        Root<AdvertisementEntity> employeeRoot = criteriaQuery.from(AdvertisementEntity.class);
+    public Page<Advertisement> findAllWithFilters(AdvertPage advertPage,
+                                                  AdvertSearchCriteria searchCriteria) {
+        CriteriaQuery<Advertisement> criteriaQuery = criteriaBuilder.createQuery(Advertisement.class);
+        Root<Advertisement> employeeRoot = criteriaQuery.from(Advertisement.class);
 
         Predicate predicate = getPredicate(searchCriteria, employeeRoot);
         criteriaQuery.where(predicate);
         setOrder(advertPage, criteriaQuery, employeeRoot);
 
-        TypedQuery<AdvertisementEntity> typedQuery = entityManager.createQuery(criteriaQuery);
+        TypedQuery<Advertisement> typedQuery = entityManager.createQuery(criteriaQuery);
         typedQuery.setFirstResult(advertPage.getPageNumber() * advertPage.getPageSize());
         typedQuery.setMaxResults(advertPage.getPageSize());
 
@@ -47,7 +48,7 @@ public class AdvertisementCriteriaRepository {
     }
 
     private Predicate getPredicate(AdvertSearchCriteria advertSearchCriteria,
-                                   Root<AdvertisementEntity> root) {
+                                   Root<Advertisement> root) {
         List<Predicate> predicates = new ArrayList<>();
 
         if (Objects.nonNull(advertSearchCriteria.getTitle())) {
@@ -60,8 +61,8 @@ public class AdvertisementCriteriaRepository {
     }
 
     private void setOrder(AdvertPage advertPage,
-                          CriteriaQuery<AdvertisementEntity> criteriaQuery,
-                          Root<AdvertisementEntity> root) {
+                          CriteriaQuery<Advertisement> criteriaQuery,
+                          Root<Advertisement> root) {
         if (advertPage.getSortDirection().equals(Sort.Direction.ASC)) {
             criteriaQuery.orderBy(criteriaBuilder.asc(root.get(advertPage.getSortBy())));
         } else {
@@ -76,7 +77,7 @@ public class AdvertisementCriteriaRepository {
 
     private long getEmployeesCount(Predicate predicate) {
         CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
-        Root<AdvertisementEntity> countRoot = countQuery.from(AdvertisementEntity.class);
+        Root<Advertisement> countRoot = countQuery.from(Advertisement.class);
         countQuery.select(criteriaBuilder.count(countRoot)).where(predicate);
         return entityManager.createQuery(countQuery).getSingleResult();
     }

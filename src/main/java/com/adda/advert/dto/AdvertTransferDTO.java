@@ -1,7 +1,7 @@
 package com.adda.advert.dto;
 
-import com.adda.advert.category.CategoriesEntity;
-import com.adda.advert.photo.PhotoEntity;
+import com.adda.advert.category.Category;
+import com.adda.advert.photo.Photo;
 import com.adda.user.User;
 import lombok.Getter;
 
@@ -15,14 +15,14 @@ public class AdvertTransferDTO {
     String description;
     String email;
     String username;
-    PhotoEntity photos;
-    CategoriesEntity category;
+    Photo photos;
+    Category category;
     User user;
     String date;
     String qrCode;
 
-    public AdvertTransferDTO(UUID id, AdvertisementDTO dto, User user, PhotoEntity photos,
-                             CategoriesEntity category, String date, String qrCode) {
+    public AdvertTransferDTO(UUID id, AdvertDTO dto, User user, Photo photos,
+                             Category category, String date, String qrCode) {
         this.id = id;
         this.title = dto.getTitle();
         this.price = dto.getPrice();

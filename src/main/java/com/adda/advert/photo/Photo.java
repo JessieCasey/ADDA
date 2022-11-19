@@ -1,6 +1,6 @@
 package com.adda.advert.photo;
 
-import com.adda.advert.AdvertisementEntity;
+import com.adda.advert.Advertisement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,7 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table(name = "photo_table")
-public class PhotoEntity {
+public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,13 +32,13 @@ public class PhotoEntity {
 
     @JsonIgnore
     @OneToOne(mappedBy = "photos", cascade = CascadeType.ALL)
-    private AdvertisementEntity advert;
+    private Advertisement advert;
 
-    public PhotoEntity() {
+    public Photo() {
         setPhotos(new String[8]);
     }
 
-    public PhotoEntity(Integer size) {
+    public Photo(Integer size) {
         this();
         this.size = size;
     }
@@ -80,7 +80,7 @@ public class PhotoEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        PhotoEntity that = (PhotoEntity) o;
+        Photo that = (Photo) o;
         return id != null && Objects.equals(id, that.id);
     }
 

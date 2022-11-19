@@ -6,6 +6,7 @@ import com.adda.auth.jwt.JwtResponse;
 import com.adda.user.User;
 import com.adda.user.dto.UserDeletedDTO;
 import com.adda.user.dto.UserUpdateDTO;
+import org.springframework.data.domain.Page;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -36,4 +37,6 @@ public interface UserService {
     List<User> getAll();
 
     String verify(String code);
+
+    Page<User> fetchCustomerDataAsPageWithFilteringAndSorting(String firstNameFilter, String lastNameFilter, int page, int size, List<String> sortList, String toString);
 }

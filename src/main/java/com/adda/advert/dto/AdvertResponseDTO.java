@@ -1,6 +1,6 @@
 package com.adda.advert.dto;
 
-import com.adda.advert.AdvertisementEntity;
+import com.adda.advert.Advertisement;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;
 
@@ -21,13 +21,13 @@ public class AdvertResponseDTO {
     String[] photos;
     String category;
 
-    public AdvertResponseDTO(AdvertisementEntity advertisement) {
+    public AdvertResponseDTO(Advertisement advertisement) {
         this.id = advertisement.getId();
         this.title = advertisement.getTitle();
         this.price = advertisement.getPrice();
         this.description = advertisement.getDescription();
-        this.email = advertisement.getEmail();
-        this.username = advertisement.getUsername();
+        this.email = advertisement.getUser().getEmail();
+        this.username = advertisement.getUser().getUsername();
         this.date = advertisement.getDate();
         this.viewers = advertisement.getViewers();
         this.qrCode = advertisement.getQrCode();

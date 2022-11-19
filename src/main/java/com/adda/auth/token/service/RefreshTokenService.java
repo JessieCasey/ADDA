@@ -3,7 +3,7 @@ package com.adda.auth.token.service;
 import com.adda.auth.token.RefreshToken;
 import com.adda.auth.token.RefreshTokenRepository;
 import com.adda.auth.token.exception.TokenRefreshException;
-import com.adda.user.UserRepository;
+import com.adda.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
