@@ -5,7 +5,7 @@ import com.adda.advert.dto.AdvertUpdateDTO;
 import com.adda.advert.Advertisement;
 import com.adda.user.User;
 import com.adda.advert.repository.AdvertRepository;
-import com.adda.user.UserRepository;
+import com.adda.user.repository.UserRepository;
 import com.adda.advert.service.AdvertisementService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

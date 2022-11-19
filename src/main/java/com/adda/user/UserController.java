@@ -4,16 +4,20 @@ import com.adda.advert.dto.AdvertResponseDTO;
 import com.adda.advice.MessageException;
 import com.adda.user.dto.UserResponseDTO;
 import com.adda.user.dto.UserUpdateDTO;
-import com.adda.user.exception.UserNotFoundException;
 import com.adda.user.history.HistoryService;
+import com.adda.user.repository.UserModel;
+import com.adda.user.repository.UserModelAssembler;
 import com.adda.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -30,10 +34,38 @@ public class UserController {
 
     private final UserService userService;
     private final HistoryService historyService;
+    private final PagedResourcesAssembler<User> pagedResourcesAssembler;
+    private final UserModelAssembler userModelAssembler;
 
-    public UserController(UserService userService, HistoryService historyService) {
+    public UserController(UserService userService, HistoryService historyService,
+                          PagedResourcesAssembler<User> pagedResourcesAssembler, UserModelAssembler userModelAssembler) {
         this.userService = userService;
         this.historyService = historyService;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.userModelAssembler = userModelAssembler;
+    }
+
+
+    /**
+     * @param firstNameFilter Filter for the first Name if required
+     * @param lastNameFilter  Filter for the last Name if required
+     * @param page            number of the page returned
+     * @param size            number of entries in each page
+     * @param sortList        list of columns to sort on
+     * @param sortOrder       sort order. Can be ASC or DESC
+     * @return PagedModel object in Hateoas with customers after filtering and sorting
+     */
+    @GetMapping
+    public PagedModel<UserModel> fetchUsersWithPagination(
+            @RequestParam(defaultValue = "") String firstNameFilter,
+            @RequestParam(defaultValue = "") String lastNameFilter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "30") int size,
+            @RequestParam(defaultValue = "") List<String> sortList,
+            @RequestParam(defaultValue = "DESC") Sort.Direction sortOrder) {
+        log.info("[GET] Request to method 'fetchCustomersWithPagination'");
+        Page<User> customerPage = userService.fetchCustomerDataAsPageWithFilteringAndSorting(firstNameFilter, lastNameFilter, page, size, sortList, sortOrder.toString());
+        return pagedResourcesAssembler.toModel(customerPage, userModelAssembler);
     }
 
     @PutMapping("/{id}")
@@ -72,17 +104,6 @@ public class UserController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<?> getAllUsers() {
-        log.info("[Get] Request to method 'getAllUsers'");
-        try {
-            return ResponseEntity.ok(userService.getAll().stream().map(UserResponseDTO::new).collect(Collectors.toList()));
-        } catch (Exception e) {
-            log.error("Error in method 'getAllUsers': " + e.getMessage());
-            return ResponseEntity.badRequest().body("You cannot get all users");
-        }
-    }
-
     @DeleteMapping("/{id}")
     @PreAuthorize("#user.id == #id or hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable Long id,
@@ -109,4 +130,5 @@ public class UserController {
             return ResponseEntity.badRequest().body("No user found");
         }
     }
+
 }

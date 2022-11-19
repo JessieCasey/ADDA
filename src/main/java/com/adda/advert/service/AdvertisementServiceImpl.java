@@ -15,7 +15,7 @@ import com.adda.advert.repository.AdvertCriteriaRepository;
 import com.adda.advert.repository.AdvertRepository;
 import com.adda.exception.NullEntityReferenceException;
 import com.adda.user.User;
-import com.adda.user.UserRepository;
+import com.adda.user.repository.UserRepository;
 import com.adda.user.history.History;
 import com.adda.user.history.HistoryRepository;
 import lombok.extern.slf4j.Slf4j;

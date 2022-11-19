@@ -3,7 +3,7 @@ package com.adda.user.wishlist;
 import com.adda.advert.Advertisement;
 import com.adda.advert.dto.AdvertResponseDTO;
 import com.adda.user.User;
-import com.adda.user.UserRepository;
+import com.adda.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;

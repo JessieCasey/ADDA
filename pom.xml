@@ -16,6 +16,12 @@
     <description>Back-end Part of ADDA</description>
 
     <dependencies>
+        <!--  Filtering, Pagination and Sorting      -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-hateoas</artifactId>
+        </dependency>
+        <!--  -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

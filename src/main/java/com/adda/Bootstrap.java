@@ -1,11 +1,10 @@
 package com.adda;
 
 import com.adda.user.User;
-import com.adda.user.UserRepository;
+import com.adda.user.repository.UserRepository;
 import com.adda.user.role.ERole;
 import com.adda.user.role.Role;
 import com.adda.user.role.RoleRepository;
-import com.adda.user.wishlist.WishListRepository;
 import com.adda.user.wishlist.WishListService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
