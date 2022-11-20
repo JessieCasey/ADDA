@@ -1,6 +1,6 @@
 package com.adda.user.wishlist;
 
-import com.adda.advert.Advertisement;
+import com.adda.advert.Advert;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
@@ -22,7 +22,7 @@ public class WishList {
     private long userId;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Advertisement> advertisements;
+    private List<Advert> adverts;
 
     public WishList() {
     }

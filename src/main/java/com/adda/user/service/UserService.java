@@ -6,37 +6,40 @@ import com.adda.auth.jwt.JwtResponse;
 import com.adda.user.User;
 import com.adda.user.dto.UserDeletedDTO;
 import com.adda.user.dto.UserUpdateDTO;
+import com.adda.user.role.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public interface UserService {
 
-    static String getBearerTokenHeader() {
-        return ((ServletRequestAttributes) Objects.requireNonNull(
-                RequestContextHolder.getRequestAttributes()))
-                .getRequest()
-                .getHeader("Authorization");
-    }
+    //  Fetch data
+    Page<User> fetchUserDataAsPageWithFilteringAndSorting(String firstNameFilter, String lastNameFilter, int page, int size, List<String> sortList, String toString);
 
-    JwtResponse authenticate(SignInDTO loginRequest);
+    Page<User> fetchUserDataAsPageWithFiltering(String firstNameFilter, String lastNameFilter, int page, int size);
 
-    void createUser(SignupDTO signUpRequest, String siteURL);
+    List<User> fetchFilteredUserDataAsList(String firstNameFilter, String lastNameFilter);
 
-    User encodeUserFromToken(String bearerTokenHeader);
-
-    User update(UserUpdateDTO updateDTO);
+    List<User> fetchUserDataAsList();
 
     User getOneUser(Long id);
 
-    UserDeletedDTO delete(Long id);
+    //  Updating and verifying user's credentials
+    User update(UserUpdateDTO updateDTO);
 
-    List<User> getAll();
+    void updatePassword(String token);
+
+    void updatePasswordById(Long userId, String newPassword);
+
+    void sendVerification(Long id, String newPassword);
 
     String verify(String code);
 
-    Page<User> fetchCustomerDataAsPageWithFilteringAndSorting(String firstNameFilter, String lastNameFilter, int page, int size, List<String> sortList, String toString);
+    UserDeletedDTO delete(Long id);
+
+    Set<Role> getRolesList(Set<String> strRoles);
 }

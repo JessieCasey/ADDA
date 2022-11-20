@@ -1,11 +1,13 @@
 package com.adda;
 
+import com.adda.advert.category.Category;
+import com.adda.advert.category.CategoryRepository;
 import com.adda.user.User;
 import com.adda.user.repository.UserRepository;
 import com.adda.user.role.ERole;
 import com.adda.user.role.Role;
 import com.adda.user.role.RoleRepository;
-import com.adda.user.wishlist.WishListService;
+import com.adda.user.wishlist.service.WishListService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,10 +23,15 @@ public class Bootstrap {
     CommandLineRunner runner(RoleRepository roleRepository,
                              UserRepository userRepository,
                              PasswordEncoder passwordEncoder,
-                             WishListService wishListService) {
+                             WishListService wishListService,
+                             CategoryRepository categoryRepository) {
         return args -> {
 
             if (roleRepository.findByName(ERole.ROLE_USER).isEmpty()) {
+                categoryRepository.save(new Category("Car"));
+                categoryRepository.save(new Category("Electronics"));
+                categoryRepository.save(new Category("Rental state"));
+
                 Role save = roleRepository.save(new Role(ERole.ROLE_USER));
                 Role save1 = roleRepository.save( new Role(ERole.ROLE_MODERATOR));
                 Role save2 = roleRepository.save(new Role(ERole.ROLE_ADMIN));

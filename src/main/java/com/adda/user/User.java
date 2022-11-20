@@ -2,6 +2,7 @@ package com.adda.user;
 
 import com.adda.user.role.Role;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -18,6 +19,7 @@ import java.util.UUID;
         @UniqueConstraint(columnNames = {"username"}),
         @UniqueConstraint(columnNames = {"email"})
 })
+@NoArgsConstructor
 @ToString
 public class User {
 
@@ -64,9 +66,6 @@ public class User {
         this.id = id;
         this.roles = roles;
         this.wishList = wishList;
-    }
-
-    public User() {
     }
 
     @Override

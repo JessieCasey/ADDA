@@ -46,26 +46,27 @@ public class UrlShorteningController {
                                                    HttpServletResponse response) throws IOException {
 
         if (StringUtils.isEmpty(shortLink)) {
-            UrlErrorResponseDto urlErrorResponseDto = new UrlErrorResponseDto();
-            urlErrorResponseDto.setError("Invalid Url");
-            urlErrorResponseDto.setStatus("400");
-            return new ResponseEntity<UrlErrorResponseDto>(urlErrorResponseDto, HttpStatus.OK);
+            UrlErrorResponseDto responseDto = new UrlErrorResponseDto();
+            responseDto.setError("Invalid Url");
+            responseDto.setStatus("400");
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
         }
+
         Url urlToRet = urlService.getEncodedUrl(shortLink);
 
         if (urlToRet == null) {
-            UrlErrorResponseDto urlErrorResponseDto = new UrlErrorResponseDto();
-            urlErrorResponseDto.setError("Url does not exist or it might have expired!");
-            urlErrorResponseDto.setStatus("400");
-            return new ResponseEntity<UrlErrorResponseDto>(urlErrorResponseDto, HttpStatus.OK);
+            UrlErrorResponseDto responseDto = new UrlErrorResponseDto();
+            responseDto.setError("Url does not exist or it might have expired!");
+            responseDto.setStatus("400");
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
         }
 
         if (urlToRet.getExpirationDate().isBefore(LocalDateTime.now())) {
             urlService.deleteShortLink(urlToRet);
-            UrlErrorResponseDto urlErrorResponseDto = new UrlErrorResponseDto();
-            urlErrorResponseDto.setError("Url Expired. Please try generating a fresh one.");
-            urlErrorResponseDto.setStatus("200");
-            return new ResponseEntity<UrlErrorResponseDto>(urlErrorResponseDto, HttpStatus.OK);
+            UrlErrorResponseDto responseDto = new UrlErrorResponseDto();
+            responseDto.setError("Url Expired. Please try generating a fresh one.");
+            responseDto.setStatus("200");
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
         }
 
         response.sendRedirect(urlToRet.getOriginalUrl());

@@ -1,7 +1,8 @@
 package com.adda.user.history;
 
-import com.adda.advert.Advertisement;
+import com.adda.advert.Advert;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -11,22 +12,19 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "history_table")
+@Table(name = "histories")
+@NoArgsConstructor
 public class History {
     @Id
     private long id;
 
     @Column(name = "adverts_id")
     @OneToMany
-    private List<Advertisement> adverts = new ArrayList<>();
+    private List<Advert> adverts = new ArrayList<>();
 
     public History(long id) {
         this.id = id;
     }
-
-    public History() {
-    }
-
 
     @Override
     public int hashCode() {

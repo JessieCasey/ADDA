@@ -5,12 +5,12 @@ import com.adda.auth.dto.SignupDTO;
 import com.adda.auth.jwt.JwtResponse;
 import com.adda.auth.jwt.JwtUtils;
 import com.adda.auth.jwt.MessageResponse;
+import com.adda.auth.service.AuthService;
 import com.adda.auth.token.RefreshToken;
 import com.adda.auth.token.dto.TokenRefreshRequest;
 import com.adda.auth.token.dto.TokenRefreshResponse;
 import com.adda.auth.token.exception.TokenRefreshException;
 import com.adda.auth.token.service.RefreshTokenService;
-import com.adda.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,18 +25,18 @@ import javax.validation.Valid;
 public class AuthController {
 
     private final RefreshTokenService refreshTokenService;
-    private final UserService userService;
+    private final AuthService authService;
     private final JwtUtils jwtUtils;
 
-    public AuthController(RefreshTokenService refreshTokenService, UserService userService, JwtUtils jwtUtils) {
+    public AuthController(RefreshTokenService refreshTokenService, AuthService authService, JwtUtils jwtUtils) {
         this.refreshTokenService = refreshTokenService;
-        this.userService = userService;
+        this.authService = authService;
         this.jwtUtils = jwtUtils;
     }
 
     @PostMapping("/signin")
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody SignInDTO loginRequest) {
-        JwtResponse authenticate = userService.authenticate(loginRequest);
+        JwtResponse authenticate = authService.authenticate(loginRequest);
         return ResponseEntity.ok(authenticate);
     }
 
@@ -52,7 +52,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupDTO signUpRequest, HttpServletRequest request) {
-        userService.createUser(signUpRequest, getSiteURL(request));
+        authService.register(signUpRequest, getSiteURL(request));
         return ResponseEntity.ok(new MessageResponse("User registered successfully! Please, verify your email address!"));
     }
 

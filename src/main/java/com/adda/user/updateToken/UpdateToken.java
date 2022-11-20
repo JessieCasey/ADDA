@@ -1,4 +1,4 @@
-package com.adda.auth.token;
+package com.adda.user.updateToken;
 
 import com.adda.user.User;
 import lombok.Getter;
@@ -12,16 +12,14 @@ import java.time.Instant;
 @NoArgsConstructor
 @Getter
 @Setter
-public class RefreshToken {
-
+public class UpdateToken {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String token;
 
     @OneToOne
     private User user;
 
-    private String token;
-
     private Instant expiryDate;
+
+    private String sensitiveData;
 }
