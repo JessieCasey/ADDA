@@ -10,11 +10,15 @@ import org.hibernate.Hibernate;
 import javax.persistence.*;
 import java.util.Objects;
 
+/**
+ * The Photo class is required if we want to create the advert entity and represent images on the client
+ */
+
 @Getter
 @Setter
-@ToString
 @Entity
 @Table(name = "photos")
+@ToString
 public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

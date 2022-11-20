@@ -7,6 +7,10 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
+/**
+ * The UrlResponseDto class is required if we want to represent the URL entity in flexible format.
+ */
+
 @Getter
 @Setter
 @ToString

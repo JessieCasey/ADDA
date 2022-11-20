@@ -15,6 +15,10 @@ import javax.validation.constraints.Pattern;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * The Advert entity
+ */
+
 @Getter
 @Setter
 @Entity

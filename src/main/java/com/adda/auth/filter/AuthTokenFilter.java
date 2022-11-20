@@ -17,6 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * The AuthTokenFilter class is required to authentication process.
+ * Filtering the current token and comparing with the user's credentials
+ */
+
 @Slf4j
 public class AuthTokenFilter extends OncePerRequestFilter {
 

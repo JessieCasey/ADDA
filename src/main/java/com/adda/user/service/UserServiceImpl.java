@@ -4,6 +4,7 @@ import com.adda.advert.Advert;
 import com.adda.advert.service.AdvertService;
 import com.adda.email.EmailService;
 import com.adda.exception.NullEntityReferenceException;
+import com.adda.url.service.UrlService;
 import com.adda.user.User;
 import com.adda.user.dto.UserDeletedDTO;
 import com.adda.user.dto.UserUpdateDTO;
@@ -29,6 +30,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+/**
+ * The UserServiceImpl class implements UserService interface to create methods {@link UserService}
+ */
 
 @Service
 @Slf4j

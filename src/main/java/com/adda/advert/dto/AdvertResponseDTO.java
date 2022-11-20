@@ -6,6 +6,9 @@ import lombok.Value;
 
 import java.util.UUID;
 
+/**
+ * The AdvertResponseDTO class is required if we want to represent the advert entity in flexible format.
+ */
 @Value
 public class AdvertResponseDTO {
     UUID id;

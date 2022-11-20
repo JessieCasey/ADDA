@@ -13,6 +13,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * The AdvertService interface is required to create AdvertServiceImpl {@link AdvertServiceImpl}
+ */
+
 public interface AdvertService {
     Page<Advert> fetchAdvertsWithFilteringAndSorting(String title, String description, int page, int size, List<String> sortList, String sortOrder);
 

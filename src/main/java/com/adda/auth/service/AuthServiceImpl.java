@@ -1,10 +1,16 @@
 package com.adda.auth.service;
 
+import com.adda.advert.Advert;
+import com.adda.advert.AdvertController;
+import com.adda.advert.repository.AdvertModelAssembler;
+import com.adda.advert.service.AdvertService;
+import com.adda.advice.MessageResponse;
 import com.adda.auth.dto.SignInDTO;
 import com.adda.auth.dto.SignupDTO;
 import com.adda.auth.jwt.JwtResponse;
 import com.adda.auth.jwt.JwtUtils;
 import com.adda.auth.token.RefreshToken;
+import com.adda.auth.token.dto.TokenRefreshRequest;
 import com.adda.auth.token.service.RefreshTokenService;
 import com.adda.email.EmailService;
 import com.adda.user.User;
@@ -15,6 +21,8 @@ import com.adda.user.service.UserService;
 import com.adda.user.wishlist.service.WishListService;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,6 +36,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * The AuthServiceImpl class implements AuthService interface to create methods {@link AuthService}
+ */
+
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -40,10 +52,20 @@ public class AuthServiceImpl implements AuthService {
     private final WishListService wishListService;
     private final EmailService emailService;
 
+    /**
+     * Constructor for {@link AuthServiceImpl}.
+     *
+     * @param userRepository        {@link UserRepository}
+     * @param authenticationManager {@link AuthenticationManager}
+     * @param jwtUtils              {@link JwtUtils}
+     * @param refreshTokenService   {@link RefreshTokenService}
+     * @param passwordEncoder       {@link PasswordEncoder}
+     * @param userService           {@link UserService}
+     * @param wishListService       {@link WishListService}
+     * @param emailService          {@link EmailService}
+     */
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, AuthenticationManager authenticationManager,
-                           JwtUtils jwtUtils, RefreshTokenService refreshTokenService, PasswordEncoder passwordEncoder,
-                           UserService userService, WishListService wishListService, EmailService emailService) {
+    public AuthServiceImpl(UserRepository userRepository, AuthenticationManager authenticationManager, JwtUtils jwtUtils, RefreshTokenService refreshTokenService, PasswordEncoder passwordEncoder, UserService userService, WishListService wishListService, EmailService emailService) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
@@ -54,10 +76,16 @@ public class AuthServiceImpl implements AuthService {
         this.emailService = emailService;
     }
 
+    /**
+     * Method that authenticate user into the system and save in DB. {@link com.adda.user.User}
+     *
+     * @param loginRequest DTO to authenticate data. {@link SignInDTO}
+     * @return JwtResponse object in case of success. {@link JwtResponse}
+     */
     @Override
     public JwtResponse authenticate(@Valid SignInDTO loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -67,8 +95,7 @@ public class AuthServiceImpl implements AuthService {
         } else {
             String jwt = jwtUtils.generateJwtToken(userDetails);
 
-            List<String> roles = userDetails.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+            List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
@@ -76,21 +103,25 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+
+    /**
+     * Method that registering user in the system and save in DB. {@link com.adda.user.User}
+     *
+     * @param request DTO to register user. {@link SignupDTO}
+     * @param url     The request URL.
+     */
     @Override
     public void register(SignupDTO request, String url) {
         User user = register(request);
 
-        String content = "Dear " + user.getUsername() + ",<br>"
-                + "Please click the link below to verify your registration:<br>"
-                + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
-                + "Thank you,<br>"
-                + "ADDA - the best market place";
+        String content = "Dear " + user.getUsername() + ",<br>" + "Please click the link below to verify your registration:<br>" + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>" + "Thank you,<br>" + "ADDA - the best market place";
 
         String verifyURL = url + "/verify?code=" + user.getVerificationCode();
         content = content.replace("[[URL]]", verifyURL);
 
         emailService.sendEmail(user.getEmail(), content, "Please verify your registration");
     }
+
 
     public User register(SignupDTO request) {
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -101,8 +132,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Error: Email is already in use!");
         }
 
-        User user = new User(request.getFirstName(), request.getLastName(),
-                request.getUsername(), passwordEncoder.encode(request.getPassword()), request.getEmail());
+        User user = new User(request.getFirstName(), request.getLastName(), request.getUsername(), passwordEncoder.encode(request.getPassword()), request.getEmail());
 
         Set<String> strRoles = request.getRole();
         Set<Role> roles = userService.getRolesList(strRoles);

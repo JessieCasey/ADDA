@@ -1,19 +1,17 @@
 package com.adda.user.service;
 
-import com.adda.auth.dto.SignInDTO;
-import com.adda.auth.dto.SignupDTO;
-import com.adda.auth.jwt.JwtResponse;
 import com.adda.user.User;
 import com.adda.user.dto.UserDeletedDTO;
 import com.adda.user.dto.UserUpdateDTO;
 import com.adda.user.role.Role;
 import org.springframework.data.domain.Page;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
+
+/**
+ * The UserService interface is required to create UserServiceImpl {@link UserServiceImpl}
+ */
 
 public interface UserService {
 

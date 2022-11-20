@@ -3,6 +3,11 @@ package com.adda.auth.token.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The TokenRefreshResponse class is required to represent server response after refreshing token.
+ */
+
+
 @Getter
 @Setter
 public class TokenRefreshResponse {

@@ -7,6 +7,10 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+/**
+ * The UserDeletedDTO class is required if we want to represent deleted entity.
+ */
+
 @Getter
 @Setter
 public class UserDeletedDTO extends UserResponseDTO {

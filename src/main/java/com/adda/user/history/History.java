@@ -9,6 +9,10 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The History entity
+ */
+
 @Entity
 @Getter
 @Setter

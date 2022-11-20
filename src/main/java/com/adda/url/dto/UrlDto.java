@@ -5,6 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * The UrlDto class is required if we want to create the short link.
+ */
+
 @Getter
 @Setter
 @NoArgsConstructor

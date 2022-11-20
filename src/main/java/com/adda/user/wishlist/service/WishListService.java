@@ -2,10 +2,15 @@ package com.adda.user.wishlist.service;
 
 import com.adda.advert.Advert;
 import com.adda.advert.dto.AdvertResponseDTO;
+import com.adda.url.service.UrlServiceImpl;
 import com.adda.user.User;
 import com.adda.user.wishlist.WishList;
 
 import java.util.UUID;
+
+/**
+ * The WishListService interface is required to create AuthServiceImpl {@link UrlServiceImpl}
+ */
 
 public interface WishListService {
 

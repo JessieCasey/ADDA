@@ -6,7 +6,7 @@ import com.adda.advert.dto.AdvertUpdateDTO;
 import com.adda.advert.repository.AdvertModel;
 import com.adda.advert.repository.AdvertModelAssembler;
 import com.adda.advert.service.AdvertService;
-import com.adda.advice.MessageException;
+import com.adda.advice.MessageResponse;
 import com.adda.user.service.UserDetailsImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,18 +39,29 @@ public class AdvertController {
     private final PagedResourcesAssembler<Advert> assembler;
     private final AdvertModelAssembler modelAssembler;
 
+    /**
+     * Constructor for {@link AdvertController}.
+     *
+     * @param advertService  {@link AdvertService}
+     * @param assembler      {@link PagedResourcesAssembler<Advert>}
+     * @param modelAssembler {@link AdvertModelAssembler}
+     */
     @Autowired
-    public AdvertController(AdvertService advertService,
-                            PagedResourcesAssembler<Advert> assembler, AdvertModelAssembler modelAssembler) {
+    public AdvertController(AdvertService advertService, PagedResourcesAssembler<Advert> assembler,
+                            AdvertModelAssembler modelAssembler) {
         this.advertService = advertService;
         this.assembler = assembler;
         this.modelAssembler = modelAssembler;
     }
 
     /**
-     * @param advertDTO       DTO for creating advertisement
-     * @param file1 (n)       file(N) Multipart files are such as photos for advertisement
-     * @return ResponseEntity<AdvertResponseDTO> object in case of success.
+     * Method that adding adverts to the user.  {@link Advert}
+     *
+     * @param advertDTO DTO to create advertisement. {@link AdvertDTO}
+     * @param file1     file(max 8) Multipart files for advertisement. {@link MultipartFile}
+     * @param user      Authenticated user. {@link UserDetailsImpl}
+     * @return ResponseEntity<AdvertResponseDTO> object in case of success. {@link ResponseEntity<AdvertResponseDTO>}
+     * @author Artem Komarov
      */
     @PostMapping
     public ResponseEntity<?> addAdvert(
@@ -73,18 +84,21 @@ public class AdvertController {
             return ResponseEntity.ok(new AdvertResponseDTO(advertService.create(advertDTO, user, photos)));
         } catch (Exception e) {
             log.error("Error in method 'addAdvert': " + e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageException(e.getMessage(), request));
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage(), request));
         }
     }
 
     /**
-     * @param title       Filter for the first Name if required
-     * @param description Filter for the last Name if required
+     * Method that fetching adverts with pagination, sorting and filtering.
+     *
+     * @param title       Filter for the title if required
+     * @param description Filter for the description if required
      * @param page        number of the page returned
      * @param size        number of entries in each page
      * @param sortList    list of columns to sort on
-     * @param sortOrder   sort order. Can be ASC or DESC
-     * @return PagedModel object in Hateoas with adverts after filtering and sorting
+     * @param sortOrder   sort order. Can be ASC or DESC. {@link Sort}
+     * @return PagedModel object in Hateoas with adverts after filtering and sorting. {@link PagedModel<AdvertModel>}
+     * @author Artem Komarov
      */
     @GetMapping("/v4/page")
     public PagedModel<AdvertModel> fetchAdvertsWithPagination(
@@ -100,13 +114,16 @@ public class AdvertController {
     }
 
     /**
-     * @param title Filter for the first Name if required
-     * @param description  Filter for the last Name if required
-     * @param page      number of the page returned
-     * @param size      number of entries in each page
-     * @param sortList  list of columns to sort on
-     * @param sortOrder sort order. Can be ASC or DESC
-     * @return Page object with customers after filtering and sorting
+     * Method that fetching adverts with pagination, sorting and filtering. But return Page<Advert>.
+     *
+     * @param title       Filter for the title if required
+     * @param description Filter for the description if required
+     * @param page        number of the page returned
+     * @param size        number of entries in each page
+     * @param sortList    list of columns to sort on
+     * @param sortOrder   sort order. Can be ASC or DESC. {@link Sort}
+     * @return Page<Advert> object in Hateoas with adverts after filtering and sorting. {@link Page<Advert>}
+     * @author Artem Komarov
      */
     @GetMapping("/v3/page")
     public Page<Advert> fetchUsersWithPageInterfaceAndSorted(
@@ -121,11 +138,14 @@ public class AdvertController {
     }
 
     /**
-     * @param title   Filter for the title if required
-     * @param description  Filter for the description if required
-     * @param page    number of the page returned
-     * @param size    number of entries in each page
-     * @return Page object with adverts after filtering
+     * Method that fetching adverts with pagination and filtering.
+     *
+     * @param title       Filter for the title if required
+     * @param description Filter for the description if required
+     * @param page        number of the page returned
+     * @param size        number of entries in each page
+     * @return Page object with adverts after filtering. {@link Page<Advert>}
+     * @author Artem Komarov
      */
     @GetMapping("/v2/page")
     public Page<Advert> fetchUsersWithPageInterface(
@@ -137,9 +157,12 @@ public class AdvertController {
     }
 
     /**
-     * @param title Filter for the title if required
-     * @param description  Filter for the description if required
-     * @return List of filtered adverts
+     * Method that fetching adverts as a filtered list.
+     *
+     * @param title       Filter for the title if required
+     * @param description Filter for the description if required
+     * @return List of filtered adverts. {@link List<Advert>}
+     * @author Artem Komarov
      */
     @GetMapping("/v1/page")
     public List<Advert> fetchUsersAsFilteredList(@RequestParam(defaultValue = "") String title,
@@ -155,7 +178,15 @@ public class AdvertController {
         return advertService.fetchAdvertDataAsList();
     }
 
-
+    /**
+     * [Put] Method that changing advert. {@link Advert}
+     *
+     * @param advertId  The id of the advert. {@link UUID}
+     * @param advertDTO Update DTO with values to be changed in the advert. {@link AdvertUpdateDTO}
+     * @param user      Authenticated user. {@link UserDetailsImpl}
+     * @return AdvertResponseDTO object in case of success. {@link AdvertResponseDTO(Advert)}
+     * @author Artem Komarov
+     */
     @PutMapping("/{advertId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("@advertController.idComparator(#user.id, #advertId) or hasRole('ADMIN')")
@@ -177,10 +208,18 @@ public class AdvertController {
             return ResponseEntity.created(location).body(new AdvertResponseDTO(update));
         } catch (Exception e) {
             log.error("Error in method 'updateAdvert': " + e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageException(e.getMessage(), request));
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage(), request));
         }
     }
 
+    /**
+     * [Delete] Method that deleting advert. {@link Advert}
+     *
+     * @param advertId the id of the advert. {@link UUID}
+     * @param user     Authenticated user. {@link UserDetailsImpl}
+     * @return MessageResponse object in case of success. {@link MessageResponse)}
+     * @author Artem Komarov
+     */
     @DeleteMapping("/{advertId}")
     @PreAuthorize("@advertController.idComparator(#user.id, #advertId) or hasRole('ADMIN')")
     public ResponseEntity<?> deleteAdvertById(@PathVariable UUID advertId,
@@ -191,10 +230,18 @@ public class AdvertController {
             return ResponseEntity.ok("Advert \"" + advertService.deleteAdvertById(advertId) + "\" was deleted");
         } catch (Exception e) {
             log.error("Error in method 'deleteAdvertById': " + e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageException(e.getMessage(), request));
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage(), request));
         }
     }
 
+    /**
+     * [Get] Method that finding advert by ID. {@link Advert}
+     *
+     * @param advertId The id of the advert. {@link UUID}
+     * @param user     Authenticated user. {@link UserDetailsImpl}
+     * @return AdvertResponseDTO object in case of success. {@link AdvertResponseDTO)}
+     * @author Artem Komarov
+     */
     @GetMapping("/{advertId}")
     public ResponseEntity<?> getAdvertById(@PathVariable UUID advertId,
                                            @AuthenticationPrincipal UserDetailsImpl user,
@@ -208,11 +255,17 @@ public class AdvertController {
             }
         } catch (Exception e) {
             log.error("Error in method 'getAdvertById': " + e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageException(e.getMessage(), request));
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage(), request));
         }
     }
 
-
+    /**
+     * [Get] Method that finding adverts by User. {@link com.adda.user.User}
+     *
+     * @param userId The id of the user.
+     * @return List<AdvertResponseDTO> object in case of success. {@link List<AdvertResponseDTO>)}
+     * @author Artem Komarov
+     */
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getAdvertsByUser(@PathVariable long userId) {
         log.info("[Get] Request to method 'getAdvertisementsByUser'");
@@ -226,6 +279,13 @@ public class AdvertController {
         }
     }
 
+    /**
+     * Method that checking whether the user is the owner of advert.
+     *
+     * @param userId   The id of the user.
+     * @param advertId The id of the advert. {@link UUID}
+     * @return boolean value
+     */
     public boolean idComparator(long userId, UUID advertId) {
         return advertService.getAdvertById(advertId).getUser().getId() == userId;
     }

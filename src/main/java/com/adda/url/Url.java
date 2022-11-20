@@ -10,6 +10,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
+/**
+ * The Url class which is used to create short link functionality
+ */
+
 @Entity
 @Getter
 @Setter

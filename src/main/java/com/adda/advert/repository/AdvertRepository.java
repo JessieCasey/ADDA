@@ -1,6 +1,7 @@
 package com.adda.advert.repository;
 
 import com.adda.advert.Advert;
+import com.adda.advert.photo.Photo;
 import com.adda.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,10 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 import java.util.UUID;
+
+/**
+ * The AdvertRepository interface {@link Advert}
+ */
 
 public interface AdvertRepository extends CrudRepository<Advert, UUID> {
 
@@ -24,7 +29,6 @@ public interface AdvertRepository extends CrudRepository<Advert, UUID> {
     Advert getById(UUID id);
 
     void deleteById(UUID id);
-
 
     boolean existsByTitleAndUser_Username(String advertisementName, String username);
 

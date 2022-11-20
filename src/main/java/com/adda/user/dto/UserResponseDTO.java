@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * The UserResponseDTO class is required if we want to represent the user entity in flexible format.
+ */
 @Getter
 @Setter
 public class UserResponseDTO {

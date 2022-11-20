@@ -2,7 +2,7 @@ package com.adda.user.wishlist;
 
 import com.adda.advert.repository.AdvertRepository;
 import com.adda.advert.dto.AdvertResponseDTO;
-import com.adda.advice.MessageException;
+import com.adda.advice.MessageResponse;
 import com.adda.user.User;
 import com.adda.user.service.UserDetailsImpl;
 import com.adda.user.service.UserService;
@@ -10,7 +10,6 @@ import com.adda.user.wishlist.service.WishListService;
 import com.adda.user.wishlist.service.WishListServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -51,7 +50,7 @@ public class WishListController {
 
         } catch (Exception e) {
             log.error("Error in method 'getWishListOfUser': " + e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageException(e.getMessage(), request));
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage(), request));
         }
     }
 
@@ -64,7 +63,7 @@ public class WishListController {
             return ResponseEntity.ok(wishListService.addAdvertToWishList(user, advertRepository.getById(advertId)));
         } catch (Exception e) {
             log.error("Error in method 'addByIdToList': " + e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageException(e.getMessage(), request));
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage(), request));
         }
     }
 
@@ -77,7 +76,7 @@ public class WishListController {
             return ResponseEntity.ok(wishListService.deleteAdvertFromWishList(user, advertRepository.getById(advertId)));
         } catch (Exception e) {
             log.error("Error in method 'deleteByIdFromList': " + e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageException(e.getMessage(), request));
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage(), request));
         }
     }
     @GetMapping("/{wishListId}")
@@ -97,7 +96,7 @@ public class WishListController {
 
         } catch (Exception e) {
             log.error("Error in method 'getWishListOfUser': " + e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageException(e.getMessage(), request));
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage(), request));
         }
     }
 

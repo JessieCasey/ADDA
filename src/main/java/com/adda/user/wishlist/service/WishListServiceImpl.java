@@ -2,6 +2,7 @@ package com.adda.user.wishlist.service;
 
 import com.adda.advert.Advert;
 import com.adda.advert.dto.AdvertResponseDTO;
+import com.adda.url.service.UrlService;
 import com.adda.user.User;
 import com.adda.user.repository.UserRepository;
 import com.adda.user.wishlist.WishList;
@@ -15,6 +16,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+/**
+ * The WishListServiceImpl class implements AuthService interface to create methods {@link WishListService}
+ */
 
 @Service
 @Slf4j

@@ -6,6 +6,10 @@ import lombok.Setter;
 
 import java.util.Set;
 
+/**
+ * The SignInDTO class is required to sign up (register) into the system.
+ */
+
 @Getter
 @Setter
 public class SignupDTO {

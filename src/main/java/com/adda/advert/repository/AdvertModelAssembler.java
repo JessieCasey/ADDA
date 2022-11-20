@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * This class extends RepresentationModelAssemblerSupport which is required for Pagination.
- * It converts the Advert Entity to User Model.
+ * It converts the Advert Entity to Advert Model.
  */
 @Component
 public class AdvertModelAssembler extends RepresentationModelAssemblerSupport<Advert, AdvertModel> {

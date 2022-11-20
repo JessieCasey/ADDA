@@ -14,6 +14,13 @@ public class UploadClient {
     private static final String USER_AGENT = "Imgbb Java SDK";
     private static final int TIMEOUT = 5000;
 
+    /**
+     * Methods that uploading photo of QR code to the hosting server.
+     *
+     * @param parameters encoded image of QR code in base64. {@link UploadParameters}
+     * @return OptionalResponse in case of success {@link OptionalResponse}
+     */
+
     public static OptionalResponse upload(UploadParameters parameters) {
         try {
             Response response = Jsoup.connect(API_URL)

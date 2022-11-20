@@ -8,7 +8,9 @@ import com.adda.advert.dto.AdvertUpdateDTO;
 import com.adda.advert.exception.AdvertNotFoundException;
 import com.adda.advert.photo.Photo;
 import com.adda.advert.photo.service.PhotoServiceImpl;
+import com.adda.advert.repository.AdvertModel;
 import com.adda.advert.repository.AdvertRepository;
+import com.adda.advice.MessageResponse;
 import com.adda.exception.NullEntityReferenceException;
 import com.adda.user.User;
 import com.adda.user.exception.UserNotFoundException;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +32,10 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+/**
+ * The AdvertServiceImpl class implements AdvertService interface to create methods {@link AdvertService}
+ */
 
 @Service
 @Slf4j
@@ -48,28 +55,68 @@ public class AdvertServiceImpl implements AdvertService {
         this.advertRepository = advertRepository;
     }
 
+    /**
+     * Method that fetching adverts with pagination, sorting and filtering.
+     *
+     * @param title       Filter for the title if required
+     * @param description Filter for the description if required
+     * @param page        number of the page returned
+     * @param size        number of entries in each page
+     * @param sortList    list of columns to sort on
+     * @param sortOrder   sort order. Can be ASC or DESC. {@link Sort}
+     * @return PagedModel object in Hateoas with adverts after filtering and sorting. {@link PagedModel < AdvertModel >}
+     * @author Artem Komarov
+     */
     @Override
     public Page<Advert> fetchAdvertsWithFilteringAndSorting(String title, String description, int page, int size, List<String> sortList, String sortOrder) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(createSortOrder(sortList, sortOrder)));
         return advertRepository.findByTitleLikeAndDescriptionLike(title, description, pageable);
     }
 
+    /**
+     * @return List of all adverts
+     */
     @Override
     public List<Advert> fetchAdvertDataAsList() {
         return advertRepository.findAll();
     }
 
+    /**
+     * Method that fetching adverts as a filtered list.
+     *
+     * @param title       Filter for the title if required
+     * @param description Filter for the description if required
+     * @return List of filtered adverts. {@link List<Advert>}
+     * @author Artem Komarov
+     */
     @Override
     public List<Advert> fetchFilteredAdvertsAsList(String title, String description) {
         return advertRepository.findByTitleLikeAndDescriptionLike(title, description);
     }
 
+    /**
+     * Method that fetching adverts with pagination, sorting and filtering. But return Page<Advert>.
+     *
+     * @param title       Filter for the title if required
+     * @param description Filter for the description if required
+     * @param page        number of the page returned
+     * @param size        number of entries in each page
+     * @return Page<Advert> object in Hateoas with adverts after filtering and sorting. {@link Page<Advert>}
+     * @author Artem Komarov
+     */
     @Override
     public Page<Advert> fetchAdvertDataAsPageWithFiltering(String title, String description, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return advertRepository.findByTitleLikeAndDescriptionLike(title, description, pageable);
     }
 
+    /**
+     * Method create sort order on fields
+     *
+     * @param sortList      List of fields which will be used to sort adverts (title, description).
+     * @param sortDirection ASC or DESC
+     * @return Sort.Order class {@link Sort.Order}
+     */
     private List<Sort.Order> createSortOrder(List<String> sortList, String sortDirection) {
         List<Sort.Order> sorts = new ArrayList<>();
         Sort.Direction direction;
@@ -84,6 +131,15 @@ public class AdvertServiceImpl implements AdvertService {
         return sorts;
     }
 
+    /**
+     * Method that creating adverts
+     *
+     * @param dto         Advert DTO contains title, category_id, price, description {@link AdvertDTO}
+     * @param userDetails Authenticated user {@link UserDetailsImpl}
+     * @param photos      photos for advert {@link List<MultipartFile>}
+     *
+     * @return Advert class {@link Sort.Order}
+     */
     @Override
     public Advert create(AdvertDTO dto, UserDetailsImpl userDetails, List<MultipartFile> photos) throws IOException {
         return create(null, dto, userRepository.findById(userDetails.getId()).orElseThrow(IllegalArgumentException::new), photos);
@@ -92,7 +148,6 @@ public class AdvertServiceImpl implements AdvertService {
     @Override
     public Advert create(UUID id, AdvertDTO dto, User user, List<MultipartFile> photos) throws IOException {
         UUID advertID = Optional.ofNullable(id).orElse(UUID.randomUUID());
-
         AdvertTransferDTO transferDTO = new AdvertTransferDTO(
                 advertID, dto, user,
                 new Photo(photos.size()),
