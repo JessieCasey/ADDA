@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.Pattern;
+import java.util.UUID;
 
 @Getter
 @Setter
 public class AdvertUpdateDTO {
-    @Pattern(regexp = "^[0-9]*$",
-            message = "Must start and end with digits only")
-    private String price;
+    private UUID id;
+    private Float price;
     private String description;
 }

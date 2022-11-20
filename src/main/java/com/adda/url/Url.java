@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 public class Url {
+
     @Id
     @GeneratedValue
     private long id;

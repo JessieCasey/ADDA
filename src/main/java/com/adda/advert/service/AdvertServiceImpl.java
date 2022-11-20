@@ -1,26 +1,27 @@
 package com.adda.advert.service;
 
-import com.adda.advert.Advertisement;
-import com.adda.advert.QRcodeServiceImpl;
+import com.adda.advert.Advert;
 import com.adda.advert.category.CategoryRepository;
-import com.adda.advert.dto.AdvertTransferDTO;
 import com.adda.advert.dto.AdvertDTO;
+import com.adda.advert.dto.AdvertTransferDTO;
 import com.adda.advert.dto.AdvertUpdateDTO;
 import com.adda.advert.exception.AdvertNotFoundException;
-import com.adda.advert.filter.AdvertPage;
-import com.adda.advert.filter.AdvertSearchCriteria;
 import com.adda.advert.photo.Photo;
 import com.adda.advert.photo.service.PhotoServiceImpl;
-import com.adda.advert.repository.AdvertCriteriaRepository;
 import com.adda.advert.repository.AdvertRepository;
 import com.adda.exception.NullEntityReferenceException;
 import com.adda.user.User;
-import com.adda.user.repository.UserRepository;
+import com.adda.user.exception.UserNotFoundException;
 import com.adda.user.history.History;
 import com.adda.user.history.HistoryRepository;
+import com.adda.user.repository.UserRepository;
+import com.adda.user.service.UserDetailsImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,32 +32,65 @@ import java.util.*;
 
 @Service
 @Slf4j
-public class AdvertisementServiceImpl implements AdvertisementService {
+public class AdvertServiceImpl implements AdvertService {
 
     private final HistoryRepository historyRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final AdvertRepository advertRepository;
-    private final AdvertCriteriaRepository advertCriteriaRepository;
 
     @Autowired
-    public AdvertisementServiceImpl(HistoryRepository historyRepository, UserRepository userRepository,
-                                    CategoryRepository categoryRepository, AdvertRepository advertRepository,
-                                    AdvertCriteriaRepository advertCriteriaRepository) {
+    public AdvertServiceImpl(HistoryRepository historyRepository, UserRepository userRepository,
+                             CategoryRepository categoryRepository, AdvertRepository advertRepository) {
         this.historyRepository = historyRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.advertRepository = advertRepository;
-        this.advertCriteriaRepository = advertCriteriaRepository;
     }
 
     @Override
-    public Advertisement create(AdvertDTO dto, User user, List<MultipartFile> photos) throws IOException {
-        return create(null, dto, user, photos);
+    public Page<Advert> fetchAdvertsWithFilteringAndSorting(String title, String description, int page, int size, List<String> sortList, String sortOrder) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(createSortOrder(sortList, sortOrder)));
+        return advertRepository.findByTitleLikeAndDescriptionLike(title, description, pageable);
     }
 
     @Override
-    public Advertisement create(UUID id, AdvertDTO dto, User user, List<MultipartFile> photos) throws IOException {
+    public List<Advert> fetchAdvertDataAsList() {
+        return advertRepository.findAll();
+    }
+
+    @Override
+    public List<Advert> fetchFilteredAdvertsAsList(String title, String description) {
+        return advertRepository.findByTitleLikeAndDescriptionLike(title, description);
+    }
+
+    @Override
+    public Page<Advert> fetchAdvertDataAsPageWithFiltering(String title, String description, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return advertRepository.findByTitleLikeAndDescriptionLike(title, description, pageable);
+    }
+
+    private List<Sort.Order> createSortOrder(List<String> sortList, String sortDirection) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        Sort.Direction direction;
+        for (String sort : sortList) {
+            if (sortDirection != null) {
+                direction = Sort.Direction.fromString(sortDirection);
+            } else {
+                direction = Sort.Direction.DESC;
+            }
+            sorts.add(new Sort.Order(direction, sort));
+        }
+        return sorts;
+    }
+
+    @Override
+    public Advert create(AdvertDTO dto, UserDetailsImpl userDetails, List<MultipartFile> photos) throws IOException {
+        return create(null, dto, userRepository.findById(userDetails.getId()).orElseThrow(IllegalArgumentException::new), photos);
+    }
+
+    @Override
+    public Advert create(UUID id, AdvertDTO dto, User user, List<MultipartFile> photos) throws IOException {
         UUID advertID = Optional.ofNullable(id).orElse(UUID.randomUUID());
 
         AdvertTransferDTO transferDTO = new AdvertTransferDTO(
@@ -64,10 +98,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 new Photo(photos.size()),
                 categoryRepository.findById(dto.getCategoryId()).orElseThrow(IllegalArgumentException::new),
                 getCurrentTime(),
-                QRcodeServiceImpl.getUrlOfAdvertisement(advertID)
+                "QRcodeServiceImpl.getUrlOfAdvertisement(advertID)"
         );
 
-        Advertisement saved = advertRepository.save(new Advertisement(transferDTO));
+        Advert saved = advertRepository.save(new Advert(transferDTO));
+
         addPhoto(photos, saved.getId());
         return saved;
     }
@@ -78,13 +113,14 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public void addPhoto(List<MultipartFile> photos, UUID id) throws IOException {
-        Advertisement advert = advertRepository.findById(id).get();
+        Advert advert = advertRepository.findById(id).get();
         advert.setPhotos(PhotoServiceImpl.uploadPhotoToAdvertisement(photos));
         advertRepository.save(advert);
     }
 
     @Override
-    public Advertisement update(Advertisement advert, AdvertUpdateDTO advertDTO) {
+    public Advert update(AdvertUpdateDTO advertDTO) {
+        Advert advert = getAdvertById(advertDTO.getId());
         if (advert != null) {
             getAdvertById(advert.getId());
 
@@ -97,18 +133,17 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public Advertisement getAdvertById(UUID id) throws AdvertNotFoundException {
+    public Advert getAdvertById(UUID id) throws AdvertNotFoundException {
         return getAdvertById(id, null);
     }
 
     @Override
-    public Advertisement getAdvertById(UUID id, User user) throws AdvertNotFoundException {
-        Advertisement advert = advertRepository.findById(id).get();
-        if (advert == null) {
-            throw new AdvertNotFoundException("Advert is not found");
-        }
+    public Advert getAdvertById(UUID id, UserDetailsImpl userDetails) throws AdvertNotFoundException {
 
-        if (user != null) {
+        Advert advert = advertRepository.findById(id).orElseThrow(() -> new AdvertNotFoundException("Advert is not found"));
+
+        if (userDetails != null) {
+            User user = userRepository.findById(userDetails.getId()).orElseThrow(() -> new UserNotFoundException("User is not found"));
             if (!historyRepository.existsByIdAndAdvertsIsContaining(user.getId(), advert)) {
                 History history = new History(user.getId());
                 history.getAdverts().add(advert);
@@ -117,33 +152,25 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 advertRepository.save(advert);
             }
         }
-
         return advert;
     }
 
     @Override
     @Transactional
     public String deleteAdvertById(UUID id) throws AdvertNotFoundException {
-        Advertisement advert = getAdvertById(id);
+        Advert advert = getAdvertById(id);
         advertRepository.deleteById(id);
         log.info("Method 'advertService.deleteAdvertById(UUID id)': Advert is deleted from the DB");
-
         return advert.getTitle();
     }
 
     @Override
-    public List<Advertisement> getAllByUser(long userId) throws AdvertNotFoundException {
+    public List<Advert> getAllByUser(long userId) throws AdvertNotFoundException {
         if (userRepository.findById(userId).isEmpty()) {
             throw new AdvertNotFoundException("The user doesn't have any adverts");
         } else {
             return advertRepository.findAllByUser(userRepository.findById(userId).get());
         }
-    }
-
-    public Page<Advertisement> getAdverts(AdvertPage advertPage,
-                                          AdvertSearchCriteria advertSearchCriteria) {
-
-        return advertCriteriaRepository.findAllWithFilters(advertPage, advertSearchCriteria);
     }
 
     @Override

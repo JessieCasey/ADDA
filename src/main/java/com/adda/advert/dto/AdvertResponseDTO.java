@@ -1,6 +1,6 @@
 package com.adda.advert.dto;
 
-import com.adda.advert.Advertisement;
+import com.adda.advert.Advert;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;
 
@@ -10,7 +10,7 @@ import java.util.UUID;
 public class AdvertResponseDTO {
     UUID id;
     String title;
-    String price;
+    Float price;
     String description;
     String email;
     String username;
@@ -21,17 +21,17 @@ public class AdvertResponseDTO {
     String[] photos;
     String category;
 
-    public AdvertResponseDTO(Advertisement advertisement) {
-        this.id = advertisement.getId();
-        this.title = advertisement.getTitle();
-        this.price = advertisement.getPrice();
-        this.description = advertisement.getDescription();
-        this.email = advertisement.getUser().getEmail();
-        this.username = advertisement.getUser().getUsername();
-        this.date = advertisement.getDate();
-        this.viewers = advertisement.getViewers();
-        this.qrCode = advertisement.getQrCode();
-        this.photos = advertisement.getPhotos().getArray();
-        this.category = advertisement.getCategory().getCategoryName();
+    public AdvertResponseDTO(Advert advert) {
+        this.id = advert.getId();
+        this.title = advert.getTitle();
+        this.price = advert.getPrice();
+        this.description = advert.getDescription();
+        this.email = advert.getUser().getEmail();
+        this.username = advert.getUser().getUsername();
+        this.date = advert.getDate();
+        this.viewers = advert.getViewers();
+        this.qrCode = advert.getQrCode();
+        this.photos = advert.getPhotos().getArray();
+        this.category = advert.getCategory().getCategoryName();
     }
 }

@@ -18,14 +18,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException ex,  WebRequest request) {
-        log.error("[handleMethodArgumentNotValid] in method 'updateUser': " + ex.getMessage());
+        log.error("[GH][handleUserNotFoundException]: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(new MessageException(HttpStatus.NO_CONTENT.value(), ex.getMessage(), request));
     }
 
     @ExceptionHandler
-    public ResponseEntity<?> handleNullEntityReferenceException(AdvertNotFoundException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
+    public ResponseEntity<?> handleAdvertNotFound(AdvertNotFoundException ex, WebRequest request) {
+        log.error("[GH][handleAdvertNotFound]: " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .body(new MessageException(HttpStatus.NO_CONTENT.value(), ex.getMessage(), request));
     }
 
     @ExceptionHandler

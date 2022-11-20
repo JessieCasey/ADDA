@@ -20,7 +20,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "advertisements")
 @NoArgsConstructor
-public class Advertisement {
+public class Advert {
 
     @Id
     private UUID id;
@@ -28,9 +28,7 @@ public class Advertisement {
     @NotBlank
     private String title;
 
-    @Pattern(regexp = "^[0-9]*$",
-            message = "Must start and end with digits only")
-    private String price;
+    private Float price;
 
     @NotBlank
     private String description;
@@ -50,7 +48,7 @@ public class Advertisement {
     @ManyToOne
     private User user;
 
-    public Advertisement(AdvertTransferDTO advertDTO) {
+    public Advert(AdvertTransferDTO advertDTO) {
         this.id = advertDTO.getId();
         this.title = advertDTO.getTitle();
         this.price = advertDTO.getPrice();
@@ -65,9 +63,11 @@ public class Advertisement {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Advertisement that = (Advertisement) o;
-        return id != null && Objects.equals(id, that.id);
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Advert advert = (Advert) o;
+
+        return Objects.equals(id, advert.id);
     }
 
     @Override

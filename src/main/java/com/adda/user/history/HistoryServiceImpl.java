@@ -1,7 +1,6 @@
 package com.adda.user.history;
 
-import com.adda.advert.Advertisement;
-import com.adda.advert.dto.AdvertResponseDTO;
+import com.adda.advert.Advert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,7 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public List<Advertisement> getUserHistory(long userId) {
+    public List<Advert> getUserHistory(long userId) {
         if (!historyRepository.existsById(userId)) {
             return new ArrayList<>();
         } else {

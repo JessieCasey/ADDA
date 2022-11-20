@@ -11,7 +11,7 @@ import java.util.UUID;
 public class AdvertTransferDTO {
     UUID id;
     String title;
-    String price;
+    Float price;
     String description;
     String email;
     String username;

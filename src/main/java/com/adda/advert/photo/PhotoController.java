@@ -1,7 +1,7 @@
 package com.adda.advert.photo;
 
-import com.adda.advert.Advertisement;
-import com.adda.advert.service.AdvertisementService;
+import com.adda.advert.Advert;
+import com.adda.advert.service.AdvertService;
 import com.adda.advert.exception.AdvertNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +21,12 @@ import java.util.UUID;
 @Slf4j
 public class PhotoController {
 
-    private final AdvertisementService advertisementService;
+    private final AdvertService advertService;
 
     @Lazy
     @Autowired
-    public PhotoController(AdvertisementService advertisementService) {
-        this.advertisementService = advertisementService;
+    public PhotoController(AdvertService advertService) {
+        this.advertService = advertService;
     }
 
     @PostMapping("/{advertId}")
@@ -40,14 +40,14 @@ public class PhotoController {
 
         log.info("[Post] Request to method 'uploadPhotoToAdvert'");
 
-        Advertisement advert = advertisementService.getAdvertById(advertId);
+        Advert advert = advertService.getAdvertById(advertId);
         if (advert == null) {
             log.warn("Warning in method 'uploadPhotoToAdvert': advert is null");
             return new ResponseEntity<>("Files are NOT uploaded successfully" + "advert is null", HttpStatus.BAD_REQUEST);
         }
 
-        List<MultipartFile> photos = advertisementService.getMultipartFiles(file1, file2, file3, file4, file5, file6, file7, file8);
-        advertisementService.addPhoto(photos, advert.getId());
+        List<MultipartFile> photos = advertService.getMultipartFiles(file1, file2, file3, file4, file5, file6, file7, file8);
+        advertService.addPhoto(photos, advert.getId());
 
         return new ResponseEntity<>("Files are uploaded successfully", HttpStatus.OK);
     }

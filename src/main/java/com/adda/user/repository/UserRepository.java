@@ -19,6 +19,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(FILTER_CUSTOMERS_ON_FIRST_NAME_AND_LAST_NAME_QUERY)
     Page<User> findByFirstNameLikeAndLastNameLike(String firstNameFilter, String lastNameFilter, Pageable pageable);
 
+    @Query(FILTER_CUSTOMERS_ON_FIRST_NAME_AND_LAST_NAME_QUERY)
+    List<User> findByFirstNameLikeAndLastNameLike(String firstNameFilter, String lastNameFilter);
+
     Optional<User> findByVerificationCode(String code);
 
     Optional<User> findByEmail(String email);

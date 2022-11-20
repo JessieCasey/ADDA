@@ -1,6 +1,6 @@
 package com.adda.advert.photo;
 
-import com.adda.advert.Advertisement;
+import com.adda.advert.Advert;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @Entity
-@Table(name = "photo_table")
+@Table(name = "photos")
 public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class Photo {
 
     @JsonIgnore
     @OneToOne(mappedBy = "photos", cascade = CascadeType.ALL)
-    private Advertisement advert;
+    private Advert advert;
 
     public Photo() {
         setPhotos(new String[8]);

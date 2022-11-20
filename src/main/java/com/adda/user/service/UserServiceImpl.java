@@ -1,125 +1,96 @@
 package com.adda.user.service;
 
-import com.adda.advert.Advertisement;
-import com.adda.advert.service.AdvertisementService;
-import com.adda.auth.dto.SignInDTO;
-import com.adda.auth.dto.SignupDTO;
-import com.adda.auth.jwt.JwtResponse;
-import com.adda.auth.jwt.JwtUtils;
-import com.adda.auth.token.RefreshToken;
-import com.adda.auth.token.service.RefreshTokenService;
+import com.adda.advert.Advert;
+import com.adda.advert.service.AdvertService;
+import com.adda.email.EmailService;
 import com.adda.exception.NullEntityReferenceException;
 import com.adda.user.User;
-import com.adda.user.repository.UserRepository;
 import com.adda.user.dto.UserDeletedDTO;
 import com.adda.user.dto.UserUpdateDTO;
 import com.adda.user.exception.UserNotFoundException;
+import com.adda.user.repository.UserRepository;
 import com.adda.user.role.ERole;
 import com.adda.user.role.Role;
 import com.adda.user.role.RoleRepository;
-import com.adda.user.wishlist.WishListService;
+import com.adda.user.updateToken.UpdateToken;
+import com.adda.user.updateToken.UpdateTokenService;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.utility.RandomString;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.validation.Valid;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    private final AdvertisementService advertisementService;
+    private final AdvertService advertService;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final WishListService wishListService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtils jwtUtils;
-    private final RefreshTokenService refreshTokenService;
-    private final JavaMailSender mailSender;
-    private final String fromAddress;
+    private final EmailService emailService;
+    private final UpdateTokenService updateTokenService;
 
     @Autowired
-    public UserServiceImpl(AdvertisementService advertisementService, UserRepository userRepository,
-                           RoleRepository roleRepository, PasswordEncoder passwordEncoder, WishListService wishListService,
-                           AuthenticationManager authenticationManager, JwtUtils jwtUtils,
-                           RefreshTokenService refreshTokenService,
-                           JavaMailSender mailSender, @Value("${spring.mail.username}") String fromAddress) {
-        this.advertisementService = advertisementService;
+    public UserServiceImpl(AdvertService advertService, UserRepository userRepository,
+                           RoleRepository roleRepository, PasswordEncoder passwordEncoder,
+                           EmailService emailService, UpdateTokenService updateTokenService) {
+        this.advertService = advertService;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.wishListService = wishListService;
-        this.authenticationManager = authenticationManager;
-        this.jwtUtils = jwtUtils;
-        this.refreshTokenService = refreshTokenService;
-        this.mailSender = mailSender;
-        this.fromAddress = fromAddress;
+        this.emailService = emailService;
+        this.updateTokenService = updateTokenService;
     }
 
-    public void createUser(SignupDTO request, String url) {
-        User user = createUser(request);
-
-        String content = "Dear " + user.getUsername() + ",<br>"
-                + "Please click the link below to verify your registration:<br>"
-                + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
-                + "Thank you,<br>"
-                + "ADDA - the best market place";
-
-        String verifyURL = url + "/verify?code=" + user.getVerificationCode();
-        content = content.replace("[[URL]]", verifyURL);
-
-        sendEmail(user, content, "Please verify your registration");
+    @Override
+    public Page<User> fetchUserDataAsPageWithFilteringAndSorting(String firstNameFilter, String lastNameFilter, int page, int size, List<String> sortList, String sortOrder) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(createSortOrder(sortList, sortOrder)));
+        return userRepository.findByFirstNameLikeAndLastNameLike(firstNameFilter, lastNameFilter, pageable);
     }
 
-    public User createUser(SignupDTO request) {
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new IllegalArgumentException("Error: Username is already taken!");
+    @Override
+    public List<User> fetchFilteredUserDataAsList(String firstNameFilter, String lastNameFilter) {
+        return userRepository.findByFirstNameLikeAndLastNameLike(firstNameFilter, lastNameFilter);
+    }
+
+    @Override
+    public Page<User> fetchUserDataAsPageWithFiltering(String firstNameFilter, String lastNameFilter, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findByFirstNameLikeAndLastNameLike(firstNameFilter, lastNameFilter, pageable);
+    }
+
+    @Override
+    public List<User> fetchUserDataAsList() {
+        return userRepository.findAll();
+    }
+
+    public List<Sort.Order> createSortOrder(List<String> sortList, String sortDirection) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        Sort.Direction direction;
+        for (String sort : sortList) {
+            if (sortDirection != null) {
+                direction = Sort.Direction.fromString(sortDirection);
+            } else {
+                direction = Sort.Direction.DESC;
+            }
+            sorts.add(new Sort.Order(direction, sort));
         }
-
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Error: Email is already in use!");
-        }
-
-        User user = new User(request.getFirstName(), request.getLastName(),
-                request.getUsername(), passwordEncoder.encode(request.getPassword()), request.getEmail());
-
-        Set<String> strRoles = request.getRole();
-        Set<Role> roles = getRolesList(strRoles);
-
-        user.setRoles(roles);
-
-        user.setVerificationCode(RandomString.make(64));
-        user.setEnabled(false);
-
-        User save = userRepository.save(user);
-        wishListService.createWishList(save);
-        return save;
+        return sorts;
     }
 
-    private Set<Role> getRolesList(Set<String> strRoles) {
+    @Override
+    public Set<Role> getRolesList(Set<String> strRoles) {
         Set<Role> roles = new HashSet<>();
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
@@ -149,29 +120,12 @@ public class UserServiceImpl implements UserService {
         return roles;
     }
 
-    public void sendEmail(User user, String content, String subject) {
-        try {
-            String toAddress = user.getEmail();
-
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message);
-
-            helper.setFrom(fromAddress, "DoubleA");
-            helper.setTo(toAddress);
-            helper.setSubject(subject);
-
-            helper.setText(content, true);
-            mailSender.send(message);
-        } catch (MessagingException | UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
+    @Override
     public User getOneUser(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User with id: '" + id + "' is not found"));
     }
 
+    @Override
     public User update(UserUpdateDTO userDTO) {
         User user = null;
         if (userDTO != null) {
@@ -187,8 +141,6 @@ public class UserServiceImpl implements UserService {
                 user.setLastName(userDTO.getLastName());
             if (userDTO.getEmail() != null)
                 user.setEmail(userDTO.getEmail());
-            if (userDTO.getPassword() != null)
-                user.setPassword(userDTO.getPassword());
             if (userDTO.getRoles() != null && userDTO.getRoles().size() != 0)
                 user.setRoles(getRolesList(userDTO.getRoles()));
 
@@ -196,17 +148,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public List<User> getAll() {
-        return userRepository.findAll();
-    }
-
+    @Override
     public UserDeletedDTO delete(Long id) {
         if (userRepository.existsById(id)) {
-            List<Advertisement> allByUser = advertisementService.getAllByUser(id);
+            List<Advert> allByUser = advertService.getAllByUser(id);
             UserDeletedDTO userDeletedDTO =
                     new UserDeletedDTO(userRepository.getById(id), allByUser.size(), LocalDateTime.now());
 
-            allByUser.forEach(x -> advertisementService.deleteAdvertById(x.getId()));
+            allByUser.forEach(x -> advertService.deleteAdvertById(x.getId()));
             userRepository.deleteById(id);
 
             log.info("Method 'delete()': User is deleted from the DB");
@@ -216,18 +165,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email: '" + email + "' is not found"));
-    }
-
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
-    public boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username);
-    }
-
+    @Override
     public String verify(String verificationCode) {
         log.info("Method 'verify': method is invoked");
         User user = userRepository.findByVerificationCode(verificationCode).orElseThrow();
@@ -246,67 +184,37 @@ public class UserServiceImpl implements UserService {
                     + "Feel free to start you business with us, <br>"
                     + "ADDA - the best market place";
 
-            sendEmail(user, content, "Registration completed");
+            emailService.sendEmail(user.getEmail(), content, "Registration completed");
             log.info("Method 'verify': Successful");
             return "Done";
         }
     }
 
-    public User encodeUserFromToken(String token) {
-        String[] chunks = token.split("\\.");
+    public void updatePassword(String token) {
+        UpdateToken updateToken = updateTokenService.getById(token);
+        User user = userRepository.getById(updateToken.getUser().getId());
+        user.setPassword(passwordEncoder.encode(updateToken.getSensitiveData()));
+        userRepository.save(user);
 
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-        String payload = new String(decoder.decode(chunks[1]));
-
-        Long id = new JSONObject(payload).getLong("id");
-
-        if (userRepository.findById(id).isEmpty()) {
-            throw new UsernameNotFoundException("You are not registered");
-        }
-        return userRepository.findById(id).get();
     }
 
-    public JwtResponse authenticate(@Valid SignInDTO loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        if (!userRepository.findById(userDetails.getId()).get().isEnabled()) {
-            throw new IllegalArgumentException("You need to confirm your email address first");
-        } else {
-            String jwt = jwtUtils.generateJwtToken(userDetails);
-
-            List<String> roles = userDetails.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-
-            RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
-
-            return new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles);
-        }
+    public void updatePasswordById(Long userId, String password) {
+        User user = userRepository.getById(userId);
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
     }
 
-    @Override
-    public Page<User> fetchCustomerDataAsPageWithFilteringAndSorting(String firstNameFilter, String lastNameFilter, int page, int size, List<String> sortList, String sortOrder) {
-        // create Pageable object using the page, size and sort details
-        Pageable pageable = PageRequest.of(page, size, Sort.by(createSortOrder(sortList, sortOrder)));
-        // fetch the page object by additionally passing pageable with the filters
-        return userRepository.findByFirstNameLikeAndLastNameLike(firstNameFilter, lastNameFilter, pageable);
-    }
+    public void sendVerification(Long id, String newPassword) {
+        User user = userRepository.getById(id);
+        UpdateToken updateToken = updateTokenService.createUpdateToken(id, newPassword);
 
-    private List<Sort.Order> createSortOrder(List<String> sortList, String sortDirection) {
-        List<Sort.Order> sorts = new ArrayList<>();
-        Sort.Direction direction;
-        for (String sort : sortList) {
-            if (sortDirection != null) {
-                direction = Sort.Direction.fromString(sortDirection);
-            } else {
-                direction = Sort.Direction.DESC;
-            }
-            sorts.add(new Sort.Order(direction, sort));
-        }
-        return sorts;
-    }
+        String content = "Hi again! " + user.getUsername() + ",<br>"
+                + "You wanted to change your password, <br>"
+                + "Please follow this link to update password: \n" +
+                "<a href=\"http://localhost:8080/security/verify/" + updateToken.getToken() + "\" target=\"_self\">Change password</a>" +
+                "\n Note! This code is valid for " + updateToken.getExpiryDate() +
+                "\n ADDA - the best market place";
 
+        emailService.sendEmail(user.getEmail(), content, "Update password");
+    }
 }

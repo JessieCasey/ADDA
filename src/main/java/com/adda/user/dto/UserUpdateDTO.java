@@ -20,7 +20,6 @@ public class UserUpdateDTO {
     @JsonProperty("last_name")
     private String lastName;
     private String username;
-    private String password;
     private String email;
     private Set<String> roles;
 
@@ -29,7 +28,8 @@ public class UserUpdateDTO {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.username = user.getUsername();
-        this.password = user.getPassword();
         this.email = user.getEmail();
     }
+
+
 }

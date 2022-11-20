@@ -1,4 +1,4 @@
-package com.adda.advert;
+package com.adda.advert.service;
 
 import com.adda.advert.photo.service.PhotoServiceImpl;
 import com.google.zxing.BarcodeFormat;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @Lazy
 @Service
-public class QRcodeServiceImpl {
+public class QRCodeServiceImpl {
 
     public static byte[] getQRCodeImage(String text, int width, int height) throws WriterException, IOException {
         BitMatrix bitMatrix = new QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, width, height);
@@ -32,7 +32,7 @@ public class QRcodeServiceImpl {
     public static String getUrlOfAdvertisement(UUID advertisementID) {
         byte[] image = new byte[0];
         try {
-            image = QRcodeServiceImpl.getQRCodeImage("http://localhost:3000/advertisement/" + advertisementID, 250, 250);
+            image = QRCodeServiceImpl.getQRCodeImage("http://localhost:8080/api/advert/" + advertisementID, 250, 250);
         } catch (WriterException | IOException e) {
             e.printStackTrace();
         }

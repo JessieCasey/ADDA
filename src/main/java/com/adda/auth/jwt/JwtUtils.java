@@ -12,10 +12,10 @@ import java.util.Date;
 @Slf4j
 public class JwtUtils {
 
-    @Value("${bezkoder.app.jwtSecret}")
+    @Value("${adda.app.jwtSecret}")
     private String jwtSecret;
 
-    @Value("${bezkoder.app.jwtExpirationMs}")
+    @Value("${adda.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
     public String generateJwtToken(UserDetailsImpl userPrincipal) {
