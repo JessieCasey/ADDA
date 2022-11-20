@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "wishlist_table")
+@Table(name = "wishlist")
 @Getter
 @Setter
 public class WishList {
