@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * The AuthEntryPointJwt class is required to authentication process.
+ */
+
 @Component
 @Slf4j
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {

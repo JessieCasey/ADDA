@@ -5,6 +5,11 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * The JwtResponse class is required to provide response from authentication method.
+ * {@link com.adda.auth.AuthController}
+ */
+
 @Getter
 @Setter
 public class JwtResponse {

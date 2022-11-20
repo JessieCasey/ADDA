@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
+/**
+ * The UpdateTokenService class is responsible for updating user's password
+ */
+
 @Service
 public class UpdateTokenService {
 

@@ -6,6 +6,10 @@ import com.adda.auth.jwt.JwtResponse;
 
 import javax.validation.Valid;
 
+/**
+ * The AuthService interface is required to create AuthServiceImpl {@link AuthServiceImpl}
+ */
+
 public interface AuthService {
     JwtResponse authenticate(@Valid SignInDTO loginRequest);
 

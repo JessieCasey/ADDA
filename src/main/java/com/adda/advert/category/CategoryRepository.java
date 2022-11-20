@@ -1,9 +1,11 @@
 package com.adda.advert.category;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface CategoryRepository extends CrudRepository<Category, Long> {
-    Category findByCategoryName(String category_name);
+/**
+ * The CategoryRepository interface {@link Category}
+ */
 
-    boolean existsByCategoryName(String name);
-}
+@Repository
+public interface CategoryRepository extends CrudRepository<Category, Long> {}

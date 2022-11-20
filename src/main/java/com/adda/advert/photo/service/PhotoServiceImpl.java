@@ -22,6 +22,13 @@ public class PhotoServiceImpl {
         PhotoServiceImpl.API_KEY = API_KEY;
     }
 
+    /**
+     * Method that uploading photos to the hosting server and tie up with advert
+     *
+     * @param fileList List of the multipart files {@link List<MultipartFile>}
+     * @return Photo entity in case of success. {@link Photo}
+     */
+
     public static Photo uploadPhotoToAdvertisement(List<MultipartFile> fileList) throws IOException {
         String[] arrayOfPath = new String[8];
         String[] fileNames = new String[8];
@@ -47,6 +54,12 @@ public class PhotoServiceImpl {
         return photo;
     }
 
+    /**
+     * Method that uploading photos to the hosting server. Related to the 'uploadPhotoToAdvertisement'.
+     *
+     * @param imagesInBase64 encoded image in base64.
+     * @return OptionalResponse[] in case of success. {@link OptionalResponse}
+     */
     public static OptionalResponse[] uploadPhotoToServer(String[] imagesInBase64, String[] fileNames) {
         OptionalResponse[] uploadedImages = new OptionalResponse[imagesInBase64.length];
         for (int i = 0; i < imagesInBase64.length; i++) {
@@ -58,6 +71,14 @@ public class PhotoServiceImpl {
         return uploadedImages;
     }
 
+    /**
+     * Methods that uploading photo of QR code to the hosting server.
+     *
+     * @param qrCodeInBase64 encoded image of QR code in base64.
+     * @param url            link to the advert which is encoded in QR code.
+     *
+     * @return link of QR code in case of success
+     */
     public static String uploadPhotoOfQRcodeToAdvertisement(String qrCodeInBase64, String url) {
         OptionalResponse optionalResponse = PhotoServiceImpl.uploadPhotoOfQRcodeToServer(qrCodeInBase64, url);
         return optionalResponse.get().getResponseData().getImageUrl();

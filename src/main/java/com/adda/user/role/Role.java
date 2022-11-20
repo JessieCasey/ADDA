@@ -6,6 +6,10 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+/**
+ * The Role entity
+ */
+
 @Entity
 @Table(name = "roles")
 @Getter

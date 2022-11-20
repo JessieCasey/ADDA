@@ -2,6 +2,7 @@ package com.adda.config;
 
 import com.adda.auth.filter.AuthEntryPointJwt;
 import com.adda.auth.filter.AuthTokenFilter;
+import com.adda.auth.service.AuthService;
 import com.adda.user.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+/**
+ * WebSecurityConfig class
+ */
 
 @Configuration
 @EnableWebSecurity

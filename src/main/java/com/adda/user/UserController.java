@@ -1,7 +1,11 @@
 package com.adda.user;
 
+import com.adda.advert.Advert;
+import com.adda.advert.AdvertController;
 import com.adda.advert.dto.AdvertResponseDTO;
-import com.adda.advice.MessageException;
+import com.adda.advert.repository.AdvertModelAssembler;
+import com.adda.advert.service.AdvertService;
+import com.adda.advice.MessageResponse;
 import com.adda.user.dto.UserResponseDTO;
 import com.adda.user.dto.UserUpdateDTO;
 import com.adda.user.history.HistoryService;
@@ -9,6 +13,7 @@ import com.adda.user.repository.UserModel;
 import com.adda.user.repository.UserModelAssembler;
 import com.adda.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -37,6 +42,15 @@ public class UserController {
     private final PagedResourcesAssembler<User> assembler;
     private final UserModelAssembler modelAssembler;
 
+    /**
+     * Constructor for {@link UserController}.
+     *
+     * @param userService    {@link UserService}
+     * @param historyService {@link HistoryService}
+     * @param assembler      {@link PagedResourcesAssembler}
+     * @param modelAssembler {@link UserModelAssembler}
+     */
+    @Autowired
     public UserController(UserService userService, HistoryService historyService,
                           PagedResourcesAssembler<User> assembler, UserModelAssembler modelAssembler) {
         this.userService = userService;
@@ -141,7 +155,7 @@ public class UserController {
             return ResponseEntity.created(location).body(new UserResponseDTO(updated));
         } catch (Exception e) {
             log.error("Error in method 'updateUser': " + e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageException(e.getMessage(), request));
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage(), request));
         }
     }
 
@@ -154,7 +168,7 @@ public class UserController {
             return ResponseEntity.ok(userService.delete(id));
         } catch (Exception e) {
             log.error("Error in method 'updateUser': " + e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageException(e.getMessage(), request));
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage(), request));
         }
     }
 
@@ -166,7 +180,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("Error in method 'getUser': " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new MessageException(HttpStatus.BAD_REQUEST.value(), e.getMessage(), request));
+                    .body(new MessageResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage(), request));
         }
     }
 
@@ -184,7 +198,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("Error in method 'getUser': " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new MessageException(e.getMessage(), request));
+                    .body(new MessageResponse(e.getMessage(), request));
         }
     }
 

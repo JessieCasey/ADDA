@@ -5,6 +5,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.Serial;
 
+/**
+ * The TokenRefreshException exception extends RuntimeException.
+ * GlobalExceptionHandler handles this exception. {@link com.adda.exception.GlobalExceptionHandler}
+ */
+
+
 @ResponseStatus(HttpStatus.FORBIDDEN)
 public class TokenRefreshException extends RuntimeException {
 

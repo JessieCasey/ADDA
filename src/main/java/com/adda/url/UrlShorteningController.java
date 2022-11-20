@@ -1,10 +1,12 @@
 package com.adda.url;
 
+import com.adda.advert.Advert;
 import com.adda.url.dto.UrlDto;
 import com.adda.url.dto.UrlErrorResponseDto;
 import com.adda.url.dto.UrlResponseDto;
 import com.adda.url.service.UrlService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +20,22 @@ public class UrlShorteningController {
 
     private final UrlService urlService;
 
+    /**
+     * Constructor for {@link UrlShorteningController}.
+     *
+     * @param urlService {@link UrlService}
+     */
+    @Autowired
     public UrlShorteningController(UrlService urlService) {
         this.urlService = urlService;
     }
 
+    /**
+     * Method that generating short links.  {@link Advert}
+     *
+     * @param urlDto DTO to create URL entity. {@link UrlDto}
+     * @return ResponseEntity<AdvertResponseDTO> object in case of success. {@link ResponseEntity}
+     */
     @PostMapping("/url")
     public ResponseEntity<?> generateShortLink(@RequestBody UrlDto urlDto) {
         Url urlToRet = urlService.generateShortLink(urlDto);
@@ -41,6 +55,11 @@ public class UrlShorteningController {
 
     }
 
+    /**
+     * Method that redirect from the short links.  {@link Advert}
+     *
+     * @param shortLink short link that was generated earlier.
+     */
     @GetMapping("/{shortLink}")
     public ResponseEntity<?> redirectToOriginalUrl(@PathVariable String shortLink,
                                                    HttpServletResponse response) throws IOException {

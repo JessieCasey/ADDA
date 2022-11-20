@@ -8,6 +8,12 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.Instant;
 
+
+/**
+ * The UpdateToken entity  is used to update sensitive data (password or email)
+ */
+
+
 @Entity
 @NoArgsConstructor
 @Getter

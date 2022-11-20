@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
+/**
+ * The UrlServiceImpl class implements UrlService interface to create methods {@link UrlService}
+ */
+
 @Component
 @Slf4j
 public class UrlServiceImpl implements UrlService {

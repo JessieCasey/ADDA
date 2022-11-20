@@ -12,6 +12,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * The User entity
+ */
+
 @Getter
 @Setter
 @Entity

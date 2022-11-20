@@ -8,6 +8,11 @@ import org.hibernate.Hibernate;
 import javax.persistence.*;
 import java.util.Objects;
 
+/**
+ * The Category class is required if we want to create the advert entity.
+ * DB already has several of categories (check second migration 'V2__INSERT_ROLES_AND_CATEGORIES.sql')
+ */
+
 @Entity
 @Getter
 @Setter

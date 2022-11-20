@@ -8,6 +8,10 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.Instant;
 
+/**
+ * The RefreshToken entity is required if we want to update current session.
+ */
+
 @Entity
 @NoArgsConstructor
 @Getter
