@@ -1,8 +1,5 @@
 package com.adda.user.updateToken;
 
-import com.adda.advert.Advert;
-import com.adda.advert.dto.AdvertDTO;
-import com.adda.advert.dto.AdvertResponseDTO;
 import com.adda.advice.MessageResponse;
 import com.adda.user.User;
 import com.adda.user.service.UserDetailsImpl;
@@ -15,7 +12,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("security")

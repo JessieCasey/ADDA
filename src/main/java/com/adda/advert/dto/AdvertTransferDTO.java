@@ -4,7 +4,6 @@ import com.adda.advert.category.Category;
 import com.adda.advert.photo.Photo;
 import com.adda.user.User;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
 

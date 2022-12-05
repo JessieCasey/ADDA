@@ -1,10 +1,6 @@
 package com.adda.user;
 
-import com.adda.advert.Advert;
-import com.adda.advert.AdvertController;
 import com.adda.advert.dto.AdvertResponseDTO;
-import com.adda.advert.repository.AdvertModelAssembler;
-import com.adda.advert.service.AdvertService;
 import com.adda.advice.MessageResponse;
 import com.adda.user.dto.UserResponseDTO;
 import com.adda.user.dto.UserUpdateDTO;
@@ -77,7 +73,8 @@ public class UserController {
             @RequestParam(defaultValue = "") List<String> sortList,
             @RequestParam(defaultValue = "DESC") Sort.Direction sortOrder) {
         log.info("[GET] Request to method 'fetchUsersWithPagination'");
-        Page<User> customerPage = userService.fetchUserDataAsPageWithFilteringAndSorting(firstName, lastName, page, size, sortList, sortOrder.toString());
+        Page<User> customerPage = userService.fetchUserDataAsPageWithFilteringAndSorting
+                (firstName, lastName, page, size, sortList, sortOrder.toString());
         return assembler.toModel(customerPage, modelAssembler);
     }
 

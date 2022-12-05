@@ -4,7 +4,6 @@ import com.adda.advert.Advert;
 import com.adda.advert.service.AdvertService;
 import com.adda.email.EmailService;
 import com.adda.exception.NullEntityReferenceException;
-import com.adda.url.service.UrlService;
 import com.adda.user.User;
 import com.adda.user.dto.UserDeletedDTO;
 import com.adda.user.dto.UserUpdateDTO;
@@ -159,10 +158,8 @@ public class UserServiceImpl implements UserService {
             List<Advert> allByUser = advertService.getAllByUser(id);
             UserDeletedDTO userDeletedDTO =
                     new UserDeletedDTO(userRepository.getById(id), allByUser.size(), LocalDateTime.now());
-
             allByUser.forEach(x -> advertService.deleteAdvertById(x.getId()));
             userRepository.deleteById(id);
-
             log.info("Method 'delete()': User is deleted from the DB");
             return userDeletedDTO;
         } else {
@@ -200,7 +197,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.getById(updateToken.getUser().getId());
         user.setPassword(passwordEncoder.encode(updateToken.getSensitiveData()));
         userRepository.save(user);
-
     }
 
     public void updatePasswordById(Long userId, String password) {

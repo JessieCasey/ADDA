@@ -2,9 +2,6 @@ package com.adda.advert.repository;
 
 import com.adda.advert.Advert;
 import com.adda.advert.AdvertController;
-import com.adda.user.User;
-import com.adda.user.UserController;
-import com.adda.user.repository.UserModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;

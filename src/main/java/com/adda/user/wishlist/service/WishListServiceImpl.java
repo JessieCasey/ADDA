@@ -2,17 +2,15 @@ package com.adda.user.wishlist.service;
 
 import com.adda.advert.Advert;
 import com.adda.advert.dto.AdvertResponseDTO;
-import com.adda.url.service.UrlService;
 import com.adda.user.User;
-import com.adda.user.repository.UserRepository;
 import com.adda.user.wishlist.WishList;
 import com.adda.user.wishlist.WishListNotFoundException;
 import com.adda.user.wishlist.WishListRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,8 +31,8 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public WishList getWishList(User user) throws IllegalAccessException {
-        return wishListRepository.findById(user.getWishList()).orElseThrow(IllegalAccessException::new);
+    public WishList getWishList(User user) {
+        return wishListRepository.findById(user.getWishList()).orElseThrow(() -> new EntityNotFoundException("Unable to find com.adda.user.User with id " + user.getId()));
     }
 
     @Override

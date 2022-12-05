@@ -1,6 +1,5 @@
 package com.adda.user.wishlist;
 
-import com.adda.advert.photo.Photo;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

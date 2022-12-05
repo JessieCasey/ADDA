@@ -21,7 +21,7 @@ import java.util.Objects;
 @ToString
 public class Photo {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
     private String photo1;
     private String photo2;

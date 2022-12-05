@@ -1,7 +1,6 @@
 package com.adda.user.history;
 
 import com.adda.advert.Advert;
-import com.adda.url.service.UrlServiceImpl;
 
 import java.util.List;
 

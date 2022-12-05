@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public interface WishListService {
 
-    WishList getWishList(User user) throws IllegalAccessException;
+    WishList getWishList(User user);
 
     AdvertResponseDTO addAdvertToWishList(User user, Advert advert) throws IllegalAccessException;
 

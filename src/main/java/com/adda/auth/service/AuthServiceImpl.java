@@ -1,16 +1,10 @@
 package com.adda.auth.service;
 
-import com.adda.advert.Advert;
-import com.adda.advert.AdvertController;
-import com.adda.advert.repository.AdvertModelAssembler;
-import com.adda.advert.service.AdvertService;
-import com.adda.advice.MessageResponse;
 import com.adda.auth.dto.SignInDTO;
 import com.adda.auth.dto.SignupDTO;
 import com.adda.auth.jwt.JwtResponse;
 import com.adda.auth.jwt.JwtUtils;
 import com.adda.auth.token.RefreshToken;
-import com.adda.auth.token.dto.TokenRefreshRequest;
 import com.adda.auth.token.service.RefreshTokenService;
 import com.adda.email.EmailService;
 import com.adda.user.User;
@@ -21,8 +15,6 @@ import com.adda.user.service.UserService;
 import com.adda.user.wishlist.service.WishListService;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -122,7 +114,11 @@ public class AuthServiceImpl implements AuthService {
         emailService.sendEmail(user.getEmail(), content, "Please verify your registration");
     }
 
-
+    /**
+     * Method that registering user in the system and save in DB. {@link com.adda.user.User}
+     *
+     * @param request DTO to register user. {@link SignupDTO}
+     */
     public User register(SignupDTO request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Error: Username is already taken!");
