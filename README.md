@@ -85,11 +85,11 @@ There are two users in our database
 
 Also, there are 3 adverts in our database
 
-| UUID                                  | Title                   | Price     | Category       | User id |
-|:--------------------------------------|:------------------------|:----------|:---------------|:--------|
-| `46ef9821-5f1f-4927-a98f-1a94f71703eb`| `BMW F90`               | `90549.0` | `Car`          | `2`     |
-| `e0bbdb63-8cbc-49aa-a442-b7ba6ca20e86`| `Iphone 12 mini 256 gb` | `670.0`   | `Electronics`  | `2`     |
-| `73e0b7d7-0051-48d5-b263-3b9bccc20ddb`| `Lip gloss MaybeLine`   | `25.0`  | `Beauty`       | `1`     |
+| UUID                                  | Title                   | Price     | Category       | 
+|:--------------------------------------|:------------------------|:----------|:---------------|
+| `46ef9821-5f1f-4927-a98f-1a94f71703eb`| `BMW F90`               | `90549.0` | `Car`          | 
+| `e0bbdb63-8cbc-49aa-a442-b7ba6ca20e86`| `Iphone 12 mini 256 gb` | `670.0`   | `Electronics`  | 
+| `73e0b7d7-0051-48d5-b263-3b9bccc20ddb`| `Lip gloss MaybeLine`   | `25.0`  | `Beauty`       | 
 
 ![alt text](./imgs/db/advert_table_relationship.png)
 
