@@ -45,5 +45,5 @@ values ('73e0b7d7-0051-48d5-b263-3b9bccc20ddb', '21-11-2022',
         'Decorate your everyday looks with charm and ease from the popular American brand Maybelline New York!',
         25.0,
         'https://i.ibb.co/R3hsjb1/qr-code-73e0b7d7-0051-48d5-b263-3b9bccc20ddb.png', 'Lip gloss MaybeLine', 0,
-        4, 3, 1);
+        3, 3, 1);
 
