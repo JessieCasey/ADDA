@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.Pattern;
-
 /**
  * The AdvertDTO class is required if we want to create the advert entity.
  */

@@ -1,7 +1,6 @@
 package com.adda.advert.repository;
 
 import com.adda.advert.Advert;
-import com.adda.advert.photo.Photo;
 import com.adda.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

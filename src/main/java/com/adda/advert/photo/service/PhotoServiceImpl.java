@@ -85,7 +85,7 @@ public class PhotoServiceImpl {
     }
 
     public static OptionalResponse uploadPhotoOfQRcodeToServer(String qrCodeInBase64, String fileNames) {
-        UploadParameters uploadParameters = new UploadParameters(API_KEY, qrCodeInBase64, fileNames, ExpirationTime.fromLong(1000));
+        UploadParameters uploadParameters = new UploadParameters(API_KEY, qrCodeInBase64, fileNames, ExpirationTime.fromLong(170000));
         return UploadClient.upload(uploadParameters);
     }
 }

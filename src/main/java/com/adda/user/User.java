@@ -79,8 +79,8 @@ public class User {
         User that = (User) o;
         return id == that.id && Objects.equals(firstName, that.firstName)
                 && Objects.equals(lastName, that.lastName)
-                && Objects.equals(username, that.username)
-                && Objects.equals(roles, that.roles);
+                && Objects.equals(username, that.username);
+
     }
 
     @Override

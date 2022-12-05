@@ -8,9 +8,7 @@ import com.adda.advert.dto.AdvertUpdateDTO;
 import com.adda.advert.exception.AdvertNotFoundException;
 import com.adda.advert.photo.Photo;
 import com.adda.advert.photo.service.PhotoServiceImpl;
-import com.adda.advert.repository.AdvertModel;
 import com.adda.advert.repository.AdvertRepository;
-import com.adda.advice.MessageResponse;
 import com.adda.exception.NullEntityReferenceException;
 import com.adda.user.User;
 import com.adda.user.exception.UserNotFoundException;
@@ -48,7 +46,7 @@ public class AdvertServiceImpl implements AdvertService {
 
     @Autowired
     public AdvertServiceImpl(HistoryRepository historyRepository, UserRepository userRepository,
-                             CategoryRepository categoryRepository, AdvertRepository advertRepository) {
+                             CategoryRepository categoryRepository, AdvertRepository advertRepository, QRCodeService qrCodeService) {
         this.historyRepository = historyRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
@@ -137,7 +135,6 @@ public class AdvertServiceImpl implements AdvertService {
      * @param dto         Advert DTO contains title, category_id, price, description {@link AdvertDTO}
      * @param userDetails Authenticated user {@link UserDetailsImpl}
      * @param photos      photos for advert {@link List<MultipartFile>}
-     *
      * @return Advert class {@link Sort.Order}
      */
     @Override
@@ -153,7 +150,7 @@ public class AdvertServiceImpl implements AdvertService {
                 new Photo(photos.size()),
                 categoryRepository.findById(dto.getCategoryId()).orElseThrow(IllegalArgumentException::new),
                 getCurrentTime(),
-                "QRcodeServiceImpl.getUrlOfAdvertisement(advertID)"
+                QRCodeService.getUrlOfAdvertisement(advertID)
         );
 
         Advert saved = advertRepository.save(new Advert(transferDTO));

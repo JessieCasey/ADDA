@@ -1,7 +1,5 @@
 package com.adda.email;
 
-import com.adda.auth.dto.SignInDTO;
-import com.adda.auth.jwt.JwtResponse;
 import com.adda.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

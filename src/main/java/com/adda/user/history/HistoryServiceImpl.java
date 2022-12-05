@@ -1,7 +1,6 @@
 package com.adda.user.history;
 
 import com.adda.advert.Advert;
-import com.adda.url.service.UrlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

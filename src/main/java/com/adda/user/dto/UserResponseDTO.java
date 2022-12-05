@@ -1,7 +1,6 @@
 package com.adda.user.dto;
 
 import com.adda.user.User;
-import com.adda.user.role.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
